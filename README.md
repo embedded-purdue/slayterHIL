@@ -17,6 +17,7 @@ _Note: If you are on a PC, Zephyr does not work well with WSL. Please use Window
         - [Install the Zephyr SDK](https://docs.zephyrproject.org/latest/develop/getting_started/index.html#install-the-zephyr-sdk)
 
     - [Just command runner](https://github.com/casey/just?tab=readme-ov-file#installation) - This is used like a makefile as a hotkey for all of our project-specific commands
+If you are using Windows, installing chocolatey package manager is recommended. After installing chocolatey, you can install just by running ``choco install just``.  
 
 2. Clone this repository:
     ```bash
