@@ -2,7 +2,7 @@
 
 A hardware-in-the-loop test system codesigned with a drone flight controller.
 
-## Setup
+## Setup to work on orchestrator
 
 0. Install prerequisites
 
