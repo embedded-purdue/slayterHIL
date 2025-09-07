@@ -1,0 +1,1 @@
+Hi I'm Brian. I'm a senior in CompE and I am excited to learn about RTOS.
