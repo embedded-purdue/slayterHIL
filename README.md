@@ -4,7 +4,10 @@ A hardware-in-the-loop test system codesigned with a drone flight controller.
 
 ## Setup to work on orchestrator
 
+_Note: If you are on a PC, Zephyr does not work well with WSL. Please use Windows native, or consider eventually dual-booting linux!_
+
 0. Install prerequisites
+
 
     - [Python3](https://www.geeksforgeeks.org/python/download-and-install-python-3-latest-version/)
 
@@ -15,31 +18,31 @@ A hardware-in-the-loop test system codesigned with a drone flight controller.
 
     - [Just command runner](https://github.com/casey/just?tab=readme-ov-file#installation) - This is used like a makefile as a hotkey for all of our project-specific commands
 
-1. Clone this repository:
+2. Clone this repository:
     ```bash
     git clone https://github.com/alexayl/zephyr_monorepo_template.git
     cd zephyr_monorepo_template
     ```
 
-2. Create and activate a Python virtual environment:
+3. Create and activate a Python virtual environment:
     ```bash
     python -m venv .venv
     source .venv/bin/activate  # On Linux/macOS
     ```
 
-3. Install west
+4. Install west
     ```bash
     pip install west
     ```
 
-4. Update the workspace
+5. Update the workspace
     ```bash
     cd firmware
     west update
     west packages pip --install
     ```
     
-5. Try to build and run
+6. Try to build and run
     ```bash
     just run-sim
     ```
