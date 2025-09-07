@@ -20,7 +20,7 @@ _Note: If you are on a PC, Zephyr does not work well with WSL. Please use Window
 
 2. Clone this repository:
     ```bash
-    git clone https://github.com/alexayl/zephyr_monorepo_template.git
+    git clone git@github.com:embedded-purdue/slayterHIL.git
     cd zephyr_monorepo_template
     ```
 
