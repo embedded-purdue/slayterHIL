@@ -1,0 +1,1 @@
+Hi, I'm Craig. I am a senior in compE and a TA for 362 (embedded systems), and I'm the subteam lead for firmware team.
