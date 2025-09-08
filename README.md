@@ -2,7 +2,7 @@
 
 A hardware-in-the-loop test system codesigned with a drone flight controller.
 
-## Setup to work on orchestrator
+## Setup to work on test node
 
 _Note: If you are on a PC, Zephyr does not work well with WSL. Please use Windows native, or consider eventually dual-booting/VM linux!_
 
