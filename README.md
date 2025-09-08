@@ -37,17 +37,29 @@ _Note: If you are on a PC, Zephyr does not work well with WSL. Please use Window
     pip install west
     ```
 
-5. Install the [Zephyr SDK](https://docs.zephyrproject.org/latest/develop/getting_started/index.html#install-the-zephyr-sdk)
-     - Stop after that section, nothing else.
-
-6. Update the workspace
+5. Update the workspace
     ```bash
-    cd firmware
+    cd slayterHIL
     west update
     west packages pip --install
     ```
 
+6. Install the Zephyr SDK
+    1. navigate to `slayterHIL/test_node/zephyr`
+        ```bash
+        cd zephyr
+        ```
+    2.  Perform installation 
+        ```bash
+        west sdk install
+        ```
+
 7. Try to build and run
-    ```bash
-    just run-sim
-    ```
+    1. navigate to `slayterHIL/test_node`
+        ```bash
+        cd ..
+        ```
+    2.  Build the sim to verify it works 
+        ```bash
+        just run-sim
+        ```
