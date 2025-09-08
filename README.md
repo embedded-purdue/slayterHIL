@@ -39,7 +39,7 @@ _Note: If you are on a PC, Zephyr does not work well with WSL. Please use Window
 
 5. Update the workspace
     ```bash
-    cd slayterHIL
+    cd test_node
     west update
     west packages pip --install
     ```
