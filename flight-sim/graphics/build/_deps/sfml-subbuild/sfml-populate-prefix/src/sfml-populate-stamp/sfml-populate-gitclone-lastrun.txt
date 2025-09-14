@@ -3,9 +3,9 @@
 # No other meaning or use of this file is supported.
 
 method=git
-command=/usr/bin/cmake;-P;/home/matt/Programming/flightsim/build/_deps/sfml-subbuild/sfml-populate-prefix/tmp/sfml-populate-gitclone.cmake
-source_dir=/home/matt/Programming/flightsim/build/_deps/sfml-src
-work_dir=/home/matt/Programming/flightsim/build/_deps
+command=/usr/bin/cmake;-P;/home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-subbuild/sfml-populate-prefix/tmp/sfml-populate-gitclone.cmake
+source_dir=/home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src
+work_dir=/home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps
 repository=https://github.com/SFML/SFML.git
 remote=origin
 init_submodules=TRUE

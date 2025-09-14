@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/matt/Programming/flightsim
+CMAKE_SOURCE_DIR = /home/matt/Programming/slayterHIL/flight-sim/graphics
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/matt/Programming/flightsim/build
+CMAKE_BINARY_DIR = /home/matt/Programming/slayterHIL/flight-sim/graphics/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -132,14 +132,14 @@ install/strip/fast: preinstall/fast
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/matt/Programming/flightsim/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/matt/Programming/flightsim/build/CMakeFiles /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML//CMakeFiles/progress.marks
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 _deps/sfml-build/src/SFML/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/matt/Programming/flightsim/build/CMakeFiles 0
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/matt/Programming/slayterHIL/flight-sim/graphics/build/CMakeFiles /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML//CMakeFiles/progress.marks
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 _deps/sfml-build/src/SFML/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/matt/Programming/slayterHIL/flight-sim/graphics/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 _deps/sfml-build/src/SFML/clean
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 _deps/sfml-build/src/SFML/clean
 .PHONY : clean
 
 # The main clean target
@@ -148,17 +148,17 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 _deps/sfml-build/src/SFML/preinstall
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 _deps/sfml-build/src/SFML/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 _deps/sfml-build/src/SFML/preinstall
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 _deps/sfml-build/src/SFML/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/matt/Programming/flightsim/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Help Target
@@ -184,6 +184,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/matt/Programming/flightsim/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

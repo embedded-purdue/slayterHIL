@@ -1,12 +1,13 @@
 CMakeFiles/main.dir/src/main.cpp.o: \
- /home/matt/Programming/flightsim/src/main.cpp /usr/include/stdc-predef.h \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Graphics.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Graphics/BlendMode.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Graphics/Export.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Config.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Graphics/CircleShape.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Graphics/Shape.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Graphics/Color.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/src/main.cpp \
+ /usr/include/stdc-predef.h \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Graphics.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Graphics/BlendMode.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Graphics/Export.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Config.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Graphics/CircleShape.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Graphics/Shape.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Graphics/Color.hpp \
  /usr/include/c++/13/cstdint \
  /usr/include/x86_64-linux-gnu/c++/13/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/os_defines.h \
@@ -28,16 +29,16 @@ CMakeFiles/main.dir/src/main.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/stdint-intn.h \
  /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
  /usr/include/x86_64-linux-gnu/bits/stdint-least.h \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Graphics/Color.inl \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Graphics/Drawable.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Graphics/PrimitiveType.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Graphics/Rect.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/System/Vector2.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/System/Export.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/System/Angle.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/System/Angle.inl \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Graphics/Color.inl \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Graphics/Drawable.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Graphics/PrimitiveType.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Graphics/Rect.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/System/Vector2.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/System/Export.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/System/Angle.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/System/Angle.inl \
  /usr/include/c++/13/cassert /usr/include/assert.h \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/System/Vector2.inl \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/System/Vector2.inl \
  /usr/include/c++/13/optional /usr/include/c++/13/type_traits \
  /usr/include/c++/13/exception /usr/include/c++/13/bits/exception.h \
  /usr/include/c++/13/bits/exception_ptr.h \
@@ -56,11 +57,11 @@ CMakeFiles/main.dir/src/main.cpp.o: \
  /usr/include/c++/13/bits/concept_check.h \
  /usr/include/c++/13/debug/assertions.h \
  /usr/include/c++/13/bits/utility.h \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Graphics/Rect.inl \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Graphics/RenderStates.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Graphics/CoordinateType.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Graphics/StencilMode.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Graphics/Transform.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Graphics/Rect.inl \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Graphics/RenderStates.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Graphics/CoordinateType.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Graphics/StencilMode.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Graphics/Transform.hpp \
  /usr/include/c++/13/array /usr/include/c++/13/compare \
  /usr/include/c++/13/bits/functexcept.h \
  /usr/include/c++/13/bits/stl_algobase.h \
@@ -72,11 +73,11 @@ CMakeFiles/main.dir/src/main.cpp.o: \
  /usr/include/c++/13/bits/ptr_traits.h /usr/include/c++/13/debug/debug.h \
  /usr/include/c++/13/bits/predefined_ops.h /usr/include/c++/13/bit \
  /usr/include/c++/13/bits/range_access.h \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Graphics/Transform.inl \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Graphics/Transform.inl \
  /usr/include/c++/13/cstddef \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Graphics/Transformable.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Graphics/VertexArray.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Graphics/Vertex.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Graphics/Transformable.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Graphics/VertexArray.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Graphics/Vertex.hpp \
  /usr/include/c++/13/vector /usr/include/c++/13/bits/requires_hosted.h \
  /usr/include/c++/13/bits/allocator.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/c++allocator.h \
@@ -94,12 +95,12 @@ CMakeFiles/main.dir/src/main.cpp.o: \
  /usr/include/c++/13/bits/memory_resource.h \
  /usr/include/c++/13/bits/uses_allocator.h \
  /usr/include/c++/13/bits/uses_allocator_args.h /usr/include/c++/13/tuple \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Graphics/ConvexShape.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Graphics/Font.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Graphics/Glyph.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Graphics/Texture.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Window/GlResource.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Window/Export.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Graphics/ConvexShape.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Graphics/Font.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Graphics/Glyph.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Graphics/Texture.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Window/GlResource.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Window/Export.hpp \
  /usr/include/c++/13/memory /usr/include/c++/13/bits/stl_tempbuf.h \
  /usr/include/c++/13/bits/stl_raw_storage_iter.h \
  /usr/include/c++/13/bits/align.h /usr/include/c++/13/bits/unique_ptr.h \
@@ -226,54 +227,54 @@ CMakeFiles/main.dir/src/main.cpp.o: \
  /usr/include/c++/13/bits/hashtable_policy.h \
  /usr/include/c++/13/bits/node_handle.h \
  /usr/include/c++/13/bits/erase_if.h \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Graphics/Image.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Graphics/RectangleShape.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Graphics/RenderTarget.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Graphics/View.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Graphics/RenderTexture.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Window/ContextSettings.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Graphics/RenderWindow.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Window/VideoMode.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Window/Window.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Window/WindowBase.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Window/Vulkan.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Window/WindowEnums.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Window/WindowHandle.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/System/Time.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Graphics/Image.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Graphics/RectangleShape.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Graphics/RenderTarget.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Graphics/View.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Graphics/RenderTexture.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Window/ContextSettings.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Graphics/RenderWindow.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Window/VideoMode.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Window/Window.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Window/WindowBase.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Window/Vulkan.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Window/WindowEnums.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Window/WindowHandle.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/System/Time.hpp \
  /usr/include/c++/13/chrono \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/System/Time.inl \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Window/WindowBase.inl \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Window/Event.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Window/Joystick.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/System/String.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/System/Utf.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/System/Utf.inl \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/System/String.inl \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/System/Time.inl \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Window/WindowBase.inl \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Window/Event.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Window/Joystick.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/System/String.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/System/Utf.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/System/Utf.inl \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/System/String.inl \
  /usr/include/c++/13/iterator /usr/include/c++/13/bits/stream_iterator.h \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Window/Keyboard.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Window/Mouse.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Window/Sensor.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/System/Vector3.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/System/Vector3.inl \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Window/Keyboard.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Window/Mouse.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Window/Sensor.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/System/Vector3.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/System/Vector3.inl \
  /usr/include/c++/13/variant \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Window/Event.inl \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Window/Event.inl \
  /usr/include/c++/13/utility /usr/include/c++/13/bits/stl_relops.h \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/System/Clock.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Graphics/Shader.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Graphics/Glsl.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Graphics/Glsl.inl \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Graphics/Sprite.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Graphics/Text.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Graphics/VertexBuffer.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Window.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Window/Clipboard.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Window/Context.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Window/Cursor.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/Window/Touch.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/System.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/System/Err.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/System/Exception.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/System/FileInputStream.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/System/InputStream.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/System/MemoryInputStream.hpp \
- /home/matt/Programming/flightsim/build/_deps/sfml-src/include/SFML/System/Sleep.hpp
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/System/Clock.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Graphics/Shader.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Graphics/Glsl.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Graphics/Glsl.inl \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Graphics/Sprite.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Graphics/Text.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Graphics/VertexBuffer.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Window.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Window/Clipboard.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Window/Context.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Window/Cursor.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/Window/Touch.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/System.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/System/Err.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/System/Exception.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/System/FileInputStream.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/System/InputStream.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/System/MemoryInputStream.hpp \
+ /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/include/SFML/System/Sleep.hpp

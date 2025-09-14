@@ -3,21 +3,21 @@
 
 cmake_minimum_required(VERSION 3.5)
 
-if(EXISTS "/home/matt/Programming/flightsim/build/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-gitclone-lastrun.txt" AND EXISTS "/home/matt/Programming/flightsim/build/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-gitinfo.txt" AND
-  "/home/matt/Programming/flightsim/build/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-gitclone-lastrun.txt" IS_NEWER_THAN "/home/matt/Programming/flightsim/build/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-gitinfo.txt")
+if(EXISTS "/home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-gitclone-lastrun.txt" AND EXISTS "/home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-gitinfo.txt" AND
+  "/home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-gitclone-lastrun.txt" IS_NEWER_THAN "/home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-gitinfo.txt")
   message(STATUS
     "Avoiding repeated git clone, stamp file is up to date: "
-    "'/home/matt/Programming/flightsim/build/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-gitclone-lastrun.txt'"
+    "'/home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-gitclone-lastrun.txt'"
   )
   return()
 endif()
 
 execute_process(
-  COMMAND ${CMAKE_COMMAND} -E rm -rf "/home/matt/Programming/flightsim/build/_deps/sfml-src"
+  COMMAND ${CMAKE_COMMAND} -E rm -rf "/home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src"
   RESULT_VARIABLE error_code
 )
 if(error_code)
-  message(FATAL_ERROR "Failed to remove directory: '/home/matt/Programming/flightsim/build/_deps/sfml-src'")
+  message(FATAL_ERROR "Failed to remove directory: '/home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src'")
 endif()
 
 # try the clone 3 times in case there is an odd git clone issue
@@ -27,7 +27,7 @@ while(error_code AND number_of_tries LESS 3)
   execute_process(
     COMMAND "/usr/bin/git"
             clone --no-checkout --depth 1 --no-single-branch --config "advice.detachedHead=false" "https://github.com/SFML/SFML.git" "sfml-src"
-    WORKING_DIRECTORY "/home/matt/Programming/flightsim/build/_deps"
+    WORKING_DIRECTORY "/home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps"
     RESULT_VARIABLE error_code
   )
   math(EXPR number_of_tries "${number_of_tries} + 1")
@@ -42,7 +42,7 @@ endif()
 execute_process(
   COMMAND "/usr/bin/git"
           checkout "3.0.1" --
-  WORKING_DIRECTORY "/home/matt/Programming/flightsim/build/_deps/sfml-src"
+  WORKING_DIRECTORY "/home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src"
   RESULT_VARIABLE error_code
 )
 if(error_code)
@@ -54,20 +54,20 @@ if(init_submodules)
   execute_process(
     COMMAND "/usr/bin/git" 
             submodule update --recursive --init 
-    WORKING_DIRECTORY "/home/matt/Programming/flightsim/build/_deps/sfml-src"
+    WORKING_DIRECTORY "/home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src"
     RESULT_VARIABLE error_code
   )
 endif()
 if(error_code)
-  message(FATAL_ERROR "Failed to update submodules in: '/home/matt/Programming/flightsim/build/_deps/sfml-src'")
+  message(FATAL_ERROR "Failed to update submodules in: '/home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src'")
 endif()
 
 # Complete success, update the script-last-run stamp file:
 #
 execute_process(
-  COMMAND ${CMAKE_COMMAND} -E copy "/home/matt/Programming/flightsim/build/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-gitinfo.txt" "/home/matt/Programming/flightsim/build/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-gitclone-lastrun.txt"
+  COMMAND ${CMAKE_COMMAND} -E copy "/home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-gitinfo.txt" "/home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-gitclone-lastrun.txt"
   RESULT_VARIABLE error_code
 )
 if(error_code)
-  message(FATAL_ERROR "Failed to copy script-last-run stamp file: '/home/matt/Programming/flightsim/build/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-gitclone-lastrun.txt'")
+  message(FATAL_ERROR "Failed to copy script-last-run stamp file: '/home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-gitclone-lastrun.txt'")
 endif()
