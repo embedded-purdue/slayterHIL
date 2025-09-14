@@ -10,7 +10,7 @@ public:
     Eigen::Vector3d position;
     Eigen::Vector3d velocity;
     Eigen::Vector3d acceleration;
-    Eigen::Vector3d totalForce;
+    Eigen::Vector3d total_force;
     Eigen::Quaterniond orientation;
 
     physics_body();
