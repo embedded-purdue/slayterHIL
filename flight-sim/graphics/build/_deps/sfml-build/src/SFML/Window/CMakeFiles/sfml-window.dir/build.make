@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/matt/Programming/flightsim
+CMAKE_SOURCE_DIR = /home/matt/Programming/slayterHIL/flight-sim/graphics
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/matt/Programming/flightsim/build
+CMAKE_BINARY_DIR = /home/matt/Programming/slayterHIL/flight-sim/graphics/build
 
 # Include any dependencies generated for this target.
 include _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/depend.make
@@ -72,422 +72,422 @@ include _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/flags.make
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Clipboard.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/flags.make
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Clipboard.cpp.o: _deps/sfml-src/src/SFML/Window/Clipboard.cpp
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Clipboard.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/flightsim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Clipboard.cpp.o"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Clipboard.cpp.o -MF CMakeFiles/sfml-window.dir/Clipboard.cpp.o.d -o CMakeFiles/sfml-window.dir/Clipboard.cpp.o -c /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Clipboard.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/slayterHIL/flight-sim/graphics/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Clipboard.cpp.o"
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Clipboard.cpp.o -MF CMakeFiles/sfml-window.dir/Clipboard.cpp.o.d -o CMakeFiles/sfml-window.dir/Clipboard.cpp.o -c /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Clipboard.cpp
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Clipboard.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sfml-window.dir/Clipboard.cpp.i"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Clipboard.cpp > CMakeFiles/sfml-window.dir/Clipboard.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Clipboard.cpp > CMakeFiles/sfml-window.dir/Clipboard.cpp.i
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Clipboard.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sfml-window.dir/Clipboard.cpp.s"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Clipboard.cpp -o CMakeFiles/sfml-window.dir/Clipboard.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Clipboard.cpp -o CMakeFiles/sfml-window.dir/Clipboard.cpp.s
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Context.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/flags.make
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Context.cpp.o: _deps/sfml-src/src/SFML/Window/Context.cpp
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Context.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/flightsim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Context.cpp.o"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Context.cpp.o -MF CMakeFiles/sfml-window.dir/Context.cpp.o.d -o CMakeFiles/sfml-window.dir/Context.cpp.o -c /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Context.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/slayterHIL/flight-sim/graphics/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Context.cpp.o"
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Context.cpp.o -MF CMakeFiles/sfml-window.dir/Context.cpp.o.d -o CMakeFiles/sfml-window.dir/Context.cpp.o -c /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Context.cpp
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Context.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sfml-window.dir/Context.cpp.i"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Context.cpp > CMakeFiles/sfml-window.dir/Context.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Context.cpp > CMakeFiles/sfml-window.dir/Context.cpp.i
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Context.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sfml-window.dir/Context.cpp.s"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Context.cpp -o CMakeFiles/sfml-window.dir/Context.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Context.cpp -o CMakeFiles/sfml-window.dir/Context.cpp.s
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Cursor.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/flags.make
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Cursor.cpp.o: _deps/sfml-src/src/SFML/Window/Cursor.cpp
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Cursor.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/flightsim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Cursor.cpp.o"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Cursor.cpp.o -MF CMakeFiles/sfml-window.dir/Cursor.cpp.o.d -o CMakeFiles/sfml-window.dir/Cursor.cpp.o -c /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Cursor.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/slayterHIL/flight-sim/graphics/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Cursor.cpp.o"
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Cursor.cpp.o -MF CMakeFiles/sfml-window.dir/Cursor.cpp.o.d -o CMakeFiles/sfml-window.dir/Cursor.cpp.o -c /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Cursor.cpp
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Cursor.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sfml-window.dir/Cursor.cpp.i"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Cursor.cpp > CMakeFiles/sfml-window.dir/Cursor.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Cursor.cpp > CMakeFiles/sfml-window.dir/Cursor.cpp.i
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Cursor.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sfml-window.dir/Cursor.cpp.s"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Cursor.cpp -o CMakeFiles/sfml-window.dir/Cursor.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Cursor.cpp -o CMakeFiles/sfml-window.dir/Cursor.cpp.s
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/GlContext.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/flags.make
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/GlContext.cpp.o: _deps/sfml-src/src/SFML/Window/GlContext.cpp
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/GlContext.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/flightsim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/GlContext.cpp.o"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/GlContext.cpp.o -MF CMakeFiles/sfml-window.dir/GlContext.cpp.o.d -o CMakeFiles/sfml-window.dir/GlContext.cpp.o -c /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/GlContext.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/slayterHIL/flight-sim/graphics/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/GlContext.cpp.o"
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/GlContext.cpp.o -MF CMakeFiles/sfml-window.dir/GlContext.cpp.o.d -o CMakeFiles/sfml-window.dir/GlContext.cpp.o -c /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/GlContext.cpp
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/GlContext.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sfml-window.dir/GlContext.cpp.i"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/GlContext.cpp > CMakeFiles/sfml-window.dir/GlContext.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/GlContext.cpp > CMakeFiles/sfml-window.dir/GlContext.cpp.i
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/GlContext.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sfml-window.dir/GlContext.cpp.s"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/GlContext.cpp -o CMakeFiles/sfml-window.dir/GlContext.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/GlContext.cpp -o CMakeFiles/sfml-window.dir/GlContext.cpp.s
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/GlResource.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/flags.make
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/GlResource.cpp.o: _deps/sfml-src/src/SFML/Window/GlResource.cpp
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/GlResource.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/flightsim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/GlResource.cpp.o"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/GlResource.cpp.o -MF CMakeFiles/sfml-window.dir/GlResource.cpp.o.d -o CMakeFiles/sfml-window.dir/GlResource.cpp.o -c /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/GlResource.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/slayterHIL/flight-sim/graphics/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/GlResource.cpp.o"
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/GlResource.cpp.o -MF CMakeFiles/sfml-window.dir/GlResource.cpp.o.d -o CMakeFiles/sfml-window.dir/GlResource.cpp.o -c /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/GlResource.cpp
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/GlResource.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sfml-window.dir/GlResource.cpp.i"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/GlResource.cpp > CMakeFiles/sfml-window.dir/GlResource.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/GlResource.cpp > CMakeFiles/sfml-window.dir/GlResource.cpp.i
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/GlResource.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sfml-window.dir/GlResource.cpp.s"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/GlResource.cpp -o CMakeFiles/sfml-window.dir/GlResource.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/GlResource.cpp -o CMakeFiles/sfml-window.dir/GlResource.cpp.s
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Joystick.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/flags.make
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Joystick.cpp.o: _deps/sfml-src/src/SFML/Window/Joystick.cpp
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Joystick.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/flightsim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Joystick.cpp.o"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Joystick.cpp.o -MF CMakeFiles/sfml-window.dir/Joystick.cpp.o.d -o CMakeFiles/sfml-window.dir/Joystick.cpp.o -c /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Joystick.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/slayterHIL/flight-sim/graphics/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Joystick.cpp.o"
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Joystick.cpp.o -MF CMakeFiles/sfml-window.dir/Joystick.cpp.o.d -o CMakeFiles/sfml-window.dir/Joystick.cpp.o -c /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Joystick.cpp
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Joystick.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sfml-window.dir/Joystick.cpp.i"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Joystick.cpp > CMakeFiles/sfml-window.dir/Joystick.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Joystick.cpp > CMakeFiles/sfml-window.dir/Joystick.cpp.i
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Joystick.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sfml-window.dir/Joystick.cpp.s"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Joystick.cpp -o CMakeFiles/sfml-window.dir/Joystick.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Joystick.cpp -o CMakeFiles/sfml-window.dir/Joystick.cpp.s
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/JoystickManager.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/flags.make
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/JoystickManager.cpp.o: _deps/sfml-src/src/SFML/Window/JoystickManager.cpp
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/JoystickManager.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/flightsim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/JoystickManager.cpp.o"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/JoystickManager.cpp.o -MF CMakeFiles/sfml-window.dir/JoystickManager.cpp.o.d -o CMakeFiles/sfml-window.dir/JoystickManager.cpp.o -c /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/JoystickManager.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/slayterHIL/flight-sim/graphics/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/JoystickManager.cpp.o"
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/JoystickManager.cpp.o -MF CMakeFiles/sfml-window.dir/JoystickManager.cpp.o.d -o CMakeFiles/sfml-window.dir/JoystickManager.cpp.o -c /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/JoystickManager.cpp
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/JoystickManager.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sfml-window.dir/JoystickManager.cpp.i"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/JoystickManager.cpp > CMakeFiles/sfml-window.dir/JoystickManager.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/JoystickManager.cpp > CMakeFiles/sfml-window.dir/JoystickManager.cpp.i
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/JoystickManager.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sfml-window.dir/JoystickManager.cpp.s"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/JoystickManager.cpp -o CMakeFiles/sfml-window.dir/JoystickManager.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/JoystickManager.cpp -o CMakeFiles/sfml-window.dir/JoystickManager.cpp.s
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Keyboard.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/flags.make
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Keyboard.cpp.o: _deps/sfml-src/src/SFML/Window/Keyboard.cpp
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Keyboard.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/flightsim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Keyboard.cpp.o"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Keyboard.cpp.o -MF CMakeFiles/sfml-window.dir/Keyboard.cpp.o.d -o CMakeFiles/sfml-window.dir/Keyboard.cpp.o -c /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Keyboard.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/slayterHIL/flight-sim/graphics/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Keyboard.cpp.o"
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Keyboard.cpp.o -MF CMakeFiles/sfml-window.dir/Keyboard.cpp.o.d -o CMakeFiles/sfml-window.dir/Keyboard.cpp.o -c /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Keyboard.cpp
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Keyboard.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sfml-window.dir/Keyboard.cpp.i"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Keyboard.cpp > CMakeFiles/sfml-window.dir/Keyboard.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Keyboard.cpp > CMakeFiles/sfml-window.dir/Keyboard.cpp.i
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Keyboard.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sfml-window.dir/Keyboard.cpp.s"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Keyboard.cpp -o CMakeFiles/sfml-window.dir/Keyboard.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Keyboard.cpp -o CMakeFiles/sfml-window.dir/Keyboard.cpp.s
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Mouse.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/flags.make
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Mouse.cpp.o: _deps/sfml-src/src/SFML/Window/Mouse.cpp
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Mouse.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/flightsim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Mouse.cpp.o"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Mouse.cpp.o -MF CMakeFiles/sfml-window.dir/Mouse.cpp.o.d -o CMakeFiles/sfml-window.dir/Mouse.cpp.o -c /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Mouse.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/slayterHIL/flight-sim/graphics/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Mouse.cpp.o"
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Mouse.cpp.o -MF CMakeFiles/sfml-window.dir/Mouse.cpp.o.d -o CMakeFiles/sfml-window.dir/Mouse.cpp.o -c /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Mouse.cpp
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Mouse.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sfml-window.dir/Mouse.cpp.i"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Mouse.cpp > CMakeFiles/sfml-window.dir/Mouse.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Mouse.cpp > CMakeFiles/sfml-window.dir/Mouse.cpp.i
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Mouse.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sfml-window.dir/Mouse.cpp.s"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Mouse.cpp -o CMakeFiles/sfml-window.dir/Mouse.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Mouse.cpp -o CMakeFiles/sfml-window.dir/Mouse.cpp.s
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Touch.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/flags.make
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Touch.cpp.o: _deps/sfml-src/src/SFML/Window/Touch.cpp
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Touch.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/flightsim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Touch.cpp.o"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Touch.cpp.o -MF CMakeFiles/sfml-window.dir/Touch.cpp.o.d -o CMakeFiles/sfml-window.dir/Touch.cpp.o -c /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Touch.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/slayterHIL/flight-sim/graphics/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Touch.cpp.o"
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Touch.cpp.o -MF CMakeFiles/sfml-window.dir/Touch.cpp.o.d -o CMakeFiles/sfml-window.dir/Touch.cpp.o -c /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Touch.cpp
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Touch.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sfml-window.dir/Touch.cpp.i"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Touch.cpp > CMakeFiles/sfml-window.dir/Touch.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Touch.cpp > CMakeFiles/sfml-window.dir/Touch.cpp.i
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Touch.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sfml-window.dir/Touch.cpp.s"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Touch.cpp -o CMakeFiles/sfml-window.dir/Touch.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Touch.cpp -o CMakeFiles/sfml-window.dir/Touch.cpp.s
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Sensor.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/flags.make
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Sensor.cpp.o: _deps/sfml-src/src/SFML/Window/Sensor.cpp
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Sensor.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/flightsim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Sensor.cpp.o"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Sensor.cpp.o -MF CMakeFiles/sfml-window.dir/Sensor.cpp.o.d -o CMakeFiles/sfml-window.dir/Sensor.cpp.o -c /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Sensor.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/slayterHIL/flight-sim/graphics/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Sensor.cpp.o"
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Sensor.cpp.o -MF CMakeFiles/sfml-window.dir/Sensor.cpp.o.d -o CMakeFiles/sfml-window.dir/Sensor.cpp.o -c /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Sensor.cpp
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Sensor.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sfml-window.dir/Sensor.cpp.i"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Sensor.cpp > CMakeFiles/sfml-window.dir/Sensor.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Sensor.cpp > CMakeFiles/sfml-window.dir/Sensor.cpp.i
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Sensor.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sfml-window.dir/Sensor.cpp.s"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Sensor.cpp -o CMakeFiles/sfml-window.dir/Sensor.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Sensor.cpp -o CMakeFiles/sfml-window.dir/Sensor.cpp.s
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/SensorManager.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/flags.make
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/SensorManager.cpp.o: _deps/sfml-src/src/SFML/Window/SensorManager.cpp
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/SensorManager.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/flightsim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/SensorManager.cpp.o"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/SensorManager.cpp.o -MF CMakeFiles/sfml-window.dir/SensorManager.cpp.o.d -o CMakeFiles/sfml-window.dir/SensorManager.cpp.o -c /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/SensorManager.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/slayterHIL/flight-sim/graphics/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/SensorManager.cpp.o"
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/SensorManager.cpp.o -MF CMakeFiles/sfml-window.dir/SensorManager.cpp.o.d -o CMakeFiles/sfml-window.dir/SensorManager.cpp.o -c /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/SensorManager.cpp
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/SensorManager.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sfml-window.dir/SensorManager.cpp.i"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/SensorManager.cpp > CMakeFiles/sfml-window.dir/SensorManager.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/SensorManager.cpp > CMakeFiles/sfml-window.dir/SensorManager.cpp.i
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/SensorManager.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sfml-window.dir/SensorManager.cpp.s"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/SensorManager.cpp -o CMakeFiles/sfml-window.dir/SensorManager.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/SensorManager.cpp -o CMakeFiles/sfml-window.dir/SensorManager.cpp.s
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/VideoMode.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/flags.make
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/VideoMode.cpp.o: _deps/sfml-src/src/SFML/Window/VideoMode.cpp
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/VideoMode.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/flightsim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/VideoMode.cpp.o"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/VideoMode.cpp.o -MF CMakeFiles/sfml-window.dir/VideoMode.cpp.o.d -o CMakeFiles/sfml-window.dir/VideoMode.cpp.o -c /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/VideoMode.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/slayterHIL/flight-sim/graphics/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/VideoMode.cpp.o"
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/VideoMode.cpp.o -MF CMakeFiles/sfml-window.dir/VideoMode.cpp.o.d -o CMakeFiles/sfml-window.dir/VideoMode.cpp.o -c /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/VideoMode.cpp
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/VideoMode.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sfml-window.dir/VideoMode.cpp.i"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/VideoMode.cpp > CMakeFiles/sfml-window.dir/VideoMode.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/VideoMode.cpp > CMakeFiles/sfml-window.dir/VideoMode.cpp.i
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/VideoMode.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sfml-window.dir/VideoMode.cpp.s"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/VideoMode.cpp -o CMakeFiles/sfml-window.dir/VideoMode.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/VideoMode.cpp -o CMakeFiles/sfml-window.dir/VideoMode.cpp.s
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Vulkan.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/flags.make
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Vulkan.cpp.o: _deps/sfml-src/src/SFML/Window/Vulkan.cpp
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Vulkan.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/flightsim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Vulkan.cpp.o"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Vulkan.cpp.o -MF CMakeFiles/sfml-window.dir/Vulkan.cpp.o.d -o CMakeFiles/sfml-window.dir/Vulkan.cpp.o -c /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Vulkan.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/slayterHIL/flight-sim/graphics/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Vulkan.cpp.o"
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Vulkan.cpp.o -MF CMakeFiles/sfml-window.dir/Vulkan.cpp.o.d -o CMakeFiles/sfml-window.dir/Vulkan.cpp.o -c /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Vulkan.cpp
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Vulkan.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sfml-window.dir/Vulkan.cpp.i"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Vulkan.cpp > CMakeFiles/sfml-window.dir/Vulkan.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Vulkan.cpp > CMakeFiles/sfml-window.dir/Vulkan.cpp.i
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Vulkan.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sfml-window.dir/Vulkan.cpp.s"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Vulkan.cpp -o CMakeFiles/sfml-window.dir/Vulkan.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Vulkan.cpp -o CMakeFiles/sfml-window.dir/Vulkan.cpp.s
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Window.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/flags.make
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Window.cpp.o: _deps/sfml-src/src/SFML/Window/Window.cpp
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Window.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/flightsim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Window.cpp.o"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Window.cpp.o -MF CMakeFiles/sfml-window.dir/Window.cpp.o.d -o CMakeFiles/sfml-window.dir/Window.cpp.o -c /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Window.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/slayterHIL/flight-sim/graphics/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Window.cpp.o"
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Window.cpp.o -MF CMakeFiles/sfml-window.dir/Window.cpp.o.d -o CMakeFiles/sfml-window.dir/Window.cpp.o -c /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Window.cpp
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Window.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sfml-window.dir/Window.cpp.i"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Window.cpp > CMakeFiles/sfml-window.dir/Window.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Window.cpp > CMakeFiles/sfml-window.dir/Window.cpp.i
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Window.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sfml-window.dir/Window.cpp.s"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Window.cpp -o CMakeFiles/sfml-window.dir/Window.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Window.cpp -o CMakeFiles/sfml-window.dir/Window.cpp.s
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/WindowBase.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/flags.make
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/WindowBase.cpp.o: _deps/sfml-src/src/SFML/Window/WindowBase.cpp
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/WindowBase.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/flightsim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/WindowBase.cpp.o"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/WindowBase.cpp.o -MF CMakeFiles/sfml-window.dir/WindowBase.cpp.o.d -o CMakeFiles/sfml-window.dir/WindowBase.cpp.o -c /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/WindowBase.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/slayterHIL/flight-sim/graphics/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/WindowBase.cpp.o"
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/WindowBase.cpp.o -MF CMakeFiles/sfml-window.dir/WindowBase.cpp.o.d -o CMakeFiles/sfml-window.dir/WindowBase.cpp.o -c /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/WindowBase.cpp
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/WindowBase.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sfml-window.dir/WindowBase.cpp.i"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/WindowBase.cpp > CMakeFiles/sfml-window.dir/WindowBase.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/WindowBase.cpp > CMakeFiles/sfml-window.dir/WindowBase.cpp.i
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/WindowBase.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sfml-window.dir/WindowBase.cpp.s"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/WindowBase.cpp -o CMakeFiles/sfml-window.dir/WindowBase.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/WindowBase.cpp -o CMakeFiles/sfml-window.dir/WindowBase.cpp.s
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/WindowImpl.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/flags.make
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/WindowImpl.cpp.o: _deps/sfml-src/src/SFML/Window/WindowImpl.cpp
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/WindowImpl.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/flightsim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/WindowImpl.cpp.o"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/WindowImpl.cpp.o -MF CMakeFiles/sfml-window.dir/WindowImpl.cpp.o.d -o CMakeFiles/sfml-window.dir/WindowImpl.cpp.o -c /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/WindowImpl.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/slayterHIL/flight-sim/graphics/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/WindowImpl.cpp.o"
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/WindowImpl.cpp.o -MF CMakeFiles/sfml-window.dir/WindowImpl.cpp.o.d -o CMakeFiles/sfml-window.dir/WindowImpl.cpp.o -c /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/WindowImpl.cpp
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/WindowImpl.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sfml-window.dir/WindowImpl.cpp.i"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/WindowImpl.cpp > CMakeFiles/sfml-window.dir/WindowImpl.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/WindowImpl.cpp > CMakeFiles/sfml-window.dir/WindowImpl.cpp.i
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/WindowImpl.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sfml-window.dir/WindowImpl.cpp.s"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/WindowImpl.cpp -o CMakeFiles/sfml-window.dir/WindowImpl.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/WindowImpl.cpp -o CMakeFiles/sfml-window.dir/WindowImpl.cpp.s
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/CursorImpl.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/flags.make
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/CursorImpl.cpp.o: _deps/sfml-src/src/SFML/Window/Unix/CursorImpl.cpp
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/CursorImpl.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/flightsim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/CursorImpl.cpp.o"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/CursorImpl.cpp.o -MF CMakeFiles/sfml-window.dir/Unix/CursorImpl.cpp.o.d -o CMakeFiles/sfml-window.dir/Unix/CursorImpl.cpp.o -c /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/CursorImpl.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/slayterHIL/flight-sim/graphics/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/CursorImpl.cpp.o"
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/CursorImpl.cpp.o -MF CMakeFiles/sfml-window.dir/Unix/CursorImpl.cpp.o.d -o CMakeFiles/sfml-window.dir/Unix/CursorImpl.cpp.o -c /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/CursorImpl.cpp
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/CursorImpl.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sfml-window.dir/Unix/CursorImpl.cpp.i"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/CursorImpl.cpp > CMakeFiles/sfml-window.dir/Unix/CursorImpl.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/CursorImpl.cpp > CMakeFiles/sfml-window.dir/Unix/CursorImpl.cpp.i
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/CursorImpl.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sfml-window.dir/Unix/CursorImpl.cpp.s"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/CursorImpl.cpp -o CMakeFiles/sfml-window.dir/Unix/CursorImpl.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/CursorImpl.cpp -o CMakeFiles/sfml-window.dir/Unix/CursorImpl.cpp.s
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/ClipboardImpl.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/flags.make
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/ClipboardImpl.cpp.o: _deps/sfml-src/src/SFML/Window/Unix/ClipboardImpl.cpp
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/ClipboardImpl.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/flightsim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/ClipboardImpl.cpp.o"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/ClipboardImpl.cpp.o -MF CMakeFiles/sfml-window.dir/Unix/ClipboardImpl.cpp.o.d -o CMakeFiles/sfml-window.dir/Unix/ClipboardImpl.cpp.o -c /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/ClipboardImpl.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/slayterHIL/flight-sim/graphics/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/ClipboardImpl.cpp.o"
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/ClipboardImpl.cpp.o -MF CMakeFiles/sfml-window.dir/Unix/ClipboardImpl.cpp.o.d -o CMakeFiles/sfml-window.dir/Unix/ClipboardImpl.cpp.o -c /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/ClipboardImpl.cpp
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/ClipboardImpl.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sfml-window.dir/Unix/ClipboardImpl.cpp.i"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/ClipboardImpl.cpp > CMakeFiles/sfml-window.dir/Unix/ClipboardImpl.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/ClipboardImpl.cpp > CMakeFiles/sfml-window.dir/Unix/ClipboardImpl.cpp.i
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/ClipboardImpl.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sfml-window.dir/Unix/ClipboardImpl.cpp.s"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/ClipboardImpl.cpp -o CMakeFiles/sfml-window.dir/Unix/ClipboardImpl.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/ClipboardImpl.cpp -o CMakeFiles/sfml-window.dir/Unix/ClipboardImpl.cpp.s
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/InputImpl.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/flags.make
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/InputImpl.cpp.o: _deps/sfml-src/src/SFML/Window/Unix/InputImpl.cpp
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/InputImpl.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/flightsim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/InputImpl.cpp.o"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/InputImpl.cpp.o -MF CMakeFiles/sfml-window.dir/Unix/InputImpl.cpp.o.d -o CMakeFiles/sfml-window.dir/Unix/InputImpl.cpp.o -c /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/InputImpl.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/slayterHIL/flight-sim/graphics/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/InputImpl.cpp.o"
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/InputImpl.cpp.o -MF CMakeFiles/sfml-window.dir/Unix/InputImpl.cpp.o.d -o CMakeFiles/sfml-window.dir/Unix/InputImpl.cpp.o -c /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/InputImpl.cpp
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/InputImpl.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sfml-window.dir/Unix/InputImpl.cpp.i"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/InputImpl.cpp > CMakeFiles/sfml-window.dir/Unix/InputImpl.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/InputImpl.cpp > CMakeFiles/sfml-window.dir/Unix/InputImpl.cpp.i
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/InputImpl.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sfml-window.dir/Unix/InputImpl.cpp.s"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/InputImpl.cpp -o CMakeFiles/sfml-window.dir/Unix/InputImpl.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/InputImpl.cpp -o CMakeFiles/sfml-window.dir/Unix/InputImpl.cpp.s
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/KeyboardImpl.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/flags.make
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/KeyboardImpl.cpp.o: _deps/sfml-src/src/SFML/Window/Unix/KeyboardImpl.cpp
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/KeyboardImpl.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/flightsim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/KeyboardImpl.cpp.o"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/KeyboardImpl.cpp.o -MF CMakeFiles/sfml-window.dir/Unix/KeyboardImpl.cpp.o.d -o CMakeFiles/sfml-window.dir/Unix/KeyboardImpl.cpp.o -c /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/KeyboardImpl.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/slayterHIL/flight-sim/graphics/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/KeyboardImpl.cpp.o"
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/KeyboardImpl.cpp.o -MF CMakeFiles/sfml-window.dir/Unix/KeyboardImpl.cpp.o.d -o CMakeFiles/sfml-window.dir/Unix/KeyboardImpl.cpp.o -c /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/KeyboardImpl.cpp
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/KeyboardImpl.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sfml-window.dir/Unix/KeyboardImpl.cpp.i"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/KeyboardImpl.cpp > CMakeFiles/sfml-window.dir/Unix/KeyboardImpl.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/KeyboardImpl.cpp > CMakeFiles/sfml-window.dir/Unix/KeyboardImpl.cpp.i
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/KeyboardImpl.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sfml-window.dir/Unix/KeyboardImpl.cpp.s"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/KeyboardImpl.cpp -o CMakeFiles/sfml-window.dir/Unix/KeyboardImpl.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/KeyboardImpl.cpp -o CMakeFiles/sfml-window.dir/Unix/KeyboardImpl.cpp.s
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/KeySymToKeyMapping.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/flags.make
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/KeySymToKeyMapping.cpp.o: _deps/sfml-src/src/SFML/Window/Unix/KeySymToKeyMapping.cpp
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/KeySymToKeyMapping.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/flightsim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/KeySymToKeyMapping.cpp.o"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/KeySymToKeyMapping.cpp.o -MF CMakeFiles/sfml-window.dir/Unix/KeySymToKeyMapping.cpp.o.d -o CMakeFiles/sfml-window.dir/Unix/KeySymToKeyMapping.cpp.o -c /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/KeySymToKeyMapping.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/slayterHIL/flight-sim/graphics/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/KeySymToKeyMapping.cpp.o"
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/KeySymToKeyMapping.cpp.o -MF CMakeFiles/sfml-window.dir/Unix/KeySymToKeyMapping.cpp.o.d -o CMakeFiles/sfml-window.dir/Unix/KeySymToKeyMapping.cpp.o -c /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/KeySymToKeyMapping.cpp
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/KeySymToKeyMapping.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sfml-window.dir/Unix/KeySymToKeyMapping.cpp.i"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/KeySymToKeyMapping.cpp > CMakeFiles/sfml-window.dir/Unix/KeySymToKeyMapping.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/KeySymToKeyMapping.cpp > CMakeFiles/sfml-window.dir/Unix/KeySymToKeyMapping.cpp.i
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/KeySymToKeyMapping.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sfml-window.dir/Unix/KeySymToKeyMapping.cpp.s"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/KeySymToKeyMapping.cpp -o CMakeFiles/sfml-window.dir/Unix/KeySymToKeyMapping.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/KeySymToKeyMapping.cpp -o CMakeFiles/sfml-window.dir/Unix/KeySymToKeyMapping.cpp.s
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/KeySymToUnicodeMapping.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/flags.make
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/KeySymToUnicodeMapping.cpp.o: _deps/sfml-src/src/SFML/Window/Unix/KeySymToUnicodeMapping.cpp
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/KeySymToUnicodeMapping.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/flightsim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_23) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/KeySymToUnicodeMapping.cpp.o"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/KeySymToUnicodeMapping.cpp.o -MF CMakeFiles/sfml-window.dir/Unix/KeySymToUnicodeMapping.cpp.o.d -o CMakeFiles/sfml-window.dir/Unix/KeySymToUnicodeMapping.cpp.o -c /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/KeySymToUnicodeMapping.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/slayterHIL/flight-sim/graphics/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_23) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/KeySymToUnicodeMapping.cpp.o"
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/KeySymToUnicodeMapping.cpp.o -MF CMakeFiles/sfml-window.dir/Unix/KeySymToUnicodeMapping.cpp.o.d -o CMakeFiles/sfml-window.dir/Unix/KeySymToUnicodeMapping.cpp.o -c /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/KeySymToUnicodeMapping.cpp
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/KeySymToUnicodeMapping.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sfml-window.dir/Unix/KeySymToUnicodeMapping.cpp.i"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/KeySymToUnicodeMapping.cpp > CMakeFiles/sfml-window.dir/Unix/KeySymToUnicodeMapping.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/KeySymToUnicodeMapping.cpp > CMakeFiles/sfml-window.dir/Unix/KeySymToUnicodeMapping.cpp.i
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/KeySymToUnicodeMapping.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sfml-window.dir/Unix/KeySymToUnicodeMapping.cpp.s"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/KeySymToUnicodeMapping.cpp -o CMakeFiles/sfml-window.dir/Unix/KeySymToUnicodeMapping.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/KeySymToUnicodeMapping.cpp -o CMakeFiles/sfml-window.dir/Unix/KeySymToUnicodeMapping.cpp.s
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/SensorImpl.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/flags.make
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/SensorImpl.cpp.o: _deps/sfml-src/src/SFML/Window/Unix/SensorImpl.cpp
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/SensorImpl.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/flightsim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_24) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/SensorImpl.cpp.o"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/SensorImpl.cpp.o -MF CMakeFiles/sfml-window.dir/Unix/SensorImpl.cpp.o.d -o CMakeFiles/sfml-window.dir/Unix/SensorImpl.cpp.o -c /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/SensorImpl.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/slayterHIL/flight-sim/graphics/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_24) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/SensorImpl.cpp.o"
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/SensorImpl.cpp.o -MF CMakeFiles/sfml-window.dir/Unix/SensorImpl.cpp.o.d -o CMakeFiles/sfml-window.dir/Unix/SensorImpl.cpp.o -c /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/SensorImpl.cpp
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/SensorImpl.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sfml-window.dir/Unix/SensorImpl.cpp.i"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/SensorImpl.cpp > CMakeFiles/sfml-window.dir/Unix/SensorImpl.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/SensorImpl.cpp > CMakeFiles/sfml-window.dir/Unix/SensorImpl.cpp.i
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/SensorImpl.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sfml-window.dir/Unix/SensorImpl.cpp.s"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/SensorImpl.cpp -o CMakeFiles/sfml-window.dir/Unix/SensorImpl.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/SensorImpl.cpp -o CMakeFiles/sfml-window.dir/Unix/SensorImpl.cpp.s
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/Display.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/flags.make
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/Display.cpp.o: _deps/sfml-src/src/SFML/Window/Unix/Display.cpp
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/Display.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/flightsim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/Display.cpp.o"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/Display.cpp.o -MF CMakeFiles/sfml-window.dir/Unix/Display.cpp.o.d -o CMakeFiles/sfml-window.dir/Unix/Display.cpp.o -c /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/Display.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/slayterHIL/flight-sim/graphics/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/Display.cpp.o"
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/Display.cpp.o -MF CMakeFiles/sfml-window.dir/Unix/Display.cpp.o.d -o CMakeFiles/sfml-window.dir/Unix/Display.cpp.o -c /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/Display.cpp
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/Display.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sfml-window.dir/Unix/Display.cpp.i"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/Display.cpp > CMakeFiles/sfml-window.dir/Unix/Display.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/Display.cpp > CMakeFiles/sfml-window.dir/Unix/Display.cpp.i
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/Display.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sfml-window.dir/Unix/Display.cpp.s"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/Display.cpp -o CMakeFiles/sfml-window.dir/Unix/Display.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/Display.cpp -o CMakeFiles/sfml-window.dir/Unix/Display.cpp.s
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/VideoModeImpl.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/flags.make
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/VideoModeImpl.cpp.o: _deps/sfml-src/src/SFML/Window/Unix/VideoModeImpl.cpp
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/VideoModeImpl.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/flightsim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_26) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/VideoModeImpl.cpp.o"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/VideoModeImpl.cpp.o -MF CMakeFiles/sfml-window.dir/Unix/VideoModeImpl.cpp.o.d -o CMakeFiles/sfml-window.dir/Unix/VideoModeImpl.cpp.o -c /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/VideoModeImpl.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/slayterHIL/flight-sim/graphics/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_26) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/VideoModeImpl.cpp.o"
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/VideoModeImpl.cpp.o -MF CMakeFiles/sfml-window.dir/Unix/VideoModeImpl.cpp.o.d -o CMakeFiles/sfml-window.dir/Unix/VideoModeImpl.cpp.o -c /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/VideoModeImpl.cpp
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/VideoModeImpl.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sfml-window.dir/Unix/VideoModeImpl.cpp.i"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/VideoModeImpl.cpp > CMakeFiles/sfml-window.dir/Unix/VideoModeImpl.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/VideoModeImpl.cpp > CMakeFiles/sfml-window.dir/Unix/VideoModeImpl.cpp.i
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/VideoModeImpl.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sfml-window.dir/Unix/VideoModeImpl.cpp.s"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/VideoModeImpl.cpp -o CMakeFiles/sfml-window.dir/Unix/VideoModeImpl.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/VideoModeImpl.cpp -o CMakeFiles/sfml-window.dir/Unix/VideoModeImpl.cpp.s
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/VulkanImplX11.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/flags.make
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/VulkanImplX11.cpp.o: _deps/sfml-src/src/SFML/Window/Unix/VulkanImplX11.cpp
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/VulkanImplX11.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/flightsim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_27) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/VulkanImplX11.cpp.o"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/VulkanImplX11.cpp.o -MF CMakeFiles/sfml-window.dir/Unix/VulkanImplX11.cpp.o.d -o CMakeFiles/sfml-window.dir/Unix/VulkanImplX11.cpp.o -c /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/VulkanImplX11.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/slayterHIL/flight-sim/graphics/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_27) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/VulkanImplX11.cpp.o"
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/VulkanImplX11.cpp.o -MF CMakeFiles/sfml-window.dir/Unix/VulkanImplX11.cpp.o.d -o CMakeFiles/sfml-window.dir/Unix/VulkanImplX11.cpp.o -c /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/VulkanImplX11.cpp
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/VulkanImplX11.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sfml-window.dir/Unix/VulkanImplX11.cpp.i"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/VulkanImplX11.cpp > CMakeFiles/sfml-window.dir/Unix/VulkanImplX11.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/VulkanImplX11.cpp > CMakeFiles/sfml-window.dir/Unix/VulkanImplX11.cpp.i
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/VulkanImplX11.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sfml-window.dir/Unix/VulkanImplX11.cpp.s"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/VulkanImplX11.cpp -o CMakeFiles/sfml-window.dir/Unix/VulkanImplX11.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/VulkanImplX11.cpp -o CMakeFiles/sfml-window.dir/Unix/VulkanImplX11.cpp.s
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/WindowImplX11.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/flags.make
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/WindowImplX11.cpp.o: _deps/sfml-src/src/SFML/Window/Unix/WindowImplX11.cpp
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/WindowImplX11.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/flightsim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_28) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/WindowImplX11.cpp.o"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/WindowImplX11.cpp.o -MF CMakeFiles/sfml-window.dir/Unix/WindowImplX11.cpp.o.d -o CMakeFiles/sfml-window.dir/Unix/WindowImplX11.cpp.o -c /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/WindowImplX11.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/slayterHIL/flight-sim/graphics/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_28) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/WindowImplX11.cpp.o"
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/WindowImplX11.cpp.o -MF CMakeFiles/sfml-window.dir/Unix/WindowImplX11.cpp.o.d -o CMakeFiles/sfml-window.dir/Unix/WindowImplX11.cpp.o -c /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/WindowImplX11.cpp
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/WindowImplX11.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sfml-window.dir/Unix/WindowImplX11.cpp.i"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/WindowImplX11.cpp > CMakeFiles/sfml-window.dir/Unix/WindowImplX11.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/WindowImplX11.cpp > CMakeFiles/sfml-window.dir/Unix/WindowImplX11.cpp.i
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/WindowImplX11.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sfml-window.dir/Unix/WindowImplX11.cpp.s"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/WindowImplX11.cpp -o CMakeFiles/sfml-window.dir/Unix/WindowImplX11.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/WindowImplX11.cpp -o CMakeFiles/sfml-window.dir/Unix/WindowImplX11.cpp.s
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/GlxContext.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/flags.make
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/GlxContext.cpp.o: _deps/sfml-src/src/SFML/Window/Unix/GlxContext.cpp
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/GlxContext.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/flightsim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_29) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/GlxContext.cpp.o"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/GlxContext.cpp.o -MF CMakeFiles/sfml-window.dir/Unix/GlxContext.cpp.o.d -o CMakeFiles/sfml-window.dir/Unix/GlxContext.cpp.o -c /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/GlxContext.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/slayterHIL/flight-sim/graphics/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_29) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/GlxContext.cpp.o"
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/GlxContext.cpp.o -MF CMakeFiles/sfml-window.dir/Unix/GlxContext.cpp.o.d -o CMakeFiles/sfml-window.dir/Unix/GlxContext.cpp.o -c /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/GlxContext.cpp
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/GlxContext.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sfml-window.dir/Unix/GlxContext.cpp.i"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/GlxContext.cpp > CMakeFiles/sfml-window.dir/Unix/GlxContext.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/GlxContext.cpp > CMakeFiles/sfml-window.dir/Unix/GlxContext.cpp.i
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/GlxContext.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sfml-window.dir/Unix/GlxContext.cpp.s"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/GlxContext.cpp -o CMakeFiles/sfml-window.dir/Unix/GlxContext.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/GlxContext.cpp -o CMakeFiles/sfml-window.dir/Unix/GlxContext.cpp.s
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/JoystickImpl.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/flags.make
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/JoystickImpl.cpp.o: _deps/sfml-src/src/SFML/Window/Unix/JoystickImpl.cpp
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/JoystickImpl.cpp.o: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/flightsim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_30) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/JoystickImpl.cpp.o"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/JoystickImpl.cpp.o -MF CMakeFiles/sfml-window.dir/Unix/JoystickImpl.cpp.o.d -o CMakeFiles/sfml-window.dir/Unix/JoystickImpl.cpp.o -c /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/JoystickImpl.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/matt/Programming/slayterHIL/flight-sim/graphics/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_30) "Building CXX object _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/JoystickImpl.cpp.o"
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/JoystickImpl.cpp.o -MF CMakeFiles/sfml-window.dir/Unix/JoystickImpl.cpp.o.d -o CMakeFiles/sfml-window.dir/Unix/JoystickImpl.cpp.o -c /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/JoystickImpl.cpp
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/JoystickImpl.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sfml-window.dir/Unix/JoystickImpl.cpp.i"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/JoystickImpl.cpp > CMakeFiles/sfml-window.dir/Unix/JoystickImpl.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/JoystickImpl.cpp > CMakeFiles/sfml-window.dir/Unix/JoystickImpl.cpp.i
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/JoystickImpl.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sfml-window.dir/Unix/JoystickImpl.cpp.s"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window/Unix/JoystickImpl.cpp -o CMakeFiles/sfml-window.dir/Unix/JoystickImpl.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window/Unix/JoystickImpl.cpp -o CMakeFiles/sfml-window.dir/Unix/JoystickImpl.cpp.s
 
 # Object files for target sfml-window
 sfml__window_OBJECTS = \
@@ -557,19 +557,19 @@ _deps/sfml-build/lib/libsfml-window.a: _deps/sfml-build/src/SFML/Window/CMakeFil
 _deps/sfml-build/lib/libsfml-window.a: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Unix/JoystickImpl.cpp.o
 _deps/sfml-build/lib/libsfml-window.a: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/build.make
 _deps/sfml-build/lib/libsfml-window.a: _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/matt/Programming/flightsim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_31) "Linking CXX static library ../../../lib/libsfml-window.a"
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && $(CMAKE_COMMAND) -P CMakeFiles/sfml-window.dir/cmake_clean_target.cmake
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/sfml-window.dir/link.txt --verbose=$(VERBOSE)
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/matt/Programming/slayterHIL/flight-sim/graphics/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_31) "Linking CXX static library ../../../lib/libsfml-window.a"
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && $(CMAKE_COMMAND) -P CMakeFiles/sfml-window.dir/cmake_clean_target.cmake
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/sfml-window.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/build: _deps/sfml-build/lib/libsfml-window.a
 .PHONY : _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/build
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/clean:
-	cd /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window && $(CMAKE_COMMAND) -P CMakeFiles/sfml-window.dir/cmake_clean.cmake
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window && $(CMAKE_COMMAND) -P CMakeFiles/sfml-window.dir/cmake_clean.cmake
 .PHONY : _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/clean
 
 _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/depend:
-	cd /home/matt/Programming/flightsim/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/matt/Programming/flightsim /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/Window /home/matt/Programming/flightsim/build /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/DependInfo.cmake "--color=$(COLOR)"
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/matt/Programming/slayterHIL/flight-sim/graphics /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/Window /home/matt/Programming/slayterHIL/flight-sim/graphics/build /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/DependInfo.cmake "--color=$(COLOR)"
 .PHONY : _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/depend
 

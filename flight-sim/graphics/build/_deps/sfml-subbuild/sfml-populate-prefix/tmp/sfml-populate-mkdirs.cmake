@@ -4,19 +4,19 @@
 cmake_minimum_required(VERSION 3.5)
 
 file(MAKE_DIRECTORY
-  "/home/matt/Programming/flightsim/build/_deps/sfml-src"
-  "/home/matt/Programming/flightsim/build/_deps/sfml-build"
-  "/home/matt/Programming/flightsim/build/_deps/sfml-subbuild/sfml-populate-prefix"
-  "/home/matt/Programming/flightsim/build/_deps/sfml-subbuild/sfml-populate-prefix/tmp"
-  "/home/matt/Programming/flightsim/build/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp"
-  "/home/matt/Programming/flightsim/build/_deps/sfml-subbuild/sfml-populate-prefix/src"
-  "/home/matt/Programming/flightsim/build/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp"
+  "/home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src"
+  "/home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build"
+  "/home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-subbuild/sfml-populate-prefix"
+  "/home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-subbuild/sfml-populate-prefix/tmp"
+  "/home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp"
+  "/home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-subbuild/sfml-populate-prefix/src"
+  "/home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp"
 )
 
 set(configSubDirs )
 foreach(subDir IN LISTS configSubDirs)
-    file(MAKE_DIRECTORY "/home/matt/Programming/flightsim/build/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/${subDir}")
+    file(MAKE_DIRECTORY "/home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/${subDir}")
 endforeach()
 if(cfgdir)
-  file(MAKE_DIRECTORY "/home/matt/Programming/flightsim/build/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp${cfgdir}") # cfgdir has leading slash
+  file(MAKE_DIRECTORY "/home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp${cfgdir}") # cfgdir has leading slash
 endif()

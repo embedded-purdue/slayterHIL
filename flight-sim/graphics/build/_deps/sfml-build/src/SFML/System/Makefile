@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/matt/Programming/flightsim
+CMAKE_SOURCE_DIR = /home/matt/Programming/slayterHIL/flight-sim/graphics
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/matt/Programming/flightsim/build
+CMAKE_BINARY_DIR = /home/matt/Programming/slayterHIL/flight-sim/graphics/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -132,14 +132,14 @@ install/strip/fast: preinstall/fast
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/matt/Programming/flightsim/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/matt/Programming/flightsim/build/CMakeFiles /home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/System//CMakeFiles/progress.marks
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 _deps/sfml-build/src/SFML/System/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/matt/Programming/flightsim/build/CMakeFiles 0
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/matt/Programming/slayterHIL/flight-sim/graphics/build/CMakeFiles /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/System//CMakeFiles/progress.marks
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 _deps/sfml-build/src/SFML/System/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/matt/Programming/slayterHIL/flight-sim/graphics/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 _deps/sfml-build/src/SFML/System/clean
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 _deps/sfml-build/src/SFML/System/clean
 .PHONY : clean
 
 # The main clean target
@@ -148,22 +148,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 _deps/sfml-build/src/SFML/System/preinstall
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 _deps/sfml-build/src/SFML/System/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 _deps/sfml-build/src/SFML/System/preinstall
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 _deps/sfml-build/src/SFML/System/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/matt/Programming/flightsim/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/rule:
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/rule
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/rule
 .PHONY : _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/rule
 
 # Convenience name for target.
@@ -172,7 +172,7 @@ sfml-system: _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/rule
 
 # fast build rule for target.
 sfml-system/fast:
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build
 .PHONY : sfml-system/fast
 
 Clock.o: Clock.cpp.o
@@ -180,7 +180,7 @@ Clock.o: Clock.cpp.o
 
 # target to build an object file
 Clock.cpp.o:
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Clock.cpp.o
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Clock.cpp.o
 .PHONY : Clock.cpp.o
 
 Clock.i: Clock.cpp.i
@@ -188,7 +188,7 @@ Clock.i: Clock.cpp.i
 
 # target to preprocess a source file
 Clock.cpp.i:
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Clock.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Clock.cpp.i
 .PHONY : Clock.cpp.i
 
 Clock.s: Clock.cpp.s
@@ -196,7 +196,7 @@ Clock.s: Clock.cpp.s
 
 # target to generate assembly for a file
 Clock.cpp.s:
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Clock.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Clock.cpp.s
 .PHONY : Clock.cpp.s
 
 Err.o: Err.cpp.o
@@ -204,7 +204,7 @@ Err.o: Err.cpp.o
 
 # target to build an object file
 Err.cpp.o:
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Err.cpp.o
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Err.cpp.o
 .PHONY : Err.cpp.o
 
 Err.i: Err.cpp.i
@@ -212,7 +212,7 @@ Err.i: Err.cpp.i
 
 # target to preprocess a source file
 Err.cpp.i:
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Err.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Err.cpp.i
 .PHONY : Err.cpp.i
 
 Err.s: Err.cpp.s
@@ -220,7 +220,7 @@ Err.s: Err.cpp.s
 
 # target to generate assembly for a file
 Err.cpp.s:
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Err.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Err.cpp.s
 .PHONY : Err.cpp.s
 
 FileInputStream.o: FileInputStream.cpp.o
@@ -228,7 +228,7 @@ FileInputStream.o: FileInputStream.cpp.o
 
 # target to build an object file
 FileInputStream.cpp.o:
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/FileInputStream.cpp.o
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/FileInputStream.cpp.o
 .PHONY : FileInputStream.cpp.o
 
 FileInputStream.i: FileInputStream.cpp.i
@@ -236,7 +236,7 @@ FileInputStream.i: FileInputStream.cpp.i
 
 # target to preprocess a source file
 FileInputStream.cpp.i:
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/FileInputStream.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/FileInputStream.cpp.i
 .PHONY : FileInputStream.cpp.i
 
 FileInputStream.s: FileInputStream.cpp.s
@@ -244,7 +244,7 @@ FileInputStream.s: FileInputStream.cpp.s
 
 # target to generate assembly for a file
 FileInputStream.cpp.s:
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/FileInputStream.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/FileInputStream.cpp.s
 .PHONY : FileInputStream.cpp.s
 
 MemoryInputStream.o: MemoryInputStream.cpp.o
@@ -252,7 +252,7 @@ MemoryInputStream.o: MemoryInputStream.cpp.o
 
 # target to build an object file
 MemoryInputStream.cpp.o:
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/MemoryInputStream.cpp.o
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/MemoryInputStream.cpp.o
 .PHONY : MemoryInputStream.cpp.o
 
 MemoryInputStream.i: MemoryInputStream.cpp.i
@@ -260,7 +260,7 @@ MemoryInputStream.i: MemoryInputStream.cpp.i
 
 # target to preprocess a source file
 MemoryInputStream.cpp.i:
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/MemoryInputStream.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/MemoryInputStream.cpp.i
 .PHONY : MemoryInputStream.cpp.i
 
 MemoryInputStream.s: MemoryInputStream.cpp.s
@@ -268,7 +268,7 @@ MemoryInputStream.s: MemoryInputStream.cpp.s
 
 # target to generate assembly for a file
 MemoryInputStream.cpp.s:
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/MemoryInputStream.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/MemoryInputStream.cpp.s
 .PHONY : MemoryInputStream.cpp.s
 
 Sleep.o: Sleep.cpp.o
@@ -276,7 +276,7 @@ Sleep.o: Sleep.cpp.o
 
 # target to build an object file
 Sleep.cpp.o:
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Sleep.cpp.o
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Sleep.cpp.o
 .PHONY : Sleep.cpp.o
 
 Sleep.i: Sleep.cpp.i
@@ -284,7 +284,7 @@ Sleep.i: Sleep.cpp.i
 
 # target to preprocess a source file
 Sleep.cpp.i:
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Sleep.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Sleep.cpp.i
 .PHONY : Sleep.cpp.i
 
 Sleep.s: Sleep.cpp.s
@@ -292,7 +292,7 @@ Sleep.s: Sleep.cpp.s
 
 # target to generate assembly for a file
 Sleep.cpp.s:
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Sleep.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Sleep.cpp.s
 .PHONY : Sleep.cpp.s
 
 String.o: String.cpp.o
@@ -300,7 +300,7 @@ String.o: String.cpp.o
 
 # target to build an object file
 String.cpp.o:
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/String.cpp.o
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/String.cpp.o
 .PHONY : String.cpp.o
 
 String.i: String.cpp.i
@@ -308,7 +308,7 @@ String.i: String.cpp.i
 
 # target to preprocess a source file
 String.cpp.i:
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/String.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/String.cpp.i
 .PHONY : String.cpp.i
 
 String.s: String.cpp.s
@@ -316,7 +316,7 @@ String.s: String.cpp.s
 
 # target to generate assembly for a file
 String.cpp.s:
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/String.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/String.cpp.s
 .PHONY : String.cpp.s
 
 Unix/SleepImpl.o: Unix/SleepImpl.cpp.o
@@ -324,7 +324,7 @@ Unix/SleepImpl.o: Unix/SleepImpl.cpp.o
 
 # target to build an object file
 Unix/SleepImpl.cpp.o:
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Unix/SleepImpl.cpp.o
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Unix/SleepImpl.cpp.o
 .PHONY : Unix/SleepImpl.cpp.o
 
 Unix/SleepImpl.i: Unix/SleepImpl.cpp.i
@@ -332,7 +332,7 @@ Unix/SleepImpl.i: Unix/SleepImpl.cpp.i
 
 # target to preprocess a source file
 Unix/SleepImpl.cpp.i:
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Unix/SleepImpl.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Unix/SleepImpl.cpp.i
 .PHONY : Unix/SleepImpl.cpp.i
 
 Unix/SleepImpl.s: Unix/SleepImpl.cpp.s
@@ -340,7 +340,7 @@ Unix/SleepImpl.s: Unix/SleepImpl.cpp.s
 
 # target to generate assembly for a file
 Unix/SleepImpl.cpp.s:
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Unix/SleepImpl.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Unix/SleepImpl.cpp.s
 .PHONY : Unix/SleepImpl.cpp.s
 
 Utils.o: Utils.cpp.o
@@ -348,7 +348,7 @@ Utils.o: Utils.cpp.o
 
 # target to build an object file
 Utils.cpp.o:
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Utils.cpp.o
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Utils.cpp.o
 .PHONY : Utils.cpp.o
 
 Utils.i: Utils.cpp.i
@@ -356,7 +356,7 @@ Utils.i: Utils.cpp.i
 
 # target to preprocess a source file
 Utils.cpp.i:
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Utils.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Utils.cpp.i
 .PHONY : Utils.cpp.i
 
 Utils.s: Utils.cpp.s
@@ -364,7 +364,7 @@ Utils.s: Utils.cpp.s
 
 # target to generate assembly for a file
 Utils.cpp.s:
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Utils.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Utils.cpp.s
 .PHONY : Utils.cpp.s
 
 Vector2.o: Vector2.cpp.o
@@ -372,7 +372,7 @@ Vector2.o: Vector2.cpp.o
 
 # target to build an object file
 Vector2.cpp.o:
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Vector2.cpp.o
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Vector2.cpp.o
 .PHONY : Vector2.cpp.o
 
 Vector2.i: Vector2.cpp.i
@@ -380,7 +380,7 @@ Vector2.i: Vector2.cpp.i
 
 # target to preprocess a source file
 Vector2.cpp.i:
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Vector2.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Vector2.cpp.i
 .PHONY : Vector2.cpp.i
 
 Vector2.s: Vector2.cpp.s
@@ -388,7 +388,7 @@ Vector2.s: Vector2.cpp.s
 
 # target to generate assembly for a file
 Vector2.cpp.s:
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Vector2.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Vector2.cpp.s
 .PHONY : Vector2.cpp.s
 
 Vector3.o: Vector3.cpp.o
@@ -396,7 +396,7 @@ Vector3.o: Vector3.cpp.o
 
 # target to build an object file
 Vector3.cpp.o:
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Vector3.cpp.o
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Vector3.cpp.o
 .PHONY : Vector3.cpp.o
 
 Vector3.i: Vector3.cpp.i
@@ -404,7 +404,7 @@ Vector3.i: Vector3.cpp.i
 
 # target to preprocess a source file
 Vector3.cpp.i:
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Vector3.cpp.i
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Vector3.cpp.i
 .PHONY : Vector3.cpp.i
 
 Vector3.s: Vector3.cpp.s
@@ -412,7 +412,7 @@ Vector3.s: Vector3.cpp.s
 
 # target to generate assembly for a file
 Vector3.cpp.s:
-	cd /home/matt/Programming/flightsim/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Vector3.cpp.s
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Vector3.cpp.s
 .PHONY : Vector3.cpp.s
 
 # Help Target
@@ -469,6 +469,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/matt/Programming/flightsim/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/matt/Programming/slayterHIL/flight-sim/graphics/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

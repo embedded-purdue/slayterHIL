@@ -1,4 +1,4 @@
-# Install script for directory: /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML/System
+# Install script for directory: /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML/System
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -43,14 +43,14 @@ if(NOT DEFINED CMAKE_OBJDUMP)
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "devel" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE STATIC_LIBRARY FILES "/home/matt/Programming/flightsim/build/_deps/sfml-build/lib/libsfml-system.a")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE STATIC_LIBRARY FILES "/home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/lib/libsfml-system.a")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/System/tools/pkg-config/sfml-system.pc")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/System/tools/pkg-config/sfml-system.pc")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "devel" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/cmake/SFML" TYPE FILE FILES "/home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/System/SFMLSystemDependencies.cmake")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/cmake/SFML" TYPE FILE FILES "/home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/System/SFMLSystemDependencies.cmake")
 endif()
 

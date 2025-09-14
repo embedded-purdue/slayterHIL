@@ -1,4 +1,4 @@
-# Install script for directory: /home/matt/Programming/flightsim/build/_deps/sfml-src/src/SFML
+# Install script for directory: /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-src/src/SFML
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -44,26 +44,26 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/System/cmake_install.cmake")
+  include("/home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/System/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Window/cmake_install.cmake")
+  include("/home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Window/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Network/cmake_install.cmake")
+  include("/home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Network/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Graphics/cmake_install.cmake")
+  include("/home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Graphics/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/matt/Programming/flightsim/build/_deps/sfml-build/src/SFML/Audio/cmake_install.cmake")
+  include("/home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-build/src/SFML/Audio/cmake_install.cmake")
 endif()
 

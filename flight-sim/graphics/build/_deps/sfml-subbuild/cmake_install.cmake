@@ -1,4 +1,4 @@
-# Install script for directory: /home/matt/Programming/flightsim/build/_deps/sfml-subbuild
+# Install script for directory: /home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-subbuild
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/matt/Programming/flightsim/build/_deps/sfml-subbuild/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/matt/Programming/slayterHIL/flight-sim/graphics/build/_deps/sfml-subbuild/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
