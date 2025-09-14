@@ -11,6 +11,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 find_package(Eigen3 3.4 REQUIRED NO_MODULE)
 
 add_executable(${PROJECT_NAME} src/main.cpp)
+add_executable(UDPServer src/UDPServer.cpp)
+add_executable(UDPClient src/UDPClient.cpp)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Eigen3::Eigen)
 
