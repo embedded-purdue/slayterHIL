@@ -1,11 +1,11 @@
-#include "physics_body.h"
+#include "physics_body.hpp"
 
 physics_body::physics_body()
     :   mass(0.0),
     position(Eigen::Vector3d::Zero()),
     velocity(Eigen::Vector3d::Zero()),
     acceleration(Eigen::Vector3d::Zero()),
-    totalForce(Eigen::Vector3d::Zero()),
+    total_force(Eigen::Vector3d::Zero()),
     orientation(Eigen::Quaterniond::Identity())
 {}
 
@@ -18,7 +18,6 @@ physics_body::physics_body(double mass,
     position(position),
     velocity(velocity),
     acceleration(acceleration),
-    totalForce(Eigen::Vector3d::Zero()),
+    total_force(Eigen::Vector3d::Zero()),
     orientation(orientation)
 {}
-
