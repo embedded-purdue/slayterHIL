@@ -110,7 +110,7 @@ _Note: If you are on a Windows PC, use WSL2 (look up install instructions, ubunt
           FATAL ERROR: command exited with status 2: esptool --baud 921600 --before default-reset --after hard-reset write-flash -u --flash-mode dio --flash-freq 80m --flash-size 8MB 0x0 /home/evinl/es@p/slayterHIL/test_node/zephyr/build/zephyr/zephyr.bin
           ```
        2. to fix this issue, you need add yourself to the correct usergroup:
-          1. run `ls -l /deev/[ttyUSB0]` <- ttyUSB0 is whichever port it complained about in the error
+          1. run `ls -l /dev/[ttyUSB0]` <- ttyUSB0 is whichever port it complained about in the error
 
              *example output:*
              ```bash
