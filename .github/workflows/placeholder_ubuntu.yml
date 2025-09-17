@@ -1,0 +1,52 @@
+name: CMake Build and Release
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    name: Build Firmware
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up CMake
+      run: sudo apt-get update && sudo apt-get install -y cmake build-essential
+
+    - name: Create build directory
+      run: mkdir -p build
+
+    - name: Configure with CMake
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+
+    - name: Build the project
+      run: cmake --build build --config Release
+
+    - name: Upload .bin file as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: firmware-bin
+        path: build/your_program.bin  # Replace with actual output path
+
+  release:
+    name: Create GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+    - name: Download artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: firmware-bin
+        path: ./release
+
+    - name: Create GitHub release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: ./release/your_program.bin  # Replace with actual file name
