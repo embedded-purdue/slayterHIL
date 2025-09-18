@@ -1,0 +1,52 @@
+name: CMake Build (Non-Zephyr Components)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    name: Build CMake Components
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake build-essential
+
+    - name: Create build directory
+      run: mkdir -p build
+
+    - name: Configure with CMake
+      run: |
+        # Build flight_controller if it has CMakeLists.txt
+        if [ -f "flight_controller/CMakeLists.txt" ]; then
+          cmake -B build/flight_controller -S flight_controller -DCMAKE_BUILD_TYPE=Release
+        fi
+        # Build flight_sim if it has CMakeLists.txt
+        if [ -f "flight_sim/CMakeLists.txt" ]; then
+          cmake -B build/flight_sim -S flight_sim -DCMAKE_BUILD_TYPE=Release
+        fi
+
+    - name: Build the project
+      run: |
+        # Build flight_controller if it exists
+        if [ -d "build/flight_controller" ]; then
+          cmake --build build/flight_controller --config Release
+        fi
+        # Build flight_sim if it exists
+        if [ -d "build/flight_sim" ]; then
+          cmake --build build/flight_sim --config Release
+        fi
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: cmake-build
+        path: build/
