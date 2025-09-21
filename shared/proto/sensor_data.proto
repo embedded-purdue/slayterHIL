@@ -4,40 +4,40 @@ import "google/protobuf/timestamp.proto";
 
 // Reusable vector message for any 3-axis data
 message Vector3D {
-    float x = 1;
-    float y = 2;
-    float z = 3;
+  float x = 1;
+  float y = 2;
+  float z = 3;
 }
 
 // Data from the simulated LSM6DSO IMU
 message ImuData {
   // Linear acceleration in meters per second squared (m/s^2)
   Vector3 acceleration = 1;
-  
+
   // Angular velocity in radians per second (rad/s)
   Vector3 angular_velocity = 2;
 }
 
-// Data from simulated MPL3115A2 Barometric Altimeter 
+// Data from simulated MPL3115A2 Barometric Altimeter
 message AltimeterData {
-    // Pressure in 2 Pa units.
-    float pressure = 1;
+  // Pressure in 2 Pa units.
+  float pressure = 1;
 
-    // Altitude above sea level in meters (m)
-    float altitude = 2;
-  
-    // Ambient temperature in degrees Celsius (°C)
-    float temperature = 3;
+  // Altitude above sea level in meters (m)
+  float altitude = 2;
+
+  // Ambient temperature in degrees Celsius (°C)
+  float temperature = 3;
 
 }
 
 message SensorPacket {
   // The exact time the data was captured
   google.protobuf.Timestamp timestamp = 1;
-  
+
   // Message containing all IMU data
   ImuData imu_data = 2;
-  
+
   // Message containing all altimeter data
   AltimeterData altimeter_data = 3;
 }
