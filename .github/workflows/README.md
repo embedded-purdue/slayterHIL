@@ -2,17 +2,9 @@
 
 This directory contains GitHub Actions workflows for the SlayterHIL project.
 
-## Workflows
+## Active Workflows
 
-### 1. `placeholder_ubuntu.yml` - Basic Zephyr Build Test
-- **Purpose**: Simple build test for Zephyr RTOS applications
-- **Triggers**: Push and pull requests to main branch
-- **What it does**:
-  - Sets up Zephyr development environment
-  - Builds the test_node application for QEMU x86
-  - Uploads build artifacts
-
-### 2. `zephyr-build.yml` - Multi-Board Zephyr Build
+### 1. `zephyr-build.yml` - Multi-Board Zephyr Build
 - **Purpose**: Comprehensive build and test for multiple target boards
 - **Triggers**: Push and pull requests to main branch
 - **What it does**:
@@ -21,16 +13,22 @@ This directory contains GitHub Actions workflows for the SlayterHIL project.
   - Creates releases with firmware artifacts for all boards
   - Only creates releases on pushes to main branch
 
-### 3. `cmake-build.yml` - Traditional CMake Build
+### 2. `cmake-build.yml` - Traditional CMake Build
 - **Purpose**: Build non-Zephyr components using standard CMake
 - **Triggers**: Push and pull requests to main branch
 - **What it does**:
-  - Builds the root CMakeLists.txt project
-  - Useful for flight_controller and flight_sim components when they're ready
+  - Builds flight_controller and flight_sim components if they have CMakeLists.txt
+  - Useful for future non-Zephyr components
 
-### 4. `placeholder_windows.yml` - Python Package (Legacy)
-- **Purpose**: Python testing workflow (may be removed if not needed)
-- **Note**: This appears to be a template and may not be relevant to the current project
+## Disabled Workflows
+
+### `placeholder_ubuntu.yml.disabled` - Basic Zephyr Build Test
+- **Status**: Disabled (renamed from .yml to .yml.disabled)
+- **Reason**: Redundant with zephyr-build.yml
+
+### `placeholder_windows.yml.disabled` - Python Package
+- **Status**: Disabled (renamed from .yml to .yml.disabled)
+- **Reason**: No Python code in current codebase
 
 ## Usage
 
