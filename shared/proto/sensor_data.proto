@@ -36,8 +36,8 @@ message SensorPacket {
   google.protobuf.Timestamp timestamp = 1;
   
   // Message containing all IMU data
-  ImuData imu_data = 3;
+  ImuData imu_data = 2;
   
   // Message containing all altimeter data
-  AltimeterData altimeter_data = 4;
+  AltimeterData altimeter_data = 3;
 }

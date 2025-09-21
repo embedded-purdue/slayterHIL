@@ -1,0 +1,20 @@
+[
+{
+  "directory": "/Users/frankieschlehofer/slayterHIL/slayterHIL/flight_sim/build",
+  "command": "/usr/bin/c++  -isystem /opt/homebrew/include/eigen3 -std=c++17 -arch arm64 -o CMakeFiles/flight_sim.dir/src/main.cpp.o -c /Users/frankieschlehofer/slayterHIL/slayterHIL/flight_sim/src/main.cpp",
+  "file": "/Users/frankieschlehofer/slayterHIL/slayterHIL/flight_sim/src/main.cpp",
+  "output": "CMakeFiles/flight_sim.dir/src/main.cpp.o"
+},
+{
+  "directory": "/Users/frankieschlehofer/slayterHIL/slayterHIL/flight_sim/build",
+  "command": "/usr/bin/c++   -std=c++17 -arch arm64 -o CMakeFiles/UDPServer.dir/src/UDPServer.cpp.o -c /Users/frankieschlehofer/slayterHIL/slayterHIL/flight_sim/src/UDPServer.cpp",
+  "file": "/Users/frankieschlehofer/slayterHIL/slayterHIL/flight_sim/src/UDPServer.cpp",
+  "output": "CMakeFiles/UDPServer.dir/src/UDPServer.cpp.o"
+},
+{
+  "directory": "/Users/frankieschlehofer/slayterHIL/slayterHIL/flight_sim/build",
+  "command": "/usr/bin/c++   -std=c++17 -arch arm64 -o CMakeFiles/UDPClient.dir/src/UDPClient.cpp.o -c /Users/frankieschlehofer/slayterHIL/slayterHIL/flight_sim/src/UDPClient.cpp",
+  "file": "/Users/frankieschlehofer/slayterHIL/slayterHIL/flight_sim/src/UDPClient.cpp",
+  "output": "CMakeFiles/UDPClient.dir/src/UDPClient.cpp.o"
+}
+]
