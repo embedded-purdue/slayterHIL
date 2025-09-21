@@ -80,6 +80,10 @@ CMakeFiles/main.dir/src/main.cpp.o: /home/matt/Programming/slayterHIL/flight_sim
   _deps/sfml-src/include/SFML/Window/WindowBase.inl \
   _deps/sfml-src/include/SFML/Window/WindowEnums.hpp \
   _deps/sfml-src/include/SFML/Window/WindowHandle.hpp \
+<<<<<<< HEAD
+=======
+  /home/matt/Programming/slayterHIL/flight_sim/graphics/src/mesh.cpp \
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
   /usr/include/alloca.h \
   /usr/include/asm-generic/errno-base.h \
   /usr/include/asm-generic/errno.h \
@@ -150,6 +154,10 @@ CMakeFiles/main.dir/src/main.cpp.o: /home/matt/Programming/slayterHIL/flight_sim
   /usr/include/c++/13/bits/shared_ptr.h \
   /usr/include/c++/13/bits/shared_ptr_atomic.h \
   /usr/include/c++/13/bits/shared_ptr_base.h \
+<<<<<<< HEAD
+=======
+  /usr/include/c++/13/bits/specfun.h \
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
   /usr/include/c++/13/bits/sstream.tcc \
   /usr/include/c++/13/bits/std_abs.h \
   /usr/include/c++/13/bits/stl_algobase.h \
@@ -181,6 +189,10 @@ CMakeFiles/main.dir/src/main.cpp.o: /home/matt/Programming/slayterHIL/flight_sim
   /usr/include/c++/13/cerrno \
   /usr/include/c++/13/chrono \
   /usr/include/c++/13/clocale \
+<<<<<<< HEAD
+=======
+  /usr/include/c++/13/cmath \
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
   /usr/include/c++/13/codecvt \
   /usr/include/c++/13/compare \
   /usr/include/c++/13/cstddef \
@@ -205,6 +217,10 @@ CMakeFiles/main.dir/src/main.cpp.o: /home/matt/Programming/slayterHIL/flight_sim
   /usr/include/c++/13/iomanip \
   /usr/include/c++/13/ios \
   /usr/include/c++/13/iosfwd \
+<<<<<<< HEAD
+=======
+  /usr/include/c++/13/iostream \
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
   /usr/include/c++/13/istream \
   /usr/include/c++/13/iterator \
   /usr/include/c++/13/limits \
@@ -223,6 +239,21 @@ CMakeFiles/main.dir/src/main.cpp.o: /home/matt/Programming/slayterHIL/flight_sim
   /usr/include/c++/13/string \
   /usr/include/c++/13/string_view \
   /usr/include/c++/13/system_error \
+<<<<<<< HEAD
+=======
+  /usr/include/c++/13/tr1/bessel_function.tcc \
+  /usr/include/c++/13/tr1/beta_function.tcc \
+  /usr/include/c++/13/tr1/ell_integral.tcc \
+  /usr/include/c++/13/tr1/exp_integral.tcc \
+  /usr/include/c++/13/tr1/gamma.tcc \
+  /usr/include/c++/13/tr1/hypergeometric.tcc \
+  /usr/include/c++/13/tr1/legendre_function.tcc \
+  /usr/include/c++/13/tr1/modified_bessel_func.tcc \
+  /usr/include/c++/13/tr1/poly_hermite.tcc \
+  /usr/include/c++/13/tr1/poly_laguerre.tcc \
+  /usr/include/c++/13/tr1/riemann_zeta.tcc \
+  /usr/include/c++/13/tr1/special_function_util.h \
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
   /usr/include/c++/13/tuple \
   /usr/include/c++/13/type_traits \
   /usr/include/c++/13/typeinfo \
@@ -238,6 +269,10 @@ CMakeFiles/main.dir/src/main.cpp.o: /home/matt/Programming/slayterHIL/flight_sim
   /usr/include/libintl.h \
   /usr/include/linux/errno.h \
   /usr/include/locale.h \
+<<<<<<< HEAD
+=======
+  /usr/include/math.h \
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
   /usr/include/pthread.h \
   /usr/include/sched.h \
   /usr/include/stdc-predef.h \
@@ -256,9 +291,24 @@ CMakeFiles/main.dir/src/main.cpp.o: /home/matt/Programming/slayterHIL/flight_sim
   /usr/include/x86_64-linux-gnu/bits/errno.h \
   /usr/include/x86_64-linux-gnu/bits/floatn-common.h \
   /usr/include/x86_64-linux-gnu/bits/floatn.h \
+<<<<<<< HEAD
   /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
   /usr/include/x86_64-linux-gnu/bits/locale.h \
   /usr/include/x86_64-linux-gnu/bits/long-double.h \
+=======
+  /usr/include/x86_64-linux-gnu/bits/flt-eval-method.h \
+  /usr/include/x86_64-linux-gnu/bits/fp-fast.h \
+  /usr/include/x86_64-linux-gnu/bits/fp-logb.h \
+  /usr/include/x86_64-linux-gnu/bits/iscanonical.h \
+  /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
+  /usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h \
+  /usr/include/x86_64-linux-gnu/bits/locale.h \
+  /usr/include/x86_64-linux-gnu/bits/long-double.h \
+  /usr/include/x86_64-linux-gnu/bits/math-vector.h \
+  /usr/include/x86_64-linux-gnu/bits/mathcalls-helper-functions.h \
+  /usr/include/x86_64-linux-gnu/bits/mathcalls-narrow.h \
+  /usr/include/x86_64-linux-gnu/bits/mathcalls.h \
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
   /usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h \
   /usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h \
   /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h \
@@ -381,8 +431,11 @@ CMakeFiles/main.dir/src/main.cpp.o: /home/matt/Programming/slayterHIL/flight_sim
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_itimerspec.h:
 
+<<<<<<< HEAD
 /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h:
 
+=======
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
 /usr/include/x86_64-linux-gnu/bits/types/sigset_t.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/locale_t.h:
@@ -399,8 +452,11 @@ CMakeFiles/main.dir/src/main.cpp.o: /home/matt/Programming/slayterHIL/flight_sim
 
 /usr/include/x86_64-linux-gnu/bits/types/__fpos64_t.h:
 
+<<<<<<< HEAD
 /usr/include/x86_64-linux-gnu/bits/types/__FILE.h:
 
+=======
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
 /usr/include/x86_64-linux-gnu/bits/types/FILE.h:
 
 /usr/include/x86_64-linux-gnu/bits/types.h:
@@ -435,8 +491,41 @@ CMakeFiles/main.dir/src/main.cpp.o: /home/matt/Programming/slayterHIL/flight_sim
 
 /usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h:
 
+<<<<<<< HEAD
 /usr/include/x86_64-linux-gnu/bits/long-double.h:
 
+=======
+/usr/include/x86_64-linux-gnu/bits/mathcalls-narrow.h:
+
+/usr/include/x86_64-linux-gnu/bits/mathcalls-helper-functions.h:
+
+/usr/include/x86_64-linux-gnu/bits/math-vector.h:
+
+/usr/include/x86_64-linux-gnu/bits/long-double.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h:
+
+/usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h:
+
+/usr/include/x86_64-linux-gnu/bits/libc-header-start.h:
+
+/usr/include/x86_64-linux-gnu/bits/fp-logb.h:
+
+/usr/include/x86_64-linux-gnu/bits/floatn.h:
+
+/usr/include/x86_64-linux-gnu/bits/cpu-set.h:
+
+/usr/include/x86_64-linux-gnu/bits/atomic_wide_counter.h:
+
+/usr/include/x86_64-linux-gnu/asm/errno.h:
+
+/usr/include/x86_64-linux-gnu/bits/setjmp.h:
+
+/usr/include/time.h:
+
+/usr/include/stdlib.h:
+
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
 /usr/include/x86_64-linux-gnu/bits/timesize.h:
 
 /usr/include/c++/13/bits/locale_classes.h:
@@ -455,10 +544,13 @@ _deps/sfml-src/include/SFML/Graphics/Rect.inl:
 
 /usr/include/c++/13/bits/memoryfwd.h:
 
+<<<<<<< HEAD
 /usr/include/x86_64-linux-gnu/bits/setjmp.h:
 
 /usr/include/time.h:
 
+=======
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
 /usr/include/c++/13/bits/exception_ptr.h:
 
 /usr/include/c++/13/bits/locale_conv.h:
@@ -485,9 +577,19 @@ _deps/sfml-src/include/SFML/Graphics/Transform.inl:
 
 _deps/sfml-src/include/SFML/Window/ContextSettings.hpp:
 
+<<<<<<< HEAD
 /usr/include/c++/13/bits/atomic_lockfree_defines.h:
 
 /usr/include/x86_64-linux-gnu/asm/errno.h:
+=======
+/usr/include/x86_64-linux-gnu/bits/endianness.h:
+
+/usr/include/c++/13/bits/chrono.h:
+
+/usr/include/c++/13/bits/atomic_lockfree_defines.h:
+
+/home/matt/Programming/slayterHIL/flight_sim/graphics/src/mesh.cpp:
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
 
 /usr/include/c++/13/bits/concept_check.h:
 
@@ -503,6 +605,13 @@ _deps/sfml-src/include/SFML/Window/ContextSettings.hpp:
 
 /usr/include/c++/13/bits/fs_path.h:
 
+<<<<<<< HEAD
+=======
+/usr/include/x86_64-linux-gnu/bits/errno.h:
+
+/usr/include/c++/13/bits/stl_pair.h:
+
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
 /usr/include/c++/13/cstdio:
 
 /usr/include/c++/13/bits/basic_string.tcc:
@@ -521,24 +630,38 @@ _deps/sfml-src/include/SFML/Graphics/Font.hpp:
 
 _deps/sfml-src/include/SFML/Window/WindowEnums.hpp:
 
+<<<<<<< HEAD
 _deps/sfml-src/include/SFML/Graphics/RenderTarget.hpp:
 
 /usr/include/c++/13/bits/stl_pair.h:
 
 /usr/include/x86_64-linux-gnu/bits/errno.h:
 
+=======
+/usr/include/wchar.h:
+
+/usr/include/c++/13/bits/shared_ptr_base.h:
+
+_deps/sfml-src/include/SFML/Graphics/RenderTarget.hpp:
+
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
 _deps/sfml-src/include/SFML/Window/Vulkan.hpp:
 
 /usr/include/x86_64-linux-gnu/bits/thread-shared-types.h:
 
 /usr/include/c++/13/bits/string_view.tcc:
 
+<<<<<<< HEAD
 _deps/sfml-src/include/SFML/Window/Touch.hpp:
 
 _deps/sfml-src/include/SFML/Graphics/RenderTexture.hpp:
 
 _deps/sfml-src/include/SFML/Window/Sensor.hpp:
 
+=======
+_deps/sfml-src/include/SFML/Graphics/RenderTexture.hpp:
+
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
 _deps/sfml-src/include/SFML/Window/Mouse.hpp:
 
 /usr/include/c++/13/ext/string_conversions.h:
@@ -561,6 +684,13 @@ _deps/sfml-src/include/SFML/Window/Event.inl:
 
 _deps/sfml-src/include/SFML/Window/Event.hpp:
 
+<<<<<<< HEAD
+=======
+/usr/include/x86_64-linux-gnu/bits/locale.h:
+
+_deps/sfml-src/include/SFML/Window/Cursor.hpp:
+
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
 /usr/include/c++/13/bits/stl_algobase.h:
 
 _deps/sfml-src/include/SFML/Graphics/PrimitiveType.hpp:
@@ -581,10 +711,24 @@ _deps/sfml-src/include/SFML/Graphics/CircleShape.hpp:
 
 /usr/include/c++/13/sstream:
 
+<<<<<<< HEAD
+=======
+/usr/include/x86_64-linux-gnu/bits/byteswap.h:
+
+_deps/sfml-src/include/SFML/Graphics/Transform.hpp:
+
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
 /usr/include/x86_64-linux-gnu/bits/waitstatus.h:
 
 /usr/include/c++/13/bits/exception_defines.h:
 
+<<<<<<< HEAD
+=======
+/usr/include/x86_64-linux-gnu/bits/types/__FILE.h:
+
+/usr/include/math.h:
+
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
 _deps/sfml-src/include/SFML/Graphics/RenderWindow.hpp:
 
 _deps/sfml-src/include/SFML/Graphics/RectangleShape.hpp:
@@ -593,6 +737,13 @@ _deps/sfml-src/include/SFML/Graphics/RectangleShape.hpp:
 
 _deps/sfml-src/include/SFML/Graphics/StencilMode.hpp:
 
+<<<<<<< HEAD
+=======
+_deps/sfml-src/include/SFML/Window/Sensor.hpp:
+
+/usr/include/c++/13/tr1/special_function_util.h:
+
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
 /usr/include/stdc-predef.h:
 
 /usr/include/c++/13/bits/enable_special_members.h:
@@ -615,6 +766,11 @@ _deps/sfml-src/include/SFML/Graphics/Glyph.hpp:
 
 _deps/sfml-src/include/SFML/Window/Window.hpp:
 
+<<<<<<< HEAD
+=======
+/usr/include/x86_64-linux-gnu/bits/iscanonical.h:
+
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
 /usr/include/c++/13/string_view:
 
 /usr/include/features-time64.h:
@@ -639,12 +795,19 @@ _deps/sfml-src/include/SFML/System/Vector3.inl:
 
 /usr/include/c++/13/bits/basic_string.h:
 
+<<<<<<< HEAD
 /usr/include/libintl.h:
 
 /usr/include/c++/13/bits/chrono.h:
 
 /usr/include/x86_64-linux-gnu/bits/endianness.h:
 
+=======
+/usr/include/c++/13/tr1/poly_laguerre.tcc:
+
+/usr/include/libintl.h:
+
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
 _deps/sfml-src/include/SFML/Graphics/Texture.hpp:
 
 /usr/include/c++/13/bits/erase_if.h:
@@ -683,7 +846,11 @@ _deps/sfml-src/include/SFML/Graphics/VertexBuffer.hpp:
 
 /usr/include/c++/13/bits/stl_iterator.h:
 
+<<<<<<< HEAD
 /usr/include/x86_64-linux-gnu/bits/libc-header-start.h:
+=======
+/usr/include/x86_64-linux-gnu/bits/fp-fast.h:
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
 
 _deps/sfml-src/include/SFML/Graphics/Transformable.hpp:
 
@@ -713,6 +880,13 @@ _deps/sfml-src/include/SFML/Window/WindowBase.inl:
 
 _deps/sfml-src/include/SFML/Graphics/BlendMode.hpp:
 
+<<<<<<< HEAD
+=======
+/usr/include/x86_64-linux-gnu/bits/endian.h:
+
+_deps/sfml-src/include/SFML/System/Err.hpp:
+
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
 /usr/include/c++/13/bits/locale_classes.tcc:
 
 /usr/include/c++/13/bits/stl_bvector.h:
@@ -737,8 +911,11 @@ _deps/sfml-src/include/SFML/Window/Clipboard.hpp:
 
 _deps/sfml-src/include/SFML/System/String.hpp:
 
+<<<<<<< HEAD
 /usr/include/stdlib.h:
 
+=======
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
 _deps/sfml-src/include/SFML/Graphics/Rect.hpp:
 
 /usr/include/c++/13/bits/locale_facets_nonio.h:
@@ -747,24 +924,49 @@ _deps/sfml-src/include/SFML/Graphics/Rect.hpp:
 
 _deps/sfml-src/include/SFML/System/Vector2.hpp:
 
+<<<<<<< HEAD
 /usr/include/c++/13/bits/locale_facets.tcc:
 
 _deps/sfml-src/include/SFML/Graphics/VertexArray.hpp:
 
 _deps/sfml-src/include/SFML/Graphics/Shader.hpp:
 
+=======
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
 /usr/include/c++/13/cerrno:
 
 _deps/sfml-src/include/SFML/System/Time.hpp:
 
 _deps/sfml-src/include/SFML/Graphics/Sprite.hpp:
 
+<<<<<<< HEAD
+=======
+/usr/include/c++/13/bits/specfun.h:
+
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
 _deps/sfml-src/include/SFML/System.hpp:
 
 _deps/sfml-src/include/SFML/Window/WindowBase.hpp:
 
 /usr/include/c++/13/bits/streambuf.tcc:
 
+<<<<<<< HEAD
+=======
+/usr/include/stdint.h:
+
+/usr/include/endian.h:
+
+_deps/sfml-src/include/SFML/Graphics/VertexArray.hpp:
+
+_deps/sfml-src/include/SFML/Graphics/Shader.hpp:
+
+/usr/include/c++/13/bits/locale_facets.tcc:
+
+/usr/include/x86_64-linux-gnu/bits/floatn-common.h:
+
+/usr/include/c++/13/bits/requires_hosted.h:
+
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
 _deps/sfml-src/include/SFML/System/Time.inl:
 
 _deps/sfml-src/include/SFML/Graphics/Export.hpp:
@@ -781,10 +983,13 @@ _deps/sfml-src/include/SFML/Graphics/Export.hpp:
 
 /usr/include/c++/13/bits/memory_resource.h:
 
+<<<<<<< HEAD
 /usr/include/c++/13/bits/shared_ptr_base.h:
 
 /usr/include/wchar.h:
 
+=======
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
 _deps/sfml-src/include/SFML/Window/VideoMode.hpp:
 
 /usr/include/c++/13/bits/move.h:
@@ -819,8 +1024,11 @@ _deps/sfml-src/include/SFML/System/Sleep.hpp:
 
 /usr/include/c++/13/bits/unordered_map.h:
 
+<<<<<<< HEAD
 /usr/include/c++/13/bits/range_access.h:
 
+=======
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
 /usr/include/c++/13/bits/refwrap.h:
 
 /usr/include/c++/13/bits/shared_ptr.h:
@@ -841,12 +1049,22 @@ _deps/sfml-src/include/SFML/System/Export.hpp:
 
 /usr/include/c++/13/bits/utility.h:
 
+<<<<<<< HEAD
+=======
+/usr/include/c++/13/tr1/beta_function.tcc:
+
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
 /usr/include/stdio.h:
 
 /usr/include/c++/13/bits/stl_iterator_base_types.h:
 
 /usr/include/c++/13/bits/stl_raw_storage_iter.h:
 
+<<<<<<< HEAD
+=======
+/usr/include/x86_64-linux-gnu/bits/mathcalls.h:
+
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
 /usr/include/c++/13/bits/stl_relops.h:
 
 /usr/include/c++/13/bits/stl_tempbuf.h:
@@ -857,10 +1075,22 @@ _deps/sfml-src/include/SFML/System/Export.hpp:
 
 /usr/include/c++/13/locale:
 
+<<<<<<< HEAD
+=======
+/usr/include/x86_64-linux-gnu/bits/flt-eval-method.h:
+
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
 /usr/include/c++/13/bits/streambuf_iterator.h:
 
 /usr/include/c++/13/ostream:
 
+<<<<<<< HEAD
+=======
+_deps/sfml-src/include/SFML/Window/Touch.hpp:
+
+/usr/include/c++/13/tr1/riemann_zeta.tcc:
+
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
 /usr/include/c++/13/bits/stringfwd.h:
 
 /usr/include/c++/13/optional:
@@ -873,6 +1103,11 @@ _deps/sfml-src/include/SFML/System/Export.hpp:
 
 /usr/include/c++/13/cassert:
 
+<<<<<<< HEAD
+=======
+/usr/include/c++/13/tr1/poly_hermite.tcc:
+
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
 /usr/include/c++/13/cctype:
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_tm.h:
@@ -881,8 +1116,17 @@ _deps/sfml-src/include/SFML/Window/WindowHandle.hpp:
 
 /usr/include/c++/13/ext/atomicity.h:
 
+<<<<<<< HEAD
 /usr/include/c++/13/chrono:
 
+=======
+/usr/include/c++/13/tr1/gamma.tcc:
+
+/usr/include/c++/13/chrono:
+
+/usr/include/c++/13/cmath:
+
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
 /usr/include/c++/13/codecvt:
 
 _deps/sfml-src/include/SFML/System/Vector2.inl:
@@ -919,10 +1163,20 @@ _deps/sfml-src/include/SFML/Graphics/Glsl.inl:
 
 /usr/include/c++/13/ext/type_traits.h:
 
+<<<<<<< HEAD
+=======
+/usr/include/c++/13/tr1/bessel_function.tcc:
+
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
 /usr/include/c++/13/initializer_list:
 
 /usr/include/c++/13/ios:
 
+<<<<<<< HEAD
+=======
+/usr/include/c++/13/iostream:
+
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
 /usr/include/c++/13/istream:
 
 /usr/include/c++/13/bits/ios_base.h:
@@ -937,8 +1191,11 @@ _deps/sfml-src/include/SFML/Graphics/Color.inl:
 
 /usr/include/c++/13/memory:
 
+<<<<<<< HEAD
 /usr/include/x86_64-linux-gnu/bits/floatn.h:
 
+=======
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
 /usr/include/c++/13/exception:
 
 /usr/include/c++/13/pstl/glue_memory_defs.h:
@@ -955,8 +1212,25 @@ _deps/sfml-src/include/SFML/System/FileInputStream.hpp:
 
 /usr/include/c++/13/string:
 
+<<<<<<< HEAD
 /usr/include/c++/13/type_traits:
 
+=======
+/usr/include/c++/13/tr1/ell_integral.tcc:
+
+/usr/include/c++/13/tr1/exp_integral.tcc:
+
+/usr/include/c++/13/bits/range_access.h:
+
+/usr/include/c++/13/tr1/hypergeometric.tcc:
+
+/usr/include/c++/13/type_traits:
+
+/usr/include/c++/13/tr1/legendre_function.tcc:
+
+/usr/include/c++/13/tr1/modified_bessel_func.tcc:
+
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
 /usr/include/c++/13/bits/allocator.h:
 
 /usr/include/c++/13/unordered_map:
@@ -968,6 +1242,7 @@ _deps/sfml-src/include/SFML/System/FileInputStream.hpp:
 /usr/include/wctype.h:
 
 /usr/include/sched.h:
+<<<<<<< HEAD
 
 /usr/include/endian.h:
 
@@ -992,3 +1267,5 @@ _deps/sfml-src/include/SFML/System/Err.hpp:
 _deps/sfml-src/include/SFML/Window/Cursor.hpp:
 
 /usr/include/x86_64-linux-gnu/bits/locale.h:
+=======
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9

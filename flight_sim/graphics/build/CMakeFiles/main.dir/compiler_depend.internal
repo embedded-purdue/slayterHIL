@@ -81,6 +81,10 @@ CMakeFiles/main.dir/src/main.cpp.o
  /home/matt/Programming/slayterHIL/flight_sim/graphics/build/_deps/sfml-src/include/SFML/Window/WindowBase.inl
  /home/matt/Programming/slayterHIL/flight_sim/graphics/build/_deps/sfml-src/include/SFML/Window/WindowEnums.hpp
  /home/matt/Programming/slayterHIL/flight_sim/graphics/build/_deps/sfml-src/include/SFML/Window/WindowHandle.hpp
+<<<<<<< HEAD
+=======
+ /home/matt/Programming/slayterHIL/flight_sim/graphics/src/mesh.cpp
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
  /usr/include/alloca.h
  /usr/include/asm-generic/errno-base.h
  /usr/include/asm-generic/errno.h
@@ -151,6 +155,10 @@ CMakeFiles/main.dir/src/main.cpp.o
  /usr/include/c++/13/bits/shared_ptr.h
  /usr/include/c++/13/bits/shared_ptr_atomic.h
  /usr/include/c++/13/bits/shared_ptr_base.h
+<<<<<<< HEAD
+=======
+ /usr/include/c++/13/bits/specfun.h
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
  /usr/include/c++/13/bits/sstream.tcc
  /usr/include/c++/13/bits/std_abs.h
  /usr/include/c++/13/bits/stl_algobase.h
@@ -182,6 +190,10 @@ CMakeFiles/main.dir/src/main.cpp.o
  /usr/include/c++/13/cerrno
  /usr/include/c++/13/chrono
  /usr/include/c++/13/clocale
+<<<<<<< HEAD
+=======
+ /usr/include/c++/13/cmath
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
  /usr/include/c++/13/codecvt
  /usr/include/c++/13/compare
  /usr/include/c++/13/cstddef
@@ -206,6 +218,10 @@ CMakeFiles/main.dir/src/main.cpp.o
  /usr/include/c++/13/iomanip
  /usr/include/c++/13/ios
  /usr/include/c++/13/iosfwd
+<<<<<<< HEAD
+=======
+ /usr/include/c++/13/iostream
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
  /usr/include/c++/13/istream
  /usr/include/c++/13/iterator
  /usr/include/c++/13/limits
@@ -224,6 +240,21 @@ CMakeFiles/main.dir/src/main.cpp.o
  /usr/include/c++/13/string
  /usr/include/c++/13/string_view
  /usr/include/c++/13/system_error
+<<<<<<< HEAD
+=======
+ /usr/include/c++/13/tr1/bessel_function.tcc
+ /usr/include/c++/13/tr1/beta_function.tcc
+ /usr/include/c++/13/tr1/ell_integral.tcc
+ /usr/include/c++/13/tr1/exp_integral.tcc
+ /usr/include/c++/13/tr1/gamma.tcc
+ /usr/include/c++/13/tr1/hypergeometric.tcc
+ /usr/include/c++/13/tr1/legendre_function.tcc
+ /usr/include/c++/13/tr1/modified_bessel_func.tcc
+ /usr/include/c++/13/tr1/poly_hermite.tcc
+ /usr/include/c++/13/tr1/poly_laguerre.tcc
+ /usr/include/c++/13/tr1/riemann_zeta.tcc
+ /usr/include/c++/13/tr1/special_function_util.h
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
  /usr/include/c++/13/tuple
  /usr/include/c++/13/type_traits
  /usr/include/c++/13/typeinfo
@@ -239,6 +270,10 @@ CMakeFiles/main.dir/src/main.cpp.o
  /usr/include/libintl.h
  /usr/include/linux/errno.h
  /usr/include/locale.h
+<<<<<<< HEAD
+=======
+ /usr/include/math.h
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
  /usr/include/pthread.h
  /usr/include/sched.h
  /usr/include/stdc-predef.h
@@ -257,9 +292,24 @@ CMakeFiles/main.dir/src/main.cpp.o
  /usr/include/x86_64-linux-gnu/bits/errno.h
  /usr/include/x86_64-linux-gnu/bits/floatn-common.h
  /usr/include/x86_64-linux-gnu/bits/floatn.h
+<<<<<<< HEAD
  /usr/include/x86_64-linux-gnu/bits/libc-header-start.h
  /usr/include/x86_64-linux-gnu/bits/locale.h
  /usr/include/x86_64-linux-gnu/bits/long-double.h
+=======
+ /usr/include/x86_64-linux-gnu/bits/flt-eval-method.h
+ /usr/include/x86_64-linux-gnu/bits/fp-fast.h
+ /usr/include/x86_64-linux-gnu/bits/fp-logb.h
+ /usr/include/x86_64-linux-gnu/bits/iscanonical.h
+ /usr/include/x86_64-linux-gnu/bits/libc-header-start.h
+ /usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h
+ /usr/include/x86_64-linux-gnu/bits/locale.h
+ /usr/include/x86_64-linux-gnu/bits/long-double.h
+ /usr/include/x86_64-linux-gnu/bits/math-vector.h
+ /usr/include/x86_64-linux-gnu/bits/mathcalls-helper-functions.h
+ /usr/include/x86_64-linux-gnu/bits/mathcalls-narrow.h
+ /usr/include/x86_64-linux-gnu/bits/mathcalls.h
+>>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
  /usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h
  /usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h
  /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h

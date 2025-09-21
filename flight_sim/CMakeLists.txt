@@ -14,5 +14,7 @@ add_executable(${PROJECT_NAME} src/main.cpp)
 add_executable(UDPServer src/UDPServer.cpp)
 add_executable(UDPClient src/UDPClient.cpp)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE Eigen3::Eigen)
 
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/lib)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE Eigen3::Eigen)
