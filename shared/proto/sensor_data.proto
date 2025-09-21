@@ -12,10 +12,10 @@ message Vector3D {
 // Data from the simulated LSM6DSO IMU
 message ImuData {
   // Linear acceleration in meters per second squared (m/s^2)
-  Vector3 acceleration = 1;
+  Vector3D acceleration = 1;
 
   // Angular velocity in radians per second (rad/s)
-  Vector3 angular_velocity = 2;
+  Vector3D angular_velocity = 2;
 }
 
 // Data from simulated MPL3115A2 Barometric Altimeter
