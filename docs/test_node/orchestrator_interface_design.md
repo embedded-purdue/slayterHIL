@@ -38,7 +38,7 @@ There will be a lot of data frequently passed between the orchestrator and test 
         * Very high bitrate (10s of MHz)
         * Low test node overhead
     * Cons: 
-        * Only works with Pi as orchestrator (can't upgrade) 
+        * Only works with single board computer (Pi) as orchestrator (can't upgrade to server) 
 * USB
     * Pros: 
         * Reasonably high bitrate (~10Mhz)
@@ -47,7 +47,13 @@ There will be a lot of data frequently passed between the orchestrator and test 
         * Overhead on test node
 * UART
     * Pros: 
-        * Low overhead on test node
+        * Very low overhead on test node
         * Compatible with any orchestrator (uart-usb bridge)
     * Cons:
-        * Slower bitrate (~1Mhz) (likely limited by uart-usb bridge)
+        * Slower bitrate (~1-5Mhz) (likely limited by uart-usb bridge)
+
+
+**Since we will mostly likely be using a single board computer for the orchestrator, we will go with SPI.**
+
+### SPI Comms Design
+Using SPI does have some complexity. One device is the master, and the other is the slave. They both send data at the same time. The slave is unable to start transactions. This means the slave will have to somehow signal that it has data available, which will trigger the master to start a transaction. In this setup, the master will also have to know exactly how many bytes the slave wants to transfer. We will probably need a small wrapper format around the protobuf payload. This is WIP.
