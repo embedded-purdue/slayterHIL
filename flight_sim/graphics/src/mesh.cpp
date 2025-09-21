@@ -29,7 +29,7 @@ sf::Vector2f projectPoint(const sf::Vector3f& point,
                           float fov, float aspectRatio) {
   sf::Vector2f newPoint = {point.x, point.y};    
 
-  // Transform code here
+
 
   return newPoint;
 }
