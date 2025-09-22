@@ -68,9 +68,7 @@ _Note: If you are on a Windows PC, use WSL2 (look up install instructions, ubunt
 
 8. Test flash
     1. navigate to `slayterHIL/test_node/zephyr`
-
-       _The following instructions are for WSL users only, If you are not on WSL, skip to step iii_
-    3. plug in board and use usbipd to connect it
+    3. (FOR WSL USERS; SKIP IF NOT) plug in board and use usbipd to connect it
        1. on Powershell (run with admin), run `usbipd list` and find the busid for the MCU
 
           *example output:*
@@ -97,8 +95,23 @@ _Note: If you are on a Windows PC, use WSL2 (look up install instructions, ubunt
           *note: make sure the distro is the one you are using (if you have more than one installed)*
        4. now, in your WSL terminal, run `lsusb` and make sure the USB device shows
            1. if `lsusb` is not installed, you may need to install `usbutils` (look up)
-    4. now that the USB is connected, test build the `hello_world` sample by running `west build -p always -b esp32s3_devkitc/esp32s3/procpu samples/hello_world`
-    5. flash to the usb with `west flash`
+    4. (FOR MAC USERS; SKIP IF NOT) plug in board and run:
+       1. ```bash
+          ls /dev/ | grep tty
+          ```
+       2. You should see a list of connected devices. We are looking for something similar to either of the following: 
+          ```bash
+          tty.usbserial-210
+          tty.usbmodem2101
+          ```
+          usbserial will appear if you're connected to the expressif's UART path, while usbmodem will appear if you're connected to its USB path
+       3. Copy the device name (eg. `tty.usbserial-210`)
+       4. Navigate to testnode/justfile and replace the value in the `ESP_PORT` line with your device name. It will now be able to communicate to the board using this name.
+          ```
+          ESP_PORT         := "/dev/tty.usbserial-210"
+          ```
+    6. now that the USB is connected, test build the `hello_world` sample by running `west build -p always -b esp32s3_devkitc/esp32s3/procpu samples/hello_world`
+    7. flash to the usb with `west flash`
        1. if this is the first time attempting to flash after connecting the USB, you may see an error like the following:
 
           ```bash
@@ -127,6 +140,6 @@ _Note: If you are on a Windows PC, use WSL2 (look up install instructions, ubunt
              ```bash
              evinl : evinl wheel uucp docker
              ```
-    6. The example should now be successfully flashed. In order to check, run `esptool --port /dev/[ttyUSB0] chip-id`. *Note: esptool is automatically installed with zephyr/west (I think). If it is not, install it with `pip`
-    7. If everything works, the output should show at the very least the name of the MCU (for the ESP32-S3, it will say something like `Connected to ESP32-S3 on /dev/[ttyUSB0]` and also warn that it has no chip id. This means that the USB port is properly communicating.
-    8. You can also run `read-flash` instead of `chip-id` if you want
+    8. The example should now be successfully flashed. In order to check, run `esptool --port /dev/[ttyUSB0] chip-id`. *Note: esptool is automatically installed with zephyr/west (I think). If it is not, install it with `pip`
+    9. If everything works, the output should show at the very least the name of the MCU (for the ESP32-S3, it will say something like `Connected to ESP32-S3 on /dev/[ttyUSB0]` and also warn that it has no chip id. This means that the USB port is properly communicating.
+    10. You can also run `read-flash` instead of `chip-id` if you want
