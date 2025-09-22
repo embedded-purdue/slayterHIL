@@ -10,4 +10,8 @@ project(my_zephyr_app)
 
 project(app LANGUAGES C)
 
-target_sources(app PRIVATE src/main.c)
+file(GLOB THREAD_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/src/threads/*.c)
+target_sources(app PRIVATE src/main.c ${THREAD_SRCS})
+
+# make src/ available for includes
+zephyr_include_directories(src)
