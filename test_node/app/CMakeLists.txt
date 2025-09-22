@@ -13,5 +13,5 @@ project(app LANGUAGES C)
 file(GLOB THREAD_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/src/threads/*.c)
 target_sources(app PRIVATE src/main.c ${THREAD_SRCS})
 
-# make src/ available for includes
+# All #includes to files in src directory should be relative to src directory root
 zephyr_include_directories(src)
