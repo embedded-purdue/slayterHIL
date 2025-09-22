@@ -1,6 +1,7 @@
 #include "threads/example_producer.h"
 #include <zephyr/kernel.h>
 
+// Initialize example_q message queue. Exposed in example_producer.h using extern.
 K_MSGQ_DEFINE(example_q, EXAMPLE_QUEUE_PACKET_SIZE, EXAMPLE_QUEUE_LEN, 1);
 
 static void example_producer_thread(void)
@@ -17,10 +18,12 @@ static void example_producer_thread(void)
     }
 }
 
+// Statically allocate thread
 K_THREAD_DEFINE(example_producer_tid, EXAMPLE_PRODUCER_STACK_SIZE, example_producer_thread, NULL, NULL, NULL,
-                EXAMPLE_PRODUCER_PRIORITY, 0, -1);
+                EXAMPLE_PRODUCER_PRIORITY, 0, -1); // Delay of -1 so thread doesn't start automatically
 
 
+// Initialize and start thread
 void example_producer_init() {
     // Fill in any initialization
     // If threads need to be initialized in a certain order, these functions can trigger the start of a statically defined thread.
