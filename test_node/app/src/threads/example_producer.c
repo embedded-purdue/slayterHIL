@@ -18,7 +18,7 @@ static void example_producer_thread(void)
     }
 }
 
-// Statically allocate thread
+// Statically allocate thread - this is what makes thread exist. Similar to using k_thread_create.
 K_THREAD_DEFINE(example_producer_tid, EXAMPLE_PRODUCER_STACK_SIZE, example_producer_thread, NULL, NULL, NULL,
                 EXAMPLE_PRODUCER_PRIORITY, 0, -1); // Delay of -1 so thread doesn't start automatically
 

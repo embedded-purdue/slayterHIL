@@ -14,7 +14,7 @@ static void example_consumer_thread(void) {
     }
 }
 
-// Statically allocate thread
+// Statically allocate thread - this is what makes thread exist. Similar to using k_thread_create.
 K_THREAD_DEFINE(example_consumer_tid, EXAMPLE_CONSUMER_STACK_SIZE, example_consumer_thread, NULL, NULL, NULL,
                 EXAMPLE_CONSUMER_PRIORITY, 0, -1); // Delay of -1 so thread does not start automatically
 
