@@ -11,3 +11,10 @@ project(my_zephyr_app)
 project(app LANGUAGES C)
 
 target_sources(app PRIVATE src/main.c)
+
+# Protobuf
+list(APPEND CMAKE_MODULE_PATH ${ZEPHYR_BASE}/modules/nanopb)
+include(nanopb)
+
+FILE(GLOB proto_sources ${CMAKE_CURRENT_SOURCE_DIR}/../../shared/proto/*.proto)
+zephyr_nanopb_sources(app ${proto_sources})

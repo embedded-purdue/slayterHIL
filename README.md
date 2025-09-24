@@ -18,6 +18,9 @@ _Note: If you are on a Windows PC, use WSL2 (look up install instructions, ubunt
 
     - Windows + WSL2: [usbipd-win](https://learn.microsoft.com/en-us/windows/wsl/connect-usb) - This is used to expose the USB ports to WSL2 so that flashing works properly
 
+    - [Protobuf compiler](https://protobuf.dev/installation/) 
+        - If using WSL/Ubuntu: `sudo apt install -y protobuf-compiler`
+
 2. Clone this repository:
     ```bash
     git clone git@github.com:embedded-purdue/slayterHIL.git
