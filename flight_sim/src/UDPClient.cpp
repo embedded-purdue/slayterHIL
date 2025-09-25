@@ -9,7 +9,7 @@
 
 #include "../build/sensor_data.pb.h"
 
-#define PORT     8080
+#define PORT 8080
 #define MAXLINE 1024
 
 // Driver code
@@ -59,8 +59,6 @@ int main() {
     unsigned int timestamp = 1000;
 
     auto packet = std::make_unique<SensorPacket>();
-    
-    // Accessing sub-messages works identically
     
     packet->set_timestamp(timestamp);
     
