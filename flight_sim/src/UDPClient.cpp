@@ -36,24 +36,27 @@ int main() {
     socklen_t len;
 
 
+    // Meters per second
     float acceleration_x = 0.01f;
     float acceleration_y = 0.02f;
     float acceleration_z = -9.81f;
 
+    // Meters per second^2
     float angular_velocity_x = 0.03f;
     float angular_velocity_y = 0.04f;
     float angular_velocity_z = 0.05f;
 
-    // In Pa
+    // In Palscals
     float pressure = 123000.11f;
 
+    // Meters
     float altitude = 100.15f;
 
     // In Celcius
     float temperature = 22.5f;
 
     // Timestamp in milliseconds from beginning
-    int timestamp = 1000;
+    unsigned int timestamp = 1000;
 
     auto packet = std::make_unique<SensorPacket>();
     
