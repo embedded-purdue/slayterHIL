@@ -52,15 +52,14 @@ int main() {
     // In Celcius
     float temperature = 22.5f;
 
+    // Timestamp in milliseconds from beginning
+    int timestamp = 1000;
+
     auto packet = std::make_unique<SensorPacket>();
     
     // Accessing sub-messages works identically
-    google::protobuf::Timestamp* timestamp = packet->mutable_timestamp();
-    auto now = std::chrono::system_clock::now();
-    auto seconds = std::chrono::time_point_cast<std::chrono::seconds>(now);
-    auto nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(now - seconds);
-    timestamp->set_seconds(seconds.time_since_epoch().count());
-    timestamp->set_nanos(nanoseconds.count());
+    
+    packet->set_timestamp(timestamp);
     
     // Populate nested data
     ImuData* imu = packet->mutable_imu_data();
