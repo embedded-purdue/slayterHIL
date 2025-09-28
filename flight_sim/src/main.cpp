@@ -5,7 +5,7 @@
 #include "physics/rigid_body.hpp"
 
 int main() {
-	RigidBody drone;
+	RigidBody drone(5.0, Eigen::Matrix3d::Identity(), Eigen::Vector3d(0,0,100));
 
 	using clock = std::chrono::high_resolution_clock;
 	using duration = std::chrono::duration<double>;
@@ -28,8 +28,19 @@ int main() {
 		
 		if(elapsedTime.count() >= DELTATIME){
 			//TODO: logic and the actual physics 
-			auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - previousTime);
-			std::cout << "update " << ms.count() << std::endl;
+			drone.applyForce(Eigen::Vector3d(0,0, -9.81 * drone.mass));
+			drone.update(DELTATIME);
+
+			std::cout << "pos: (" << drone.position.x() << ", "
+					      << drone.position.y() << ", "
+					      << drone.position.z() << ")";
+
+			std::cout << " vel: (" << drone.velocity.x() << ", "
+					       << drone.velocity.y() << ", "
+					       << drone.velocity.z() << ")";
+
+			std::cout << " ori: [" << drone.orientation.coeffs().transpose() << "]";
+			std::cout << std::endl;
 
 			previousTime = currentTime;
 		}
