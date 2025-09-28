@@ -5,3 +5,37 @@
         status = "okay";
     };
 };
+/ {
+     aliases {
+             led0 = &myled0;
+     };
+
+     leds {
+             compatible = "gpio-leds";
+             myled0: led_0 {
+                     gpios = <&gpio0 13 GPIO_ACTIVE_LOW>;
+             };
+     };
+};
+
+\ { 
+    aliases { 
+        button0 = &button_0; 
+    }; 
+    soc {
+        gpio0: gpio@0 {
+                status = "okay";
+                gpio-controller;
+                #gpio-cells = <2>;
+                /* ... */
+        };
+     };
+    buttons { 
+        compatible = "gpio-keys"; 
+        button_0: button_0 { 
+            gpios = <&gpio0 9 GPIO_ACTIVE_LOW>; 
+            label = "Button0"; 
+            linux,code = <103>; 
+        };
+    }
+}
