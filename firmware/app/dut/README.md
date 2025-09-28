@@ -12,7 +12,7 @@ Zephyr Setup for Reference(https://docs.zephyrproject.org/latest/develop/getting
 
 2. Build ESP32 Image
 ```bash
-    cd test_node/zephyr
+    cd firmware/zephyr
     west build -p always -b esp32s3_devkitc/esp32s3/procpu ../app/dut 
 ```
 
