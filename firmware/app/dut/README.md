@@ -29,3 +29,16 @@ Zephyr Setup for Reference(https://docs.zephyrproject.org/latest/develop/getting
     groups $USER #to check you're in the usergroup
 ```
 
+5. If you get an error about a missing file like
+```bash
+    Error: cannot find filepath ~/slayterHIL/test-node/cmake pristine
+```
+    - remove slayterHIL/firmware/zephyr and then go thru these steps again
+
+```bash
+    cd firmware
+    west update
+    west packages pip --install
+    cd zephyr
+    west sdk install
+```
