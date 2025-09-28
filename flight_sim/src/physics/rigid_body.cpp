@@ -1,34 +1,34 @@
 #include "rigid_body.hpp"
 
 // default ctor with unit mass and identity inertia
-RigidBody::RigidBody() {
-    mass = 1.0;
-    inertiaBody = Eigen::Matrix3d::Identity();
-    inertiaBodyInv = inertiaBody.inverse();
-    position.setZero();
-    velocity.setZero();
-    acceleration.setZero();
-    total_force.setZero();
-    total_torque_body.setZero();
-    orientation = Eigen::Quaterniond::Identity();
-    angularVelocity.setZero();
-}
+RigidBody::RigidBody() 
+  : PhysicsBody(1.0,
+		Eigen::Vector3d::Zero(),
+		Eigen::Vector3d::Zero(),
+		Eigen::Vector3d::Zero(),
+		Eigen::Quaterniond::Identity()),
+    inertiaBody(Eigen::Matrix3d::Identity()),
+    inertiaBodyInv(Eigen::Matrix3d::Identity()),
+    total_torque_body(Eigen::Vector3d::Zero()),
+    angularVelocity(Eigen::Vector3d::Zero())
+{}
+
 
 RigidBody::RigidBody(double m,
                      const Eigen::Matrix3d& inertia,
                      const Eigen::Vector3d& initPos,
-                     const Eigen::Quaterniond& initOri) {
-    mass = m;
-    inertiaBody = inertia;
-    inertiaBodyInv = inertiaBody.inverse();
-    position = initPos;
-    velocity.setZero();
-    acceleration.setZero();
-    total_force.setZero();
-    total_torque_body.setZero();
-    orientation = initOri.normalized();
-    angularVelocity.setZero();
-}
+                     const Eigen::Quaterniond& initOri)
+  : PhysicsBody(m,
+		initPos,
+		Eigen::Vector3d::Zero(),
+		Eigen::Vector3d::Zero(),
+		initOri.normalized()),
+    inertiaBody(inertia),
+    inertiaBodyInv(inertia.inverse()),
+    total_torque_body(Eigen::Vector3d::Zero()),
+    angularVelocity(Eigen::Vector3d::Zero())
+{}
+
 
 void RigidBody::applyForce(const Eigen::Vector3d& force) {
     total_force += force; // world frame
