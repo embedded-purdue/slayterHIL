@@ -52,6 +52,26 @@ monitor-esp32:
 
 run-esp32: build-esp32 flash-esp32 monitor-esp32
 
+attach-wsl-usb-port:
+  #!/usr/bin/env bash
+  set -euo pipefail
+
+  BUSID=$(usbipd.exe list | grep "CP2102N USB to UART Bridge Controller" | awk 'NR==1 {print $1}')
+
+  if [ -z "$BUSID" ]; then
+    echo "Device not found: CP2102N USB to UART Bridge Controller"
+    echo "This error may be because you are using a USB adapter."
+    exit 1
+  fi
+
+  echo "Found device on BUSID: $BUSID"
+
+  usbipd.exe bind --busid "$BUSID"
+  usbipd.exe attach --wsl --busid "$BUSID"
+
+  echo "Device attached to WSL."
+
+
 # ------------------
 #  Defaults
 # ------------------
