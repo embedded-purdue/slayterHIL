@@ -10,7 +10,13 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 find_package(Eigen3 3.4 REQUIRED NO_MODULE)
 
-add_executable(${PROJECT_NAME} src/main.cpp)
+
+
+add_executable(${PROJECT_NAME} 
+    src/main.cpp
+    src/physics/rigid_body.cpp)
+
+target_include_directories(${PROJECT_NAME} PRIVATE ${EIGEN3_INCLUDE_DIR})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Eigen3::Eigen)
 

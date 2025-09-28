@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include "physics_body.hpp"
 #include <Eigen/Dense>
 #include <Eigen/Geometry>
@@ -33,6 +34,7 @@ public:
     void applyTorque(const Eigen::Vector3d& torque);
     void clearAccumulators();
 
+
     // RK4 integration step
     void update(double dt) override;
 
@@ -52,11 +54,33 @@ public:
 
     void setAccelerationWorld(const Eigen::Vector3d& a) { acceleration = a; }
 
+    // Getters
+    double getXBound() const { return this->x_bound; }
+    double getYBound() const { return this->y_bound; }
+    double getZBound() const { return this->z_bound; }
+
+    // Setters
+    void setXBound(double n) { this->x_bound = n; }
+    void setYBound(double n) { this->y_bound = n; }
+    void setZBound(double n) { this->z_bound = n; }
+
+    void setBounds(double x, double y, double z) {
+        this->x_bound = x;
+        this->y_bound = y;
+        this->z_bound = z;
+    }
+
+    // Collision Logic
+    bool isColliding(RigidBody* col_body);
+
 private:
+    double x_bound, y_bound, z_bound;
+
     Eigen::Vector3d computeLinearAcceleration() const;
     Eigen::Vector3d computeAngularAcceleration() const;
 
     // RK4 helpers
     RigidBodyDerivative computeDerivative() const;
     RigidBody integrateWithDerivative(const RigidBodyDerivative& deriv, double dt) const;
+
 };

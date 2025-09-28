@@ -1,18 +1,18 @@
 #include "rigid_body.hpp"
 
-// default ctor with unit mass and identity inertia
-RigidBody::RigidBody() 
-  : PhysicsBody(1.0,
-		Eigen::Vector3d::Zero(),
-		Eigen::Vector3d::Zero(),
-		Eigen::Vector3d::Zero(),
-		Eigen::Quaterniond::Identity()),
-    inertiaBody(Eigen::Matrix3d::Identity()),
-    inertiaBodyInv(Eigen::Matrix3d::Identity()),
-    total_torque_body(Eigen::Vector3d::Zero()),
-    angularVelocity(Eigen::Vector3d::Zero())
-{}
-
+// default constructor with unit mass and identity inertia
+RigidBody::RigidBody() {
+    mass = 1.0;
+    inertiaBody = Eigen::Matrix3d::Identity();
+    inertiaBodyInv = inertiaBody.inverse();
+    position.setZero();
+    velocity.setZero();
+    acceleration.setZero();
+    total_force.setZero();
+    total_torque_body.setZero();
+    orientation = Eigen::Quaterniond::Identity();
+    angularVelocity.setZero();
+}
 
 RigidBody::RigidBody(double m,
                      const Eigen::Matrix3d& inertia,
@@ -69,6 +69,7 @@ RigidBodyDerivative RigidBody::computeDerivative() const {
                                angularVelocity.x(),
                                angularVelocity.y(),
                                angularVelocity.z());
+    
     Eigen::Quaterniond qDot = orientation * omega_q;
     qDot.coeffs() *= 0.5;
     deriv.dOrientation = qDot;
@@ -126,4 +127,32 @@ void RigidBody::update(double dt) {
 
     // clear accumulators for next step
     clearAccumulators();
+}
+
+// Collision Logic
+bool RigidBody::isColliding(RigidBody* col_body) {
+    
+    // Implenting a quite crude solution right now
+    // When rotations are involved, there needs to be a more elegant solution
+    // Consider and oriented bounding box implementation using rotation matrices
+
+    // Bounds sums for this object and passed in object
+    double bound_sum_x = this->getXBound() + col_body->getXBound();
+    double bound_sum_y = this->getYBound() + col_body->getYBound();
+    double bound_sum_z = this->getZBound() + col_body->getZBound();
+
+    // If the distance between the bodies' positions are less than or equal to the sum of their bounds, return true
+    // Otherwise, return false
+    
+    std::cout << std::endl << std::endl;
+    std::cout << "X Distance: " << this->position[0] - col_body->position[0] << "\nBound Sum " << bound_sum_x << std::endl;
+    std::cout << "Y Distance: " << this->position[1] - col_body->position[1] << "\nBound Sum " << bound_sum_y << std::endl;
+    std::cout << "Z Distance: " << this->position[2] - col_body->position[2] << "\nBound Sum " << bound_sum_z << std::endl;
+    std::cout << std::endl << std::endl;
+
+    return (
+        (this->position[0] - col_body->position[0] <= bound_sum_x) &&
+        (this->position[1] - col_body->position[1] <= bound_sum_y) &&
+        (this->position[2] - col_body->position[2] <= bound_sum_z)
+    );
 }
