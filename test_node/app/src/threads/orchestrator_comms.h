@@ -4,6 +4,8 @@
 // Handles SPI communication with orchestrator. Write to received queue, receives on send queue.
 // Priorities, stack sizes, queue packet sizes and lengths can all be changed.
 
+#include <stdint.h>
+
 #define ORCHESTRATOR_COMMS_STACK_SIZE (10 * 1024)
 #define ORCHESTRATOR_COMMS_PRIORITY 5
 

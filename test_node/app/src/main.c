@@ -13,6 +13,7 @@ int main(void)
     example_producer_init();
 
     orchestrator_comms_init();
+    scheduler_init();
 
 	return 0;
 }
