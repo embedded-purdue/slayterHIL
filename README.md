@@ -69,6 +69,7 @@ _Note: If you are on a Windows PC, use WSL2 (look up install instructions, ubunt
 8. Test flash
     1. navigate to `slayterHIL/test_node/zephyr`
     3. (FOR WSL USERS; SKIP IF NOT) plug in board and use usbipd to connect it
+       0. as a shortcut, try using `just attach-wsl-usb-port`. This should work as long as your laptop is directly plugged into the UART port on the esp32
        1. on Powershell (run with admin), run `usbipd list` and find the busid for the MCU
 
           *example output:*
