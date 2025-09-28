@@ -1,25 +1,3 @@
-#include <SFML/Graphics.hpp>
-<<<<<<< HEAD
-
-int main()
-{
-    auto window = sf::RenderWindow(sf::VideoMode({1920u, 1080u}), "CMake SFML Project");
-    window.setFramerateLimit(144);
-
-    while (window.isOpen())
-    {
-        while (const std::optional event = window.pollEvent())
-        {
-            if (event->is<sf::Event::Closed>())
-            {
-                window.close();
-            }
-        }
-
-        window.clear();
-        window.display();
-    }
-=======
 #include <iostream>
 #include <string>
 #include "mesh.cpp"
@@ -61,5 +39,4 @@ int main()
 
     window.display();
   }
->>>>>>> 1a058e877e5c6c95b2bc461dad2057097b497dc9
 }
