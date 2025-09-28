@@ -1,0 +1,1 @@
+This sample sets up i2c with the esp32s3 devkitc
