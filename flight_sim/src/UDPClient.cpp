@@ -1,5 +1,8 @@
 #include <iostream>
 #include <stdlib.h>
+#include <fcntl.h>
+#include <linux/spi/spidev.h>
+#include <sys/ioctl.h>
 #include <unistd.h>
 #include <string.h>
 #include <sys/types.h>
@@ -7,7 +10,7 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
-#include "../build/sensor_data.pb.h"
+#include "../../shared/proto/sensor_data.pb.h"
 
 #define PORT 8080
 #define MAXLINE 1024

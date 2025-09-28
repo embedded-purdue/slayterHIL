@@ -1,62 +1,91 @@
+#include "spi_interface.h"
+#include "../../shared/proto/sensor_data.pb.h"
 #include <iostream>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <sys/types.h>
 #include <sys/socket.h>
-#include <arpa/inet.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
+#include <cstring>
+#include <unistd.h>
 
-#include "../build/sensor_data.pb.h"
+#define PORT 8080
+#define MAXLINE 1024
 
-#define PORT (8080)
-#define MAXLINE (1024)
+// Choose backend
+#ifdef USE_SPI
+#include "spi_linux.cpp"
+#else
+#include "spi_stub.cpp"
+#endif
 
 int main() {
-    int sockfd;
-    char buffer[MAXLINE];
-    struct sockaddr_in servaddr, cliaddr;
+    GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-    // Creating socket file descriptor
-    if ( (sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0 ) {
-        perror("socket creation failed");
-        exit(EXIT_FAILURE);
+    // Select SPI implementation
+    SpiInterface* spi = new 
+#ifdef USE_SPI
+        SpiLinux();
+#else
+        SpiStub();
+#endif
+    if (!spi->init()) {
+        std::cerr << "SPI init failed\n";
+        return -1;
     }
 
-    memset(&servaddr, 0, sizeof(servaddr));
-    memset(&cliaddr, 0, sizeof(cliaddr));
+    int sockfd = socket(AF_INET, SOCK_DGRAM, 0);
+    if (sockfd < 0) {
+        perror("socket");
+        return -1;
+    }
 
-    // Filling server information
-    servaddr.sin_family = AF_INET; // IPv4
+    sockaddr_in servaddr{};
+    servaddr.sin_family = AF_INET;
     servaddr.sin_addr.s_addr = INADDR_ANY;
     servaddr.sin_port = htons(PORT);
 
-    // Bind the socket with the server address
-    if (bind(sockfd, (const struct sockaddr *)&servaddr, sizeof(servaddr)) < 0 ) {
-        perror("bind failed");
-        exit(EXIT_FAILURE);
+    if (bind(sockfd, (struct sockaddr*)&servaddr, sizeof(servaddr)) < 0) {
+        perror("bind");
+        return -1;
     }
 
-    socklen_t len;
+    char buffer[MAXLINE];
+    sockaddr_in cliaddr{};
+    socklen_t cli_len = sizeof(cliaddr);
 
-    len = sizeof(cliaddr);
-
-    // Server loop for accepting information. On Raspberry Pi this will likely be changed.
     while (true) {
-        int bytesReceived = recvfrom(sockfd, buffer, MAXLINE, 
-            MSG_WAITALL, ( struct sockaddr *) &cliaddr, &len);
-        printf("Bytes received: %d\n", bytesReceived);
-        SensorPacket parsed_packet;
-        // if (!parsed_packet.ParseFromString(buffer)) {
-        //     std::cerr << "Failed to parse packet from string." << std::endl;
-        //     return -1;
-        // }
-        parsed_packet.ParseFromString(buffer);
-        float pressure_returned = parsed_packet.altimeter_data().pressure();
-        int timestamp = parsed_packet.timestamp();
-        printf("Pressure deserialized: %f\n", pressure_returned);
-        printf("Timestamp parsed: %d\n", timestamp);
+        int bytesReceived = recvfrom(sockfd, buffer, MAXLINE, 0,
+                                     (struct sockaddr*)&cliaddr, &cli_len);
+        if (bytesReceived <= 0) continue;
+
+        SensorPacket packet;
+        if (!packet.ParseFromArray(buffer, bytesReceived)) {
+            std::cerr << "Failed to parse protobuf\n";
+            continue;
+        }
+
+        float payload[9] = {
+            packet.imu_data().acceleration().x(),
+            packet.imu_data().acceleration().y(),
+            packet.imu_data().acceleration().z(),
+            packet.imu_data().angular_velocity().x(),
+            packet.imu_data().angular_velocity().y(),
+            packet.imu_data().angular_velocity().z(),
+            packet.altimeter_data().pressure(),
+            packet.altimeter_data().altitude(),
+            packet.altimeter_data().temperature()
+        };
+
+        if (!spi->transmit(reinterpret_cast<uint8_t*>(payload), sizeof(payload))) {
+            std::cerr << "SPI transmit failed\n";
+        }
+
+        std::cout << "[Bridge] Parsed packet, pressure=" 
+                  << packet.altimeter_data().pressure()
+                  << ", timestamp=" << packet.timestamp() << "\n";
     }
 
+    close(sockfd);
+    delete spi;
+    google::protobuf::ShutdownProtobufLibrary();
     return 0;
 }
