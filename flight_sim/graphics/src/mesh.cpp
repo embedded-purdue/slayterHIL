@@ -1,6 +1,7 @@
 #pragma once
+
 #include <cmath>
-#include <SFML/System/Vector3.hpp>
+#include <SFML/Graphics.hpp>
 #include <vector>
 #include <utility>
 
@@ -16,22 +17,46 @@ struct Mesh {
 };
 
 struct Camera {
-  sf::Vector3f pos;
-  float yaw;
-  float pitch;
-  Camera (sf::Vector3f position,
-          float yaw,
-          float pitch) {}
+  sf::Vector3f rotation;
+  sf::Vector3f position;
+  Camera (sf::Vector3f rot, sf::Vector3f pos) : rotation(rot), position(pos) {}
 };
+typedef struct Camera Camera;
 
-sf::Vector2f projectPoint(const sf::Vector3f& point,
-                          const Camera& cam,
+typedef std::vector<sf::Vector3f> mat;
+
+sf::Vector3f transformMV(mat matrix, sf::Vector3f vector) {
+  return (sf::Vector3f){ matrix[0].x * vector.x + matrix[0].y * vector.y + matrix[0].z * vector.z,
+                         matrix[1].x * vector.x + matrix[1].y * vector.y + matrix[1].z * vector.z,
+                         matrix[2].x * vector.x + matrix[2].y * vector.y + matrix[2].z * vector.z,
+  };
+}
+
+sf::Vector2f projectPoint(const sf::Vector3f& point, Camera cam,
                           float fov, float aspectRatio) {
-  sf::Vector2f newPoint = {point.x, point.y};    
+  sf::Vector3f newPoint = point;
 
+  // Translate point
+  newPoint.x -= cam.position.x;
+  newPoint.y -= cam.position.y;
 
+  // Apply yaw
+  mat yaw = {
+    {(float)cos(cam.rotation.x), 0, (float)sin(cam.rotation.x)},
+    {0, 1, 0},
+    {-(float)sin(cam.rotation.x), 0, (float)cos(cam.rotation.x)}
+  };
+  newPoint = transformMV(yaw, newPoint);
 
-  return newPoint;
+  // Apply pitch
+  mat pitch = {
+    {1, 0, 0},
+    {0, (float)cos(cam.rotation.y), -(float)sin(cam.rotation.y)},
+    {0, (float)sin(cam.rotation.y), (float)sin(cam.rotation.y)}
+  };
+  newPoint = transformMV(pitch, newPoint);
+
+  return {newPoint.x, newPoint.y};
 }
 
 void renderMesh(Mesh &mesh, sf::RenderWindow &window, Camera cam) {
@@ -39,14 +64,17 @@ void renderMesh(Mesh &mesh, sf::RenderWindow &window, Camera cam) {
     // Creating Point
     sf::CircleShape point(5);
     point.setPosition(projectPoint(mesh.vertices[i], cam, 90, 1));
+    point.setPosition({point.getPosition().x + 400, point.getPosition().y + 400});
     point.setFillColor(sf::Color(0xffffffff));
     point.setOrigin({5, 5});
     window.draw(point);
   }
   for (int i = 0; i < mesh.indices.size(); i++) {
     sf::VertexArray line(sf::PrimitiveType::Lines, 2);
-    line[0].position = {mesh.vertices[mesh.indices[i].first].x, mesh.vertices[mesh.indices[i].first].y};
-    line[1].position = {mesh.vertices[mesh.indices[i].second].x, mesh.vertices[mesh.indices[i].second].y};
+    sf::Vector2f p1 = projectPoint(mesh.vertices[mesh.indices[i].first], cam, 0, 0);
+    sf::Vector2f p2 = projectPoint(mesh.vertices[mesh.indices[i].second], cam, 0, 0);
+    line[0].position = {p1.x + 400, p1.y + 400};
+    line[1].position = {p2.x + 400, p2.y + 400};
     window.draw(line);
   }
 }
