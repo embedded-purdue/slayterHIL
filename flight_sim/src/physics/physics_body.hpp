@@ -40,6 +40,7 @@ public:
     virtual ~PhysicsBody() = default;
 
     // Getters
+    double getMass() const { return this->mass; }
     Eigen::Vector3d getPosition() const { return this->position; }
     Eigen::Vector3d getVelocity() const { return this->velocity; }
     Eigen::Vector3d getAcceleration() const { return this->acceleration; }

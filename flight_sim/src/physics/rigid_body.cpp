@@ -141,20 +141,34 @@ bool RigidBody::isColliding(RigidBody* col_body) {
     double bound_sum_y = this->getYBound() + col_body->getYBound();
     double bound_sum_z = this->getZBound() + col_body->getZBound();
 
+    // Distances between this and col_body
+    double x_dist = this->position[0] - col_body->position[0];
+    double y_dist = this->position[1] - col_body->position[1];
+    double z_dist = this->position[2] - col_body->position[2];
+
     // If the distance between the bodies' positions are less than or equal to the sum of their bounds, return true
     // Otherwise, return false
     
-    std::cout << std::endl << std::endl;
+    // DEBUG PRINT STATEMENTS
+
+    /*std::cout << std::endl << std::endl;
     std::cout << "X Distance: " << this->position[0] - col_body->position[0] << "\nBound Sum " << bound_sum_x << std::endl;
     std::cout << "Y Distance: " << this->position[1] - col_body->position[1] << "\nBound Sum " << bound_sum_y << std::endl;
     std::cout << "Z Distance: " << this->position[2] - col_body->position[2] << "\nBound Sum " << bound_sum_z << std::endl;
-    std::cout << std::endl << std::endl;
+    std::cout << std::endl << std::endl;*/
+    
+    // Collision check SHOULD have AND (&&)
+    // 2 objects can have the same z value
+    // BUT they can be leagues apart on the x-y plane
+    bool collision = 
+        (x_dist <= bound_sum_x) &&
+        (y_dist <= bound_sum_y) &&
+        (z_dist <= bound_sum_z);
+    
+    // Collision detected
+    if(collision) std::cout << "Collision detected" << std::endl;
 
-    return (
-        (this->position[0] - col_body->position[0] <= bound_sum_x) &&
-        (this->position[1] - col_body->position[1] <= bound_sum_y) &&
-        (this->position[2] - col_body->position[2] <= bound_sum_z)
-    );
+    return collision;
 }
 
 // Tester methods for collision logic
@@ -188,6 +202,10 @@ void RigidBody::goToYWall(RigidBody* body, RigidBody* y_wall) {
     std::cout << body->getPosition() << std::endl << std::endl;
     
     while ( !body->isColliding(y_wall) ) {
+        
+        // TODO: Replace raw vector math with "addForce() + update()" and fix the X-Y wall methods
+        // (collision detection itself works fine)
+
         body->position += body->velocity;
         body->velocity += Eigen::Vector3d(0,5,0);
         std::cout << body->getPosition() << std::endl << std::endl;

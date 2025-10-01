@@ -29,6 +29,8 @@ public:
               const Eigen::Matrix3d& inertiaBody,
               const Eigen::Vector3d& initPos = Eigen::Vector3d::Zero(),
               const Eigen::Quaterniond& initOri = Eigen::Quaterniond::Identity());
+    
+    // Only need a destructor if we have pointer instance objects
 
     void applyForce(const Eigen::Vector3d& force) override;
     void applyTorque(const Eigen::Vector3d& torque);
