@@ -2,47 +2,6 @@
 #include <iostream>
 #include "physics/rigid_body.hpp"
 
-Eigen::Vector3d const GRAV(0.0, 0.0, 9.81);
-
-// Tester methods for collision logic
-void applyGravity(RigidBody* body, RigidBody* ground) {
-    std::cout << body->getPosition() << std::endl << std::endl;
-
-    while ( !body->isColliding(ground) ) {
-        body->position += body->velocity;
-        body->velocity -= GRAV;
-        std::cout << body->getPosition() << std::endl << std::endl;
-    }
-
-    std::cout << body->getPosition() << std::endl << std::endl;
-    std::cout << "Fallen to the ground" << std::endl;
-}
-
-void goToXWall(RigidBody* body, RigidBody* x_wall) {
-    std::cout << body->getPosition() << std::endl << std::endl;
-
-    while ( !body->isColliding(x_wall) ) {
-        body->position += body->velocity;
-        body->velocity += Eigen::Vector3d(5,0,0);
-        std::cout << body->getPosition() << std::endl << std::endl;
-    }
-
-    std::cout << body->getPosition() << std::endl << std::endl;
-    std::cout << "Touched X Wall" << std::endl;
-}
-
-void goToYWall(RigidBody* body, RigidBody* y_wall) {
-    std::cout << body->getPosition() << std::endl << std::endl;
-
-    while ( !body->isColliding(y_wall) ) {
-        body->position += body->velocity;
-        body->velocity += Eigen::Vector3d(0,5,0);
-        std::cout << body->getPosition() << std::endl << std::endl;
-    }
-
-    std::cout << body->getPosition() << std::endl << std::endl;
-    std::cout << "Touched Y Wall" << std::endl;
-}
 
 int main() {
     RigidBody* body = new RigidBody();
@@ -69,8 +28,8 @@ int main() {
 
 
     // Apply Movements for collision testing
-    applyGravity(body, ground);
-    //goToXWall();
-    //goToYWall();
+    //applyGravity(body, ground);
+    body->goToXWall(body, x_wall);
+    //goToYWall(body, y_wall);
 
 }

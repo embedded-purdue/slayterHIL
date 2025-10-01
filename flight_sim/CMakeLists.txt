@@ -19,4 +19,3 @@ add_executable(${PROJECT_NAME}
 target_include_directories(${PROJECT_NAME} PRIVATE ${EIGEN3_INCLUDE_DIR})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Eigen3::Eigen)
-

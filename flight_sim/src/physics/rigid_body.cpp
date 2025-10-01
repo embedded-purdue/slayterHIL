@@ -156,3 +156,43 @@ bool RigidBody::isColliding(RigidBody* col_body) {
         (this->position[2] - col_body->position[2] <= bound_sum_z)
     );
 }
+
+// Tester methods for collision logic
+void RigidBody::applyGravity(RigidBody* body, RigidBody* ground) {
+    std::cout << body->getPosition() << std::endl << std::endl;
+
+    while ( !body->isColliding(ground) ) {
+        body->position += body->velocity;
+        body->velocity -= body->getGravityVector();
+        std::cout << body->getPosition() << std::endl << std::endl;
+    }
+
+    std::cout << body->getPosition() << std::endl << std::endl;
+    std::cout << "Fallen to the ground" << std::endl;
+}
+
+void RigidBody::goToXWall(RigidBody* body, RigidBody* x_wall) {
+    std::cout << body->getPosition() << std::endl << std::endl;
+
+    while ( !body->isColliding(x_wall) ) {
+        body->position += body->velocity;
+        body->velocity += Eigen::Vector3d(5,0,0);
+        std::cout << body->getPosition() << std::endl << std::endl;
+    }
+
+    std::cout << body->getPosition() << std::endl << std::endl;
+    std::cout << "Touched X Wall" << std::endl;
+}
+
+void RigidBody::goToYWall(RigidBody* body, RigidBody* y_wall) {
+    std::cout << body->getPosition() << std::endl << std::endl;
+    
+    while ( !body->isColliding(y_wall) ) {
+        body->position += body->velocity;
+        body->velocity += Eigen::Vector3d(0,5,0);
+        std::cout << body->getPosition() << std::endl << std::endl;
+    }
+
+    std::cout << body->getPosition() << std::endl << std::endl;
+    std::cout << "Touched Y Wall" << std::endl;
+}

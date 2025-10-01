@@ -58,6 +58,7 @@ public:
     double getXBound() const { return this->x_bound; }
     double getYBound() const { return this->y_bound; }
     double getZBound() const { return this->z_bound; }
+    Eigen::Vector3d getGravityVector() const { return this->GRAV; }
 
     // Setters
     void setXBound(double n) { this->x_bound = n; }
@@ -73,8 +74,15 @@ public:
     // Collision Logic
     bool isColliding(RigidBody* col_body);
 
+    // Collision Debug Functions
+    void applyGravity(RigidBody* body, RigidBody* ground);
+    void goToXWall(RigidBody* body, RigidBody* x_wall);
+    void goToYWall(RigidBody* body, RigidBody* y_wall);
+
+
 private:
     double x_bound, y_bound, z_bound;
+    Eigen::Vector3d const GRAV = Eigen::Vector3d(0.0, 0.0, 9.81);
 
     Eigen::Vector3d computeLinearAcceleration() const;
     Eigen::Vector3d computeAngularAcceleration() const;
