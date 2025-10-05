@@ -5,3 +5,33 @@
         status = "okay";
     };
 };
+
+&spi2 {
+    compatible = "espressif,esp32-spi";
+    status="okay";
+    pinctrl-0 = <&spi2_pins>;
+    pinctrl-names = "default";
+
+    spidev: spidev-device@0 {
+        reg=<0>;
+        spi-max-frequency = <20000000>;
+        spi-tx-bits = <8>;
+        spi-rx-bits = <8>;
+        status="okay";
+        frame-format = <32768>;
+    };
+
+    cs-gpios = <&gpio0 0 GPIO_ACTIVE_LOW>;
+    clock-frequency = <20000000>;
+};
+
+&pinctrl {
+    spi2_pins: spi2_pins {
+        group1 {
+            pinmux = <SPIM2_CSEL_GPIO0
+                        SPIM2_MISO_GPIO1 
+                        SPIM2_SCLK_GPIO2 
+                        SPIM2_MOSI_GPIO3>;
+        };
+    };
+};
