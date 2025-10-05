@@ -11,7 +11,7 @@ static void orchestrator_comms_thread(void *, void *, void *) {
         // Put received messages in orchestrator_received_q   
 
         // Send all messages that appear in orchestrator_send_q
-        k_msgq_get(&orchestrator_send_q, &send_packet);
+        k_msgq_get(&orchestrator_send_q, &send_packet, K_FOREVER);
     }
 }
 

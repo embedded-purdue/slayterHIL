@@ -15,7 +15,7 @@ static void sensor_emulation_thread(void *, void *, void *) {
 
     while (1) {
         // Get data from sensor_update_q or sensor_bus_q
-        int poll_ret = k_poll(events, 2, K_FOREVER);
+        k_poll(events, 2, K_FOREVER);
         
         // Received sensor update
         if (events[0].state == K_POLL_TYPE_MSGQ_DATA_AVAILABLE) {
