@@ -20,6 +20,7 @@ _Note: If you are on a Windows PC, use WSL2 (look up install instructions, ubunt
 
     - [Protobuf compiler](https://protobuf.dev/installation/) 
         - If using WSL/Ubuntu: `sudo apt install -y protobuf-compiler`
+        - If using mac: `brew install protobuf`
 
 2. Clone this repository:
     ```bash
