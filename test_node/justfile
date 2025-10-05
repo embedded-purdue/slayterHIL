@@ -44,6 +44,16 @@ build-esp32: _verify_workspace clean
     {{CMAKE_CACHE_ARGS}} \
     -DEXTRA_DTC_OVERLAY_FILE="{{justfile_directory()}}/app/boards/esp32s3_devkitc.overlay"
 
+# build
+build-esp32-spi-bitbang: clean
+  west build \
+    -p always \
+    -b "{{ESP_BOARD}}" \
+    -d build \
+    zephyr/samples/drivers/spi_bitbang \
+    {{CMAKE_CACHE_ARGS}} \
+    -DEXTRA_DTC_OVERLAY_FILE="{{justfile_directory()}}/app/boards/esp32s3_devkitc_spi_bitbang.overlay"
+
 flash-esp32:
   west flash --build-dir build
 
