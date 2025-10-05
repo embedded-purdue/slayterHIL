@@ -56,6 +56,8 @@ jobs:
         pip3 install --user -r zephyrproject/zephyr/scripts/requirements.txt
         # Ensure esptool is available for ESP32 family builds
         pip3 install --user "esptool>=5.0.2"
+        # Python libs needed by nanopb generator
+        pip3 install --user protobuf grpcio-tools
 
     - name: Install Zephyr SDK
       env:
@@ -119,6 +121,7 @@ jobs:
       run: |
         pip3 install --user -r zephyrproject/zephyr/scripts/requirements.txt
         pip3 install --user "esptool>=5.0.2"
+        pip3 install --user protobuf grpcio-tools
 
     - name: Install Zephyr SDK
       env:
