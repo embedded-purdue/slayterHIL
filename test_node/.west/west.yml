@@ -35,6 +35,7 @@ manifest:
         # strictly needed by the application.
         name-allowlist:
           - hal_espressif # required for ESP32-based boards
+          - nanopb # protobuf
 
   self:
     path: zephyr
