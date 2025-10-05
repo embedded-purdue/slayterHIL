@@ -1,5 +1,5 @@
 #include "spi_interface.h"
-#include "../../shared/proto/sensor_data.pb.h"
+#include "sensor_data.pb.h"
 #include <iostream>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -21,7 +21,7 @@ int main() {
     GOOGLE_PROTOBUF_VERIFY_VERSION;
 
     // Select SPI implementation
-    SpiInterface* spi = new 
+    SpiInterface* spi = new
 #ifdef USE_SPI
         SpiLinux();
 #else
@@ -79,7 +79,7 @@ int main() {
             std::cerr << "SPI transmit failed\n";
         }
 
-        std::cout << "[Bridge] Parsed packet, pressure=" 
+        std::cout << "[Bridge] Parsed packet, pressure="
                   << packet.altimeter_data().pressure()
                   << ", timestamp=" << packet.timestamp() << "\n";
     }
