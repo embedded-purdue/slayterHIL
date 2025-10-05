@@ -3,6 +3,8 @@
 
 // Decodes protobuf messages from orchestrator. Queues actions based on timestamps and sends commands to the sensor emulation thread.
 
+#include <stdint.h>
+
 #define SENSOR_EMULATION_STACK_SIZE (10 * 1024)
 #define SENSOR_EMULATION_PRIORITY 5
 

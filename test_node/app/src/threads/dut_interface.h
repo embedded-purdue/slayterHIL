@@ -14,8 +14,8 @@ typedef struct _DutInterfaceCommandPacket {
     uint32_t bus_data;
 } _DutInterfaceCommandPacket;
 
-#define SENSOR_UPDATE_QUEUE_PACKET_SIZE (sizeof(_DutInterfaceCommandPacket))
-#define SENSOR_UPDATE_QUEUE_LEN (10)
+#define DUT_INTERFACE_COMMAND_QUEUE_PACKET_SIZE (sizeof(_DutInterfaceCommandPacket))
+#define DUT_INTERFACE_COMMAND_QUEUE_LEN (10)
 extern struct k_msgq dut_interface_command_q;
 
 

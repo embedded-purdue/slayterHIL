@@ -2,7 +2,7 @@
 #include "threads/example_producer.h" // Included for example_q message queue
 #include <zephyr/kernel.h>
 
-static void example_consumer_thread(void) {
+static void example_consumer_thread(void *, void *, void *) {
     uint32_t receive_data;
 
     while(1) {
@@ -14,14 +14,16 @@ static void example_consumer_thread(void) {
     }
 }
 
-// Statically allocate thread - this is what makes thread exist. Similar to using k_thread_create.
-K_THREAD_DEFINE(example_consumer_tid, EXAMPLE_CONSUMER_STACK_SIZE, example_consumer_thread, NULL, NULL, NULL,
-                EXAMPLE_CONSUMER_PRIORITY, 0, -1); // Delay of -1 so thread does not start automatically
+K_THREAD_STACK_DEFINE(example_consumer_stack, EXAMPLE_CONSUMER_STACK_SIZE);
+struct k_thread example_consumer_data;
 
 // Initialize and start thread
 void example_consumer_init() {
-    // Fill in any initialization
-    // If threads need to be initialized in a certain order, these functions can trigger the start of a statically defined thread.
+    // Any initialization
 
-    k_thread_start(example_consumer_tid);
+    k_thread_create(&example_consumer_data, example_consumer_stack, 
+        K_THREAD_STACK_SIZEOF(example_consumer_stack),
+        example_consumer_thread,
+        NULL, NULL, NULL,
+        EXAMPLE_CONSUMER_PRIORITY, 0, K_NO_WAIT);
 }

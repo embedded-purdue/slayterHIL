@@ -4,7 +4,7 @@
 // Initialize example_q message queue. Exposed in example_producer.h using extern.
 K_MSGQ_DEFINE(example_q, EXAMPLE_QUEUE_PACKET_SIZE, EXAMPLE_QUEUE_LEN, 1);
 
-static void example_producer_thread(void)
+static void example_producer_thread(void *, void *, void *)
 {
     uint32_t send_data = 0;
 
@@ -18,15 +18,16 @@ static void example_producer_thread(void)
     }
 }
 
-// Statically allocate thread - this is what makes thread exist. Similar to using k_thread_create.
-K_THREAD_DEFINE(example_producer_tid, EXAMPLE_PRODUCER_STACK_SIZE, example_producer_thread, NULL, NULL, NULL,
-                EXAMPLE_PRODUCER_PRIORITY, 0, -1); // Delay of -1 so thread doesn't start automatically
-
+K_THREAD_STACK_DEFINE(example_producer_stack, EXAMPLE_PRODUCER_STACK_SIZE);
+struct k_thread example_producer_data;
 
 // Initialize and start thread
 void example_producer_init() {
-    // Fill in any initialization
-    // If threads need to be initialized in a certain order, these functions can trigger the start of a statically defined thread.
+    // Any initialization
 
-    k_thread_start(example_producer_tid);
+    k_thread_create(&example_producer_data, example_producer_stack, 
+        K_THREAD_STACK_SIZEOF(example_producer_stack),
+        example_producer_thread,
+        NULL, NULL, NULL,
+        EXAMPLE_PRODUCER_PRIORITY, 0, K_NO_WAIT);
 }

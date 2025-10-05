@@ -5,7 +5,7 @@
 // #include <pb_decode.h> // protobuf decode header
 #include <zephyr/kernel.h>
 
-static void scheduler_thread(void) {
+static void scheduler_thread(void *, void *, void *) {
     while(1) {
         // Get data from orchestrator_received_q
         // Decode using protobuf
@@ -14,12 +14,16 @@ static void scheduler_thread(void) {
     }
 }
 
-K_THREAD_DEFINE(scheduler_tid, SCHEDULER_STACK_SIZE, scheduler_thread, NULL, NULL, NULL,
-                SCHEDULER_PRIORITY, 0, -1); // Delay of -1 so thread does not start automatically
+K_THREAD_STACK_DEFINE(scheduler_stack, SCHEDULER_STACK_SIZE);
+struct k_thread scheduler_data;
 
 // Initialize and start thread
 void scheduler_init() {
     // Any initialization
 
-    k_thread_start(scheduler_tid); // Start thread
+    k_thread_create(&scheduler_data, scheduler_stack, 
+        K_THREAD_STACK_SIZEOF(scheduler_stack),
+        scheduler_thread,
+        NULL, NULL, NULL,
+        SCHEDULER_PRIORITY, 0, K_NO_WAIT);
 }

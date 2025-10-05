@@ -4,6 +4,8 @@
 #include "threads/example_producer.h"
 #include "threads/orchestrator_comms.h"
 #include "threads/scheduler.h"
+#include "threads/sensor_emulation.h"
+#include "threads/dut_interface.h"
 
 int main(void)
 {
@@ -14,6 +16,8 @@ int main(void)
 
     orchestrator_comms_init();
     scheduler_init();
+    sensor_emulation_init();
+    dut_interface_init();
 
 	return 0;
 }
