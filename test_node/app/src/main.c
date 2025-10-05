@@ -4,7 +4,6 @@
 #include <zephyr/drivers/i2c.h>
 #include <zephyr/sys/printk.h>
 #include <zephyr/drivers/gpio.h>
-#include <zephyr/kernel.h>  
 #include <inttypes.h>
 
 #include <string.h>
@@ -42,8 +41,8 @@ static void i2c_work_handler(struct k_work *work)
         int ret = i2c_write_read(i2c, SLAVE_ADDR, &cmd, 1, rx, RX_LEN); 
         printk("write_read ret=%d  \n", ret);
         if (ret == 0) {
-            printk("HEX: ");
-            hexdump(rx, RX_LEN);
+            // printk("HEX: ");
+            // hexdump(rx, RX_LEN);
 
             // Print ASCII safely
             char ascii[RX_LEN + 1];
@@ -51,7 +50,11 @@ static void i2c_work_handler(struct k_work *work)
                 ascii[i] = isprint((int)rx[i]) ? (char)rx[i] : '.';
             }
             ascii[RX_LEN] = '\0';
-            printk("ASC: %s\n", ascii);
+            printk("%s\n", ascii);
+            if(led.port) { 
+                led_state = !led_state; 
+                gpio_pin_set(led.port, led.pin, (int)led_state); 
+            }
         }
     } else { 
         printk("I2C device not ready\n");
@@ -62,15 +65,10 @@ static void i2c_work_handler(struct k_work *work)
 void button_pressed(const struct device *dev, struct gpio_callback *cb, uint32_t pins) { 
     printk("Button pressed at %" PRIu32 "\n", k_cycle_get_32());
     
-    // Schedule I2C work to run in thread context
+   
     k_work_submit(&i2c_work);
 
-    // LED toggle can stay here (fast operation)
-    if(led.port) { 
-        led_state = !led_state; 
-        gpio_pin_set_dt(&led, led_state); 
-        printk("Button toggled\n");
-    }
+   
 }
 
 void main(void) {
