@@ -3,6 +3,7 @@
 #include <string>
 #include "mesh.cpp"
 #include <cmath>
+#include <algorithm>
 
 int main()
 {
@@ -13,25 +14,15 @@ int main()
 
   std::vector<sf::Vector3f> drone = {
     {-100, -100, 0},
-    {0, -120, 0},
     {100, -100, 0},
-    {120, 0, 0},
     {100, 100, 0},
-    {0, 120, 0},
     {-100, 100, 0},
-    {-120, 0, 0},
-    {0, 0, 0},
+    {0, 0, 0}
   };
 
   std::vector<std::pair<int, int>> drone_inds = {
-    {0, 1},
-    {1, 2}, 
-    {2, 3},
-    {3, 4},
-    {4, 5},
-    {5, 6},
-    {6, 7},
-    {7, 0}
+    {0, 2},
+    {1, 3},
   };
 
   sf::Clock clock;
@@ -49,19 +40,21 @@ int main()
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
     {
-      camera.rotation.x -= 0.05;          
+      camera.rotation.z -= 0.05;          
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
     {
-      camera.rotation.x += 0.05;
+      camera.rotation.z += 0.05;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
     {
       camera.rotation.y -= 0.05;          
+      if (camera.rotation.y < -3.14) camera.rotation.y = -3.14;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
     {
       camera.rotation.y += 0.05;          
+      if (camera.rotation.y > 0) camera.rotation.y = 0;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
     {
@@ -79,13 +72,9 @@ int main()
     {
       camera.position.x -= 5;          
     }
-   
 
-    
-    window.clear();
-    
+    window.clear(sf::Color(0xaaccffff));
     renderMesh(mesh, window, camera);
-
     window.display();
   }
 }

@@ -32,19 +32,13 @@ sf::Vector3f transformMV(mat matrix, sf::Vector3f vector) {
   };
 }
 
-sf::Vector2f projectPoint(const sf::Vector3f& point, Camera cam,
-                          float fov, float aspectRatio) {
+sf::Vector2f projectPoint(const sf::Vector3f& point, Camera cam) {
   sf::Vector3f newPoint = point;
-
-  // Translate point
-  newPoint.x -= cam.position.x;
-  newPoint.y -= cam.position.y;
-
   // Apply yaw
   mat yaw = {
-    {(float)cos(cam.rotation.x), 0, (float)sin(cam.rotation.x)},
-    {0, 1, 0},
-    {-(float)sin(cam.rotation.x), 0, (float)cos(cam.rotation.x)}
+    {(float)cos(cam.rotation.z), -(float)sin(cam.rotation.z), 0},
+    {(float)sin(cam.rotation.z), (float)cos(cam.rotation.z), 0},
+    {0, 0, 1}
   };
   newPoint = transformMV(yaw, newPoint);
 
@@ -56,6 +50,11 @@ sf::Vector2f projectPoint(const sf::Vector3f& point, Camera cam,
   };
   newPoint = transformMV(pitch, newPoint);
 
+  // Translate point
+  newPoint.x -= cam.position.x;
+  newPoint.y -= cam.position.y;
+
+
   return {newPoint.x, newPoint.y};
 }
 
@@ -63,18 +62,19 @@ void renderMesh(Mesh &mesh, sf::RenderWindow &window, Camera cam) {
   for (int i = 0; i < mesh.vertices.size(); i++) {
     // Creating Point
     sf::CircleShape point(5);
-    point.setPosition(projectPoint(mesh.vertices[i], cam, 90, 1));
-    point.setPosition({point.getPosition().x + 400, point.getPosition().y + 400});
+    point.setPosition(projectPoint(mesh.vertices[i], cam));
+    point.setPosition({point.getPosition().x + window.getSize().x/2,
+      point.getPosition().y + window.getSize().y/2});
     point.setFillColor(sf::Color(0xffffffff));
     point.setOrigin({5, 5});
     window.draw(point);
   }
   for (int i = 0; i < mesh.indices.size(); i++) {
     sf::VertexArray line(sf::PrimitiveType::Lines, 2);
-    sf::Vector2f p1 = projectPoint(mesh.vertices[mesh.indices[i].first], cam, 0, 0);
-    sf::Vector2f p2 = projectPoint(mesh.vertices[mesh.indices[i].second], cam, 0, 0);
-    line[0].position = {p1.x + 400, p1.y + 400};
-    line[1].position = {p2.x + 400, p2.y + 400};
+    sf::Vector2f p1 = projectPoint(mesh.vertices[mesh.indices[i].first], cam);
+    sf::Vector2f p2 = projectPoint(mesh.vertices[mesh.indices[i].second], cam);
+    line[0].position = {p1.x + window.getSize().x/2, p1.y + window.getSize().y/2};
+    line[1].position = {p2.x + window.getSize().x/2, p2.y + window.getSize().y/2};
     window.draw(line);
   }
 }
