@@ -5,10 +5,35 @@ K_MSGQ_DEFINE(sensor_update_q, SENSOR_UPDATE_QUEUE_PACKET_SIZE, SENSOR_UPDATE_QU
 K_MSGQ_DEFINE(sensor_bus_q, SENSOR_BUS_QUEUE_PACKET_SIZE, SENSOR_BUS_QUEUE_LEN, 1);
 
 static void sensor_emulation_thread(void *, void *, void *) {
-    while(1) {
+    struct k_poll_event events[2];
+
+    k_poll_event_init(&events[0], K_POLL_TYPE_MSGQ_DATA_AVAILABLE, K_POLL_MODE_NOTIFY_ONLY, &sensor_update_q);
+    k_poll_event_init(&events[1], K_POLL_TYPE_MSGQ_DATA_AVAILABLE, K_POLL_MODE_NOTIFY_ONLY, &sensor_bus_q);
+
+    SensorUpdatePacket update_packet;
+    SensorBusPacket bus_packet;
+
+    while (1) {
         // Get data from sensor_update_q or sensor_bus_q
-        // Update sensor data or respond to bus message
-        // Put communication peripheral commands to dut_interface thread
+        int poll_ret = k_poll(events, 2, K_FOREVER);
+        
+        // Received sensor update
+        if (events[0].state == K_POLL_TYPE_MSGQ_DATA_AVAILABLE) {
+            k_msgq_get(&sensor_update_q, &update_packet, K_FOREVER);
+
+            // Update sensor data
+
+            events[0].state = K_POLL_STATE_NOT_READY;
+        }
+
+        // Received bus data
+        if (events[1].state == K_POLL_TYPE_MSGQ_DATA_AVAILABLE) {
+            k_msgq_get(&sensor_bus_q, &bus_packet, K_FOREVER);
+
+            // Respond to bus message
+
+            events[1].state = K_POLL_STATE_NOT_READY;
+        }
     }
 }
 

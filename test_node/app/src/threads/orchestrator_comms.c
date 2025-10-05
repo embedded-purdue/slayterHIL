@@ -5,9 +5,13 @@ K_MSGQ_DEFINE(orchestrator_receive_q, ORCHESTRATOR_RECEIVE_QUEUE_PACKET_SIZE, OR
 K_MSGQ_DEFINE(orchestrator_send_q, ORCHESTRATOR_SEND_QUEUE_PACKET_SIZE, ORCHESTRATOR_SEND_QUEUE_LEN, 1);
 
 static void orchestrator_comms_thread(void *, void *, void *) {
+    OrchestratorCommsPacket send_packet;
+
     while(1) {
         // Put received messages in orchestrator_received_q   
+
         // Send all messages that appear in orchestrator_send_q
+        k_msgq_get(&orchestrator_send_q, &send_packet);
     }
 }
 

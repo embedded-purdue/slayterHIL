@@ -8,9 +8,16 @@ K_MSGQ_DEFINE(dut_interface_command_q, DUT_INTERFACE_COMMAND_QUEUE_PACKET_SIZE, 
 // Create interrupts for interfaces. When received data, put it in sensor_bus_q or orchestrator_send_q
 
 static void dut_interface_thread(void *, void *, void *) {
+    DutInterfaceCommandPacket command;
+
     while(1) {
         // Get commands from dut_interface_command_q
+        k_msgq_get(&dut_interface_command_q, &command, K_FOREVER);
+
         // Output on peripherals - ideally non-blocking
+        if (command.bus == DUT_INTERFACE_BUS_I2C0) {
+            
+        }
     }
 }
 

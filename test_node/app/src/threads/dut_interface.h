@@ -8,13 +8,17 @@
 #define DUT_INTERFACE_STACK_SIZE (10 * 1024)
 #define DUT_INTERFACE_PRIORITY 5
 
+typedef enum {
+    DUT_INTERFACE_BUS_I2C0,
+} DutInterfaceBusId;
+
 // definitely will need to be changed
 typedef struct _DutInterfaceCommandPacket {
-    uint8_t bus_id;
+    uint8_t bus;
     uint32_t bus_data;
-} _DutInterfaceCommandPacket;
+} DutInterfaceCommandPacket;
 
-#define DUT_INTERFACE_COMMAND_QUEUE_PACKET_SIZE (sizeof(_DutInterfaceCommandPacket))
+#define DUT_INTERFACE_COMMAND_QUEUE_PACKET_SIZE (sizeof(DutInterfaceCommandPacket))
 #define DUT_INTERFACE_COMMAND_QUEUE_LEN (10)
 extern struct k_msgq dut_interface_command_q;
 

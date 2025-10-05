@@ -2,12 +2,16 @@
 #include "threads/orchestrator_comms.h" // for orchestrator_received_q
 #include "threads/sensor_emulation.h" // for sensor data update queue
 // #include <sensor.pb.h> // protobuf struct definition header
-// #include <pb_decode.h> // protobuf decode header
+#include <pb_decode.h> // protobuf decode header
 #include <zephyr/kernel.h>
 
 static void scheduler_thread(void *, void *, void *) {
+    OrchestratorCommsPacket packet;
+
     while(1) {
-        // Get data from orchestrator_received_q
+        // Get data from orchestrator_receive_q
+        k_msgq_get(&orchestrator_receive_q, &packet, K_FOREVER);
+
         // Decode using protobuf
         // Schedule sensor data updates (using heap?)
         // At appropriate times, put sensor data updates into sensor data update queue
