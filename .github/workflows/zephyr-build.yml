@@ -44,10 +44,14 @@ jobs:
         cd zephyrproject
         west update
         west zephyr-export
+        # Install any west-declared python packages (covers some vendor tools)
+        west packages pip --install || true
 
     - name: Install Zephyr dependencies
       run: |
         pip3 install --user -r zephyrproject/zephyr/scripts/requirements.txt
+        # Ensure esptool is available for ESP32 family builds
+        pip3 install --user "esptool>=5.0.2"
 
     - name: Install Zephyr SDK
       env:
@@ -105,10 +109,12 @@ jobs:
         cd zephyrproject
         west update
         west zephyr-export
+        west packages pip --install || true
 
     - name: Install Zephyr dependencies
       run: |
         pip3 install --user -r zephyrproject/zephyr/scripts/requirements.txt
+        pip3 install --user "esptool>=5.0.2"
 
     - name: Install Zephyr SDK
       env:
