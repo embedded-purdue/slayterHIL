@@ -16,7 +16,7 @@ static void dut_interface_thread(void *, void *, void *) {
 
         // Output on peripherals - ideally non-blocking
         if (command.bus == DUT_INTERFACE_BUS_I2C0) {
-            
+
         }
     }
 }
