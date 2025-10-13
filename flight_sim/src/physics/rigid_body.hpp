@@ -51,18 +51,22 @@ public:
     // accumulated torque in BODY frame
     Eigen::Vector3d total_torque_body;
 
+    // Get/Set total torque vectors
+    Eigen::Vector3d getNetTorque() const { return total_torque_body; }
+    void setNetTorque(const Eigen::Vector3d& t) { total_torque_body = t; }
+
     // angular velocity (body frame)
     Eigen::Vector3d angularVelocity;
 
     void setAccelerationWorld(const Eigen::Vector3d& a) { acceleration = a; }
 
-    // Getters
+    // Bound Getters
     double getXBound() const { return this->x_bound; }
     double getYBound() const { return this->y_bound; }
     double getZBound() const { return this->z_bound; }
     Eigen::Vector3d getGravityVector() const { return this->GRAV; }
 
-    // Setters
+    // Bound Setters
     void setXBound(double n) { this->x_bound = n; }
     void setYBound(double n) { this->y_bound = n; }
     void setZBound(double n) { this->z_bound = n; }
