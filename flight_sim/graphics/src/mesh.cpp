@@ -83,31 +83,34 @@ void drawLine(sf::Vector2f p1, sf::Vector2f p2, sf::RenderWindow &window) {
   window.draw(line);
 }
 
-
-void drawTextAtPoint(sf::String string, sf::Vector3f point, Camera cam, sf::RenderWindow &window) {
-  sf::Font font("roboto_mono.ttf");
+sf::Font font("roboto_mono.ttf");
+void drawTextAtPoint(sf::String string, sf::Vector2f point, float scale, sf::RenderWindow &window) {
   sf::Text text(font, string);
-  text.setCharacterSize(18 * cam.zoom);
-  text.setPosition(centerPoint(projectPoint(point, cam), window));
+  text.setCharacterSize(18 * scale);
+  text.setPosition(point);
   text.setFillColor(sf::Color(0x000000ff));
   window.draw(text);
 }
 
 void renderMesh(Mesh &mesh, sf::RenderWindow &window, Camera cam) {
-  for (int i = 0; i < mesh.vertices.size(); i++) {
-    // Drawing Points
-    sf::Vector2f newPoint = projectPoint(mesh.vertices[i], cam);    
-    newPoint = centerPoint(newPoint, window);
-    drawPoint(newPoint, window);
-    drawTextAtPoint("(" + std::to_string((int)mesh.vertices[i].x) + ", "
-                    + std::to_string((int)mesh.vertices[i].y) + ", "
-                    + std::to_string((int)mesh.vertices[i].z) + ")", mesh.vertices[i], cam, window);
-  }
   for (int i = 0; i < mesh.indices.size(); i++) {
     // Drawing Lines
     sf::Vector2f p1 = projectPoint(mesh.vertices[mesh.indices[i].first], cam);
     sf::Vector2f p2 = projectPoint(mesh.vertices[mesh.indices[i].second], cam);
     drawLine(p1, p2, window);
+  }
+  for (int i = 0; i < mesh.vertices.size(); i++) {
+    // Drawing Points
+    sf::Vector2f newPoint = projectPoint(mesh.vertices[i], cam);    
+    newPoint = centerPoint(newPoint, window);
+    drawPoint(newPoint, window);
+
+    // drawTextAtPoint("point", newPoint, cam.zoom, window);
+
+    drawTextAtPoint("(" + std::to_string((int)mesh.vertices[i].x) + ", "
+                    + std::to_string((int)mesh.vertices[i].y) + ", "
+                    + std::to_string((int)mesh.vertices[i].z) + ")",
+                    newPoint, cam.zoom, window);
   }
 }
 
