@@ -1,10 +1,7 @@
-name: CMake Build and Release
+name: CMake Build and Release (manual)
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   build:
