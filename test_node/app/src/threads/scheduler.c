@@ -1,7 +1,7 @@
 #include "threads/scheduler.h"
 #include "threads/orchestrator_comms.h" // for orchestrator_received_q
 #include "threads/sensor_emulation.h" // for sensor data update queue
-// #include <sensor_data.pb.h> // protobuf struct definition header
+#include <sensor_data.pb.h> // protobuf struct definition header
 #include <pb_decode.h> // protobuf decode header
 #include <zephyr/kernel.h>
 
