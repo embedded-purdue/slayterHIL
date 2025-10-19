@@ -19,7 +19,8 @@ struct Mesh {
 struct Camera {
   sf::Vector3f rotation;
   sf::Vector3f position;
-  Camera (sf::Vector3f rot, sf::Vector3f pos) : rotation(rot), position(pos) {}
+  float zoom;
+  Camera (sf::Vector3f rot, sf::Vector3f pos) : rotation(rot), position(pos), zoom(1) {}
 };
 typedef struct Camera Camera;
 
@@ -51,11 +52,19 @@ sf::Vector2f projectPoint(const sf::Vector3f& point, Camera cam) {
   };
   newPoint = transformMV(pitch, newPoint);
 
+  // Apply zoom
+  newPoint.x *= cam.zoom;
+  newPoint.y *= cam.zoom;
+
   // Translate point
   newPoint.x -= cam.position.x;
   newPoint.y -= cam.position.y;
 
   return {newPoint.x, newPoint.y};
+}
+
+sf::Vector2f centerPoint(sf::Vector2f point, sf::RenderWindow &window) {
+  return {point.x + window.getSize().x / 2, point.y + window.getSize().y / 2};
 }
 
 void drawPoint(sf::Vector2f pos, sf::RenderWindow &window) {
@@ -74,12 +83,25 @@ void drawLine(sf::Vector2f p1, sf::Vector2f p2, sf::RenderWindow &window) {
   window.draw(line);
 }
 
+
+void drawTextAtPoint(sf::String string, sf::Vector3f point, Camera cam, sf::RenderWindow &window) {
+  sf::Font font("roboto_mono.ttf");
+  sf::Text text(font, string);
+  text.setCharacterSize(18 * cam.zoom);
+  text.setPosition(centerPoint(projectPoint(point, cam), window));
+  text.setFillColor(sf::Color(0x000000ff));
+  window.draw(text);
+}
+
 void renderMesh(Mesh &mesh, sf::RenderWindow &window, Camera cam) {
   for (int i = 0; i < mesh.vertices.size(); i++) {
     // Drawing Points
     sf::Vector2f newPoint = projectPoint(mesh.vertices[i], cam);    
-    newPoint = {newPoint.x + window.getSize().x / 2, newPoint.y + window.getSize().y / 2};
+    newPoint = centerPoint(newPoint, window);
     drawPoint(newPoint, window);
+    drawTextAtPoint("(" + std::to_string((int)mesh.vertices[i].x) + ", "
+                    + std::to_string((int)mesh.vertices[i].y) + ", "
+                    + std::to_string((int)mesh.vertices[i].z) + ")", mesh.vertices[i], cam, window);
   }
   for (int i = 0; i < mesh.indices.size(); i++) {
     // Drawing Lines
@@ -88,3 +110,4 @@ void renderMesh(Mesh &mesh, sf::RenderWindow &window, Camera cam) {
     drawLine(p1, p2, window);
   }
 }
+

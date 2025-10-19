@@ -7,7 +7,7 @@
 
 int main()
 {
-  auto window = sf::RenderWindow(sf::VideoMode({800u, 800u}), "CMake SFML Project");
+  auto window = sf::RenderWindow(sf::VideoMode::getDesktopMode(), "CMake SFML Project", sf::State::Fullscreen);
   window.setFramerateLimit(60);
 
   Camera camera((sf::Vector3f){0, 0, 0}, (sf::Vector3f){0, 0, 0});
@@ -71,6 +71,14 @@ int main()
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
     {
       camera.position.x -= 5;          
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::PageUp))
+    {
+      camera.zoom *= 1.1;          
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::PageDown))
+    {
+      camera.zoom *= 0.9;          
     }
 
     window.clear(sf::Color(0xaaccffff));
