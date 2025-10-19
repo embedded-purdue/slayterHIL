@@ -35,14 +35,23 @@ run-sim: build-sim
 #  ESP32-S3
 # ------------------
 
-build-esp32: _verify_workspace clean
+build-test-node: _verify_workspace clean
   west build \
     -p always \
     -b "{{ESP_BOARD}}" \
     -d build \
-    app \
+    app/test_node \
     {{CMAKE_CACHE_ARGS}} \
-    -DEXTRA_DTC_OVERLAY_FILE="{{justfile_directory()}}/app/boards/esp32s3_devkitc.overlay"
+    -DEXTRA_DTC_OVERLAY_FILE="{{justfile_directory()}}/app/test_node/boards/esp32s3_devkitc.overlay"
+
+build-dut: _verify_workspace clean
+  west build \
+    -p always \
+    -b "{{ESP_BOARD}}" \
+    -d build \
+    app/dut \
+    {{CMAKE_CACHE_ARGS}} \
+    -DEXTRA_DTC_OVERLAY_FILE="{{justfile_directory()}}/app/dut/boards/esp32s3_devkitc.overlay"
 
 flash-esp32:
   west flash --build-dir build
@@ -50,7 +59,8 @@ flash-esp32:
 monitor-esp32:
   python -m serial.tools.miniterm "{{ESP_PORT}}" 115200
 
-run-esp32: build-esp32 flash-esp32 monitor-esp32
+run-test-node: build-test-node flash-esp32 monitor-esp32
+run-dut: build-dut flash-esp32 monitor-esp32
 
 # ------------------
 #  Defaults

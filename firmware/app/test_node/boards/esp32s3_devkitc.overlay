@@ -5,3 +5,21 @@
         status = "okay";
     };
 };
+
+&pinctrl {
+	// custom pin settings for i2c bus 0
+	i2c0_controller_pins: i2c0_controller_pins {
+		group1 {
+			pinmux = <I2C0_SDA_GPIO15>, <I2C0_SCL_GPIO16>; // SDA on GPIO15, SCL on GPIO16
+			bias-pull-up; // enable pull-up resistors for both pins
+			drive-open-drain; // required for i2c
+			output-high; // start with lines high
+		};
+	};
+};
+
+// enable i2c
+&i2c0 {
+	pinctrl-0 = <&i2c0_controller_pins>;
+	status = "okay";
+};
