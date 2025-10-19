@@ -34,6 +34,7 @@ sf::Vector3f transformMV(mat matrix, sf::Vector3f vector) {
 
 sf::Vector2f projectPoint(const sf::Vector3f& point, Camera cam) {
   sf::Vector3f newPoint = point;
+
   // Apply yaw
   mat yaw = {
     {(float)cos(cam.rotation.z), -(float)sin(cam.rotation.z), 0},
@@ -54,27 +55,36 @@ sf::Vector2f projectPoint(const sf::Vector3f& point, Camera cam) {
   newPoint.x -= cam.position.x;
   newPoint.y -= cam.position.y;
 
-
   return {newPoint.x, newPoint.y};
+}
+
+void drawPoint(sf::Vector2f pos, sf::RenderWindow &window) {
+  float radius = 5;
+  sf::CircleShape point(radius);
+  point.setPosition(pos);
+  point.setFillColor(sf::Color(0xff0000ff));
+  point.setOrigin({radius, radius});
+  window.draw(point);
+}
+
+void drawLine(sf::Vector2f p1, sf::Vector2f p2, sf::RenderWindow &window) {
+  sf::VertexArray line(sf::PrimitiveType::Lines, 2);
+  line[0].position = {p1.x + window.getSize().x/2, p1.y + window.getSize().y/2};
+  line[1].position = {p2.x + window.getSize().x/2, p2.y + window.getSize().y/2};
+  window.draw(line);
 }
 
 void renderMesh(Mesh &mesh, sf::RenderWindow &window, Camera cam) {
   for (int i = 0; i < mesh.vertices.size(); i++) {
-    // Creating Point
-    sf::CircleShape point(5);
-    point.setPosition(projectPoint(mesh.vertices[i], cam));
-    point.setPosition({point.getPosition().x + window.getSize().x/2,
-      point.getPosition().y + window.getSize().y/2});
-    point.setFillColor(sf::Color(0xffffffff));
-    point.setOrigin({5, 5});
-    window.draw(point);
+    // Drawing Points
+    sf::Vector2f newPoint = projectPoint(mesh.vertices[i], cam);    
+    newPoint = {newPoint.x + window.getSize().x / 2, newPoint.y + window.getSize().y / 2};
+    drawPoint(newPoint, window);
   }
   for (int i = 0; i < mesh.indices.size(); i++) {
-    sf::VertexArray line(sf::PrimitiveType::Lines, 2);
+    // Drawing Lines
     sf::Vector2f p1 = projectPoint(mesh.vertices[mesh.indices[i].first], cam);
     sf::Vector2f p2 = projectPoint(mesh.vertices[mesh.indices[i].second], cam);
-    line[0].position = {p1.x + window.getSize().x/2, p1.y + window.getSize().y/2};
-    line[1].position = {p2.x + window.getSize().x/2, p2.y + window.getSize().y/2};
-    window.draw(line);
+    drawLine(p1, p2, window);
   }
 }
