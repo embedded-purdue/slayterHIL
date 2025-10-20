@@ -1,4 +1,4 @@
-#include "drone.hpp";
+#include "drone.hpp"
 
 // So far I could only think of these 2 types of constructors as practical.
 // If there is another type of constructor needed with different parameters,
@@ -68,6 +68,11 @@ double Drone::calculateMass() {
            this->m3->getMass() + 
            this->m4->getMass();
 }
+
+Eigen::Vector3d Drone::getPosition() const {
+    return body->getPosition();
+}
+
 
 // Faith in Eigen's Vector Addition
 Eigen::Vector3d Drone::calculateNetForce() {

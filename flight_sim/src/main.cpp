@@ -3,14 +3,24 @@
 #include <thread>
 #include <iostream>
 #include "physics/rigid_body.hpp"
-
+#include "physics/drone.hpp"
+#include "physics/PIDcalculator.hpp"
 
 int main() {
     
     // I pointer-ized everything from Sebastian's code
 
     // What unit is our mass measured in? Let it be grams for now lol
-    RigidBody* drone = new RigidBody(5.0, Eigen::Matrix3d::Identity(), Eigen::Vector3d(0,0,200));
+    //RigidBody* drone = new RigidBody(5.0, Eigen::Matrix3d::Identity(), Eigen::Vector3d(0,0,200));
+
+
+	Drone* drone = new Drone(
+    		new RigidBody(1.0, Eigen::Matrix3d::Identity(), Eigen::Vector3d(0,0,0)), // body
+    		new RigidBody(0.5, Eigen::Matrix3d::Identity(), Eigen::Vector3d(1,0,0)), //motors
+    		new RigidBody(0.5, Eigen::Matrix3d::Identity(), Eigen::Vector3d(-1,0,0)), 
+    		new RigidBody(0.5, Eigen::Matrix3d::Identity(), Eigen::Vector3d(0,1,0)), 
+    		new RigidBody(0.5, Eigen::Matrix3d::Identity(), Eigen::Vector3d(0,-1,0))  
+	);
 
     // (happy birthday to the) Ground
     RigidBody* ground = new RigidBody();
@@ -21,8 +31,13 @@ int main() {
 	
     // Is the time update necessarily in terms of a minute? Or does it work this way with chrono?
 	const double DELTATIME = 1.0/60.0; 
+	const double SIM_TIME = 10.0;
+	double elapsedTime = 0.0;
 	auto previousTime = std::chrono::high_resolution_clock::now(); 
 
+	PIDcalculator* control = new PIDcalculator (1, 0.1, 0.1);
+	Eigen::Vector3d Target(10.0, 10.0, 15.0);
+	control -> setTarget (Target);
     // Commented out thread for now
     // ( was creating a "terminate called without an active exception error" )
 
@@ -34,16 +49,18 @@ int main() {
 
 	// update loop
     // Current condition set to break when the drone collides with the ground 
-	while( !drone->isColliding(ground) ){
-	
+//	while( !drone->isColliding(ground) ){ got rid of collisions for now 
+	while (elapsedTime < SIM_TIME) {
 		auto currentTime = clock::now();
-		duration elapsedTime = currentTime - previousTime;
+		duration dt = currentTime - previousTime;
 		
-		if(elapsedTime.count() >= DELTATIME){
+		if(dt.count() >= DELTATIME){
 			//TODO: logic and the actual physics 
 			drone->applyForce( Eigen::Vector3d( 0, 0, -9.81 * drone->getMass() ) );
+			Eigen::Vector3d force = control->compute(drone->getPosition(), DELTATIME);
+			drone->applyForce(force);
 			drone->update(DELTATIME);
-
+			
 			std::cout << "pos: (" << drone->position.x() << ", "
 					      << drone->position.y() << ", "
 					      << drone->position.z() << ")";
@@ -54,11 +71,15 @@ int main() {
 
 			std::cout << "\tori: [" << drone->orientation.coeffs().transpose() << "]";
 
-            std::cout << "\tcollision: " << drone->isColliding(ground); // Might print collision detected twice oops lol
+			std::cout << "error: " << (control->getTarget() - drone->getPosition()).transpose() << std::endl;
+
+			previousTime = currentTime;
+			elapsedTime += DELTATIME;
+           /* std::cout << "\tcollision: " << drone->isColliding(ground); // Might print collision detected twice oops lol
 
 			std::cout << std::endl;
 
-			previousTime = currentTime;
+			previousTime = currentTime; */
 		}
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
@@ -72,6 +93,7 @@ int main() {
     // Delete RigidBody pointers
     delete drone;
     delete ground;
+	delete control;
 
     return 0;
 }

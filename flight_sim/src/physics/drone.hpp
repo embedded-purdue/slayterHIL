@@ -22,6 +22,7 @@ public:
         RigidBody* m4
     );
 
+	Eigen::Vector3d getPosition() const;
     // Destructor
     ~Drone() {
         delete body;
