@@ -86,7 +86,7 @@ void drawLine(sf::Vector2f p1, sf::Vector2f p2, sf::RenderWindow &window) {
 sf::Font font("roboto_mono.ttf");
 void drawTextAtPoint(sf::String string, sf::Vector2f point, float scale, sf::RenderWindow &window) {
   sf::Text text(font, string);
-  text.setCharacterSize(18 * scale);
+  text.setCharacterSize(12 * scale);
   text.setPosition(point);
   text.setFillColor(sf::Color(0x000000ff));
   window.draw(text);

@@ -14,15 +14,25 @@ int main()
 
   std::vector<sf::Vector3f> drone = {
     {-100, -100, 0},
+    {0, -120, 0},
     {100, -100, 0},
+    {120, 0, 0},
     {100, 100, 0},
+    {0, 120, 0},
     {-100, 100, 0},
-    {0, 0, 0}
+    {-120, 0, 0},
+    {0, 0, 0},
   };
 
   std::vector<std::pair<int, int>> drone_inds = {
-    {0, 2},
-    {1, 3},
+    {0, 1},
+    {1, 2}, 
+    {2, 3},
+    {3, 4},
+    {4, 5},
+    {5, 6},
+    {6, 7},
+    {7, 0}
   };
 
   sf::Clock clock;
@@ -31,17 +41,26 @@ int main()
 
   while (window.isOpen())
   {
+    sf::Time deltaTime = clock.restart();
+    float dt = deltaTime.asSeconds();
 
     while (const std::optional event = window.pollEvent())
     {
       if (event->is<sf::Event::Closed>())
       {
         window.close();
+      } else if (const auto* mouseScrolled = event->getIf<sf::Event::MouseWheelScrolled>()) {
+        if (mouseScrolled->wheel == sf::Mouse::Wheel::Vertical) {
+          camera.rotation.y += dt * mouseScrolled->delta * 100;
+          if (camera.rotation.y < -3.14) camera.rotation.y = -3.14;
+          if (camera.rotation.y > 0) camera.rotation.y = 0;
+        }
+        else {
+          camera.rotation.z += dt * mouseScrolled->delta * 100;
+        }
       }
     }
 
-    sf::Time deltaTime = clock.restart();
-    float dt = deltaTime.asSeconds();
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
     {
       camera.rotation.z -= 2 * dt;
