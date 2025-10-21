@@ -140,3 +140,19 @@ For our spi master controller, we also expect a device to output to (our suboord
     };
 };
 ```
+
+## Step 3: Creating our C program.
+
+
+
+
+
+
+
+
+
+
+
+### Editing our prj.conf
+
+Prj.conf specifies the software dependencies that we will need, often providing the correct .c and .h files for 
