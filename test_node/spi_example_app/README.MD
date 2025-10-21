@@ -124,7 +124,7 @@ We will declare it as compatible with the `espressif,esp32-spi` interface, which
 
 For our spi master controller, we also expect a device to output to (our suboordinate). This defines the existence of that device.
 - we declare it as compatible to the `vnd,spi-device,` which will enforce the set of rules in `vnd,spi-device` onto this node.
-- The name "esp32" does not matter. We are simply naming it esp32 because we will feed our output at MOSI back into MISO for testing purposes. If we were talking to a raspberry pi, for example, we'd probably label it as "pi".
+- The name `esp32` does not matter. We are simply naming it esp32 because we will feed our output at MOSI back into MISO for testing purposes. If we were talking to a raspberry pi, for example, we'd probably label it as `pi`.
 - `reg = <0>` connects it to the CS at index 0 in `cs-gpios`. 
 
 ```dts
@@ -143,11 +143,27 @@ For our spi master controller, we also expect a device to output to (our suboord
 
 ## Step 3: Creating our C program.
 
+API details are at https://docs.zephyrproject.org/latest/doxygen/html/group__spi__interface.html. As long as we can pass our SPI device and/or controller into the functions we want, we will be able to use this API to perform pre-defined SPI drivr functions.  
 
+### Includes and Defines
 
+The zephyr-provided APIs we need to write our application.
+- `spi.h` defines all the SPI driver function calls that we can make, as specified in the SPI api. 
+- `devicetree.h` defines all of Zephyr's devicetree functions, such as getting the node from a label, and more.
+```
+#include <zephyr/drivers/spi.h>
+#include <zephyr/devicetree.h>
+```
 
-
-
+Defining macros for constants is good code practice, so we don't have magic numbers later.
+- `LEN_TRANSCEIVE` will be the number of bytes we expect from one READ/WRITE in this program specifically. 
+- `DELAY` is the delay in microseconds to wait before starting the transmission and before releasing the CS line.
+- `SPI_DEVICE_NAME` is the name of our spi device's node label, which we defined in the devicetree as `esp32`.
+```
+#define LEN_TRANSCEIVE 4
+#define DELAY 0
+#define SPI_DEVICE_NAME esp32
+```
 
 
 
@@ -156,3 +172,4 @@ For our spi master controller, we also expect a device to output to (our suboord
 ### Editing our prj.conf
 
 Prj.conf specifies the software dependencies that we will need, often providing the correct .c and .h files for 
+
