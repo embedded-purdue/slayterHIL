@@ -120,3 +120,23 @@ We will declare it as compatible with the `espressif,esp32-spi` interface, which
 };
 ```
 
+### Specify the devices living at each ChipSelect.
+
+For our spi master controller, we also expect a device to output to (our suboordinate). This defines the existence of that device.
+- we declare it as compatible to the `vnd,spi-device,` which will enforce the set of rules in `vnd,spi-device` onto this node.
+- The name "esp32" does not matter. We are simply naming it esp32 because we will feed our output at MOSI back into MISO for testing purposes. If we were talking to a raspberry pi, for example, we'd probably label it as "pi".
+- `reg = <0>` connects it to the CS at index 0 in `cs-gpios`. 
+
+```dts
+&spi2 {
+    compatible = "espressif,esp32-spi";
+    cs-gpios = <&gpio0 10 GPIO_ACTIVE_LOW>;
+
+    esp32: esp32@0 {
+        compatible = "vnd,spi-device";
+        reg = <0>;
+        spi-max-frequency = <1600000>;
+        label = "esp32";
+    };
+};
+```
