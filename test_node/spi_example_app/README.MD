@@ -177,7 +177,7 @@ static const struct spi_dt_spec spi_device = SPI_DT_SPEC_GET(
     operation_flags,
     DELAY);
 ```
-Operation flags is an expected parameter of us. It defines the properties of our spi controller, which will reflect in our device driver. Are we currently in `MASTER` mode while communicating to this device? What is our word length? Are we transferring the most significant or least significant bits first? We will define this later.
+Operation flags is an expected parameter of us. It defines the properties of our spi controller, which will reflect in our device driver. Are we currently in `MASTER` mode while communicating to this device? What is our word length? Are we transferring the most significant or least significant bits first?
 - `SPI_OP_MODE_MASTER`: our controller is a manager, not a suboordinate. 
 - `SPI_TRANSFER_MSB`: most significant bit first. To learn more, review the SPI protocol and how bits are transferred.
 - `SPI_WORD_SET(8)`: The expected length of each word we will send/receive is 8 bits. 
@@ -234,3 +234,4 @@ CONFIG_SPI=y
 2. However, if we don't define this, `esp32` will never be registered upon link-time as a valid spi device. Zephyr will search for `esp32`, but never find it. 
 
 We are done!
+
