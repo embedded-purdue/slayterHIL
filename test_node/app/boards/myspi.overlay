@@ -16,8 +16,7 @@
     pinctrl-names = "default";
 
     // CUSTOM SETTINGS (except these seem to get built by zephyr too)
-    compatible = "espressif,esp32-spi"; // this is of the CONTROLLER type
-    // reg is defiend for me
+    compatible = "espressif,esp32-spi";
 
     // TRUE CUSTOM SETTINGS
     cs-gpios = <&gpio0 10 GPIO_ACTIVE_LOW>;
@@ -46,72 +45,3 @@
 		};
 	};
 };
-
-/*
-Even though SPIM2_CSEL_GPIO10 appears in pinctrl, you must still specify cs-gpios = <&gpio0 10 GPIO_ACTIVE_LOW>;.
-\*/
-
-	// spim2_default: spim2_default {
-	// 	group1 {
-	// 		pinmux = <SPIM2_MISO_GPIO13>,
-	// 			 <SPIM2_SCLK_GPIO12>,
-	// 			 <SPIM2_CSEL_GPIO10>;
-	// 	};
-
-	// 	group2 {
-	// 		pinmux = <SPIM2_MOSI_GPIO11>;
-	// 		output-low;
-	// 	};
-	// };
-
-// /{
-//     spimaster: spimaster {
-//         compatible = "espressif,esp32-spi";
-//         status = "okay";
-//     }
-// };
-// &spi2 {
-//         status = "okay";
-//         cs-gpios = <&gpio0 18 GPIO_ACTIVE_LOW>;
-//         pinctrl-0 = <&spi2_default>;
-//         pinctrl-1 = <&spi2_sleep>;
-//         pinctrl-names = "default", "sleep";
-//         mcp3201: mcp3201@0 {
-//                 compatible = "vnd,spi-device";
-//                 reg = <0>;
-//                 spi-max-frequency = <1600000>;
-//                 label = "mcp3201";
-//         };
-// };
-// &pinctrl {
-//         spi2_default: spi2_default {
-//                 group1 {
-//                         psels = <NRF_PSEL(SPIM_SCK, 0, 19)>,
-//                                 <NRF_PSEL(SPIM_MOSI, 0, 21)>,
-//                                 <NRF_PSEL(SPIM_MISO, 0, 22)>;
-//                 };
-//         };
-//         spi2_sleep: spi2_sleep {
-//                 group1 {
-//                         psels = <NRF_PSEL(SPIM_SCK, 0, 19)>,
-//                                 <NRF_PSEL(SPIM_MOSI, 0, 21)>,
-//                                 <NRF_PSEL(SPIM_MISO, 0, 22)>;
-//                         low-power-enable;
-//                 };
-//         };
-// };
-
-// &spi2 {
-//     compatible = "espressif,esp32-spi";
-//     status = "okay";
-
-//     // pinctrl alreayd covered in the soc dts 
-// };
-
-// &spi2 {
-// 	#address-cells = <1>;
-// 	#size-cells = <0>;
-// 	status = "okay";
-// 	pinctrl-0 = <&spim2_default>;
-// 	pinctrl-names = "default";
-// };
