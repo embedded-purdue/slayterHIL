@@ -217,7 +217,20 @@ This is the basic setup of the program. See `spi_example.c` to view the rest.
 
 ## Step 4: Editing our prj.conf
 
-Prj.conf specifies the software dependencies that we will need, often providing the correct .c and .h files for 
+Prj.conf specifies the software dependencies that we will need, often providing the correct .c and .h files that we used in the api.
 
+```bash
+CONFIG_ESP32_SPIM=y
+```
+1. See test_node/zephyr/drivers/spi/CMakeLists.txt. This is where our driver code is defined
+2. There exists `spi_esp32_spim.c`. Looking at the top of the c file, there is `#define DT_DRV_COMPAT espressif_esp32_spi`, which is related to when we declared our SPI controller as `compatible = "espressif,esp32-spi"`. 
+3. However, notice in the CMAKE file, `spi_esp32_spim.c` is only defined if `CONFIG_ESP32_SPIM` is defined.
+4. Therefore, in our prj.conf, we will add `CONFIG_ESP32_SPIM=y`.
 
+```bash
+CONFIG_SPI=y
+```
+1. How to deduce this? Who knows. It was provided by a tutorial linked in the useful resources section.
+2. However, if we don't define this, `esp32` will never be registered upon link-time as a valid spi device. Zephyr will search for `esp32`, but never find it. 
 
+We are done!
