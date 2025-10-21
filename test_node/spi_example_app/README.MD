@@ -16,6 +16,7 @@ for (int i = 0; i < LEN_TRANSCEIVE; i++) write_buf[i] = i;
 ```
 
 Then, we print out read_buf. If the application is working correcty, we should read back 0, 1, 2, and 3. 
+Remember to press the RESET button to run the program.
 ```bash
 *** Booting Zephyr OS build v4.2.0-6442-gbbfd206a47ee ***
 received word 0: 0
@@ -23,3 +24,5 @@ received word 1: 1
 received word 2: 2
 received word 3: 3
 ```
+
+## How was the device tree node constructed?
