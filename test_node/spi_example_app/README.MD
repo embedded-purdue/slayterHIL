@@ -31,7 +31,7 @@ received word 3: 3
 2. https://blog.golioth.io/how-to-use-generic-spi-devices-with-zephyr/
 
 ### Step 1: Gathering Reference Files
-####test_node/zephyr/dts/xtensa/espressif/esp32s3/esp32s3_common.dtsi
+test_node/zephyr/dts/xtensa/espressif/esp32s3/esp32s3_common.dtsi
 1. This is the SoC-level (not board-level!) device tree layout. It defines the existence of each hardware peripheral the SoC provides, independent of any specific board's wiring
 2. Look for spi. We can see spi2 is defined as a module we can use, along with its default properties.
 ```dts
@@ -46,7 +46,8 @@ spi2: spi@60024000 {
 };
 ```
 
-####test_node/zephyr/boards/espressif/esp32s3_devkitc/esp32s3_devkitc_procpu.dts
+
+test_node/zephyr/boards/espressif/esp32s3_devkitc/esp32s3_devkitc_procpu.dts
 1. This is where all the available, pre-defined controllers are created for us. This is board-level, not just SoC level, like `esp32s3_common.dtsi`
 2. See &spi2. This is referencing the spi2 node defined. It's &spi2, because it's referencing the already-created node of the spi hardware module in `esp32s3_common.dtsi`. 
 ```dts
@@ -61,6 +62,8 @@ spi2: spi@60024000 {
 3. Notice: it overwrites the `status = "disabled"` and enables the hardware module. It also defines a pinctrl-0, among other parameters that are specific to this board. 
 4. spim2_default is referenced elsewhere as per the `&`... let's go find it
 
-####test_node/zephyr/boards/espressif/esp32s3_devkitc/esp32s3_devkitc-pinctrl.dtsi
+
+test_node/zephyr/boards/espressif/esp32s3_devkitc/esp32s3_devkitc-pinctrl.dtsi
 1. This is the pinctrl for our board. It provides the physical wiring, including the default pinmux group `spim2_default` that we saw was used in `esp32s3_devkitc_procpu.dts`
+
 
