@@ -165,7 +165,7 @@ Defining macros for constants is good code practice, so we don't have magic numb
 #define SPI_DEVICE_NAME esp32
 ```
 
-### Getting our SPI device structure
+### Getting our SPI device structures
 
 Looking at the documentation in the API, a lot of functions require information of type `struct spi_dt_spec`. Specifically, the transceive/read/write functions we want to use need this. We will thus get our device from the device tree: 
 - be careful what you pass into the first parameter. We need to pass in the spi DEVICE, not the spi controller. This is because `SPI_DT_SPEC_GET` has a sub-macro which uses the device, which it expects to be a bus, in order to get the remaining properties from the parent controller.
@@ -189,8 +189,35 @@ static const spi_operation_t operation_flags = (
     SPI_WORD_SET(8));
 ```
 
-### Editing our prj.conf
+### creating our read and write buffers
+
+To read/write/transceive, we need a place to read from or feed to. The SPI api expects pointers to buffers of type `spi_buf_set`, so we will create these. We will do the following for both our rx buffer and our tx buffer. 
+- I want to read and write messages of `LEN_TRANSCEIVE`, so we will create buffers of that length. These are the buffers we will be interacting with in order to feed or read the SPI data. 
+- `rx_buf` and `tx_buf` are what the SPI APIs will read from / write to. As you can see from the trail of reference, the data originates from `read_buf` and `write_buf`.
+
+```c
+uint8_t read_buf[LEN_TRANSCEIVE] = {0};
+struct spi_buf spi_read_buf = {&read_buf, LEN_TRANSCEIVE};
+const struct spi_buf_set rx_buf = {&spi_read_buf, 1};
+```
+
+### Transceiving the data.
+
+We will use the `spi_transceive_dt` function provided by the API, so we can read and write data at the same time. However, note that there are other functions we could have chosen to use: `spi_read_dt` for reading only, `spi_write_dt` for writing only, and more.
+- We pass in the addresses of `tx_buf` and `rx_buf` so it may feed into these buffers. 
+
+```c
+int transceive_res = spi_transceive_dt(
+    &spi_device,
+    &tx_buf,
+    &rx_buf);
+```
+
+This is the basic setup of the program. See `spi_example.c` to view the rest.
+
+## Step 4: Editing our prj.conf
 
 Prj.conf specifies the software dependencies that we will need, often providing the correct .c and .h files for 
+
 
 
