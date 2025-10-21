@@ -1,6 +1,6 @@
 / {
     aliases {
-		my-spi = &spi2;
+		myspi = &spi2;
 	};
 };
 
@@ -22,11 +22,11 @@
     // TRUE CUSTOM SETTINGS
     cs-gpios = <&gpio0 10 GPIO_ACTIVE_LOW>;
 
-    pi: pi@0 {
+    esp32: esp32@0 {
         compatible = "vnd,spi-device";
         reg = <0>;
         spi-max-frequency = <1600000>;
-        label = "pi";
+        label = "esp32";
     };
 };
 
