@@ -29,6 +29,7 @@ received word 3: 3
 ## Useful Resources
 1. https://docs.zephyrproject.org/latest/build/dts/troubleshooting.html
 2. https://blog.golioth.io/how-to-use-generic-spi-devices-with-zephyr/
+3. https://docs.zephyrproject.org/latest/doxygen/html/group__spi__interface.html
 
 ## Step 1: Gathering Reference Files
 
@@ -68,8 +69,28 @@ spi2: spi@60024000 {
 ### test_node/zephyr/boards/espressif/esp32s3_devkitc/esp32s3_devkitc-pinctrl.dtsi
 
 1. This is the pinctrl for our board. It provides the physical wiring, including the default pinmux group `spim2_default` that we saw was used in `esp32s3_devkitc_procpu.dts`
+2. This is where we can find `spim2_default`: 
+```dts
+spim2_default: spim2_default {
+	group1 {
+		pinmux = <SPIM2_MISO_GPIO13>,
+			 <SPIM2_SCLK_GPIO12>,
+			 <SPIM2_CSEL_GPIO10>;
+	};
 
+	group2 {
+		pinmux = <SPIM2_MOSI_GPIO11>;
+		output-low;
+	};
+};
+```
+3. We can always change it to remap to the GPIOs we want. However, for sipmlicity, we will stick to this. 
+4. The reason why SPIM2_MOSI_GPIO11 is in a different group is becasue we specify a setting that sets it apart from the other 3 GPIOs: `output-low`. Grouping is just a way to group pins with the same settings together.
 
+### test_node/zephyr/dts/bindings/spi/espressif,esp32-spi.yaml
 
+1. This is the "interface" file with the expected properties of a SPI controller on the ESP32.
 
+### test_node/zephyr/dts/bindings/test/vnd,spi-device.yaml
 
+1. This is the "interface" file with the expected properties of a device living on the SPI controller. Not to be confused with the spi controller itself! 
