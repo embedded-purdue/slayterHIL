@@ -165,11 +165,32 @@ Defining macros for constants is good code practice, so we don't have magic numb
 #define SPI_DEVICE_NAME esp32
 ```
 
+### Getting our SPI device structure
 
+Looking at the documentation in the API, a lot of functions require information of type `struct spi_dt_spec`. Specifically, the transceive/read/write functions we want to use need this. We will thus get our device from the device tree: 
+- be careful what you pass into the first parameter. We need to pass in the spi DEVICE, not the spi controller. This is because `SPI_DT_SPEC_GET` has a sub-macro which uses the device, which it expects to be a bus, in order to get the remaining properties from the parent controller.
+- operation_flags is after this.
 
+```c
+static const struct spi_dt_spec spi_device = SPI_DT_SPEC_GET(
+    DT_NODELABEL(SPI_DEVICE_NAME),
+    operation_flags,
+    DELAY);
+```
+Operation flags is an expected parameter of us. It defines the properties of our spi controller, which will reflect in our device driver. Are we currently in `MASTER` mode while communicating to this device? What is our word length? Are we transferring the most significant or least significant bits first? We will define this later.
+- `SPI_OP_MODE_MASTER`: our controller is a manager, not a suboordinate. 
+- `SPI_TRANSFER_MSB`: most significant bit first. To learn more, review the SPI protocol and how bits are transferred.
+- `SPI_WORD_SET(8)`: The expected length of each word we will send/receive is 8 bits. 
 
+```c
+static const spi_operation_t operation_flags = (
+    SPI_OP_MODE_MASTER |
+    SPI_TRANSFER_MSB |
+    SPI_WORD_SET(8));
+```
 
 ### Editing our prj.conf
 
 Prj.conf specifies the software dependencies that we will need, often providing the correct .c and .h files for 
+
 
