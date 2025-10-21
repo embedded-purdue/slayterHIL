@@ -5,20 +5,14 @@
 };
 
 &spi2 {
-    // SAME SETTINGS AS DEFAULT OVERLAY; JUST HERE FOR CLARITY
-    #address-cells = <1>;
-    #size-cells = <0>;
-    status = "okay";
-	// default configuration inherited by device tree
-    // MISO: 13; SCLK: 12; CSEL: 10; MOSI: 11, OUTPUT LOW ON START
+	compatible = "espressif,esp32-spi";
 
+	// already defind for me
+	status = "okay";
     pinctrl-0 = <&spim2_default>;
     pinctrl-names = "default";
 
-    // CUSTOM SETTINGS (except these seem to get built by zephyr too)
-    compatible = "espressif,esp32-spi";
-
-    // TRUE CUSTOM SETTINGS
+	// custom settings
     cs-gpios = <&gpio0 10 GPIO_ACTIVE_LOW>;
 
     esp32: esp32@0 {
