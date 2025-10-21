@@ -94,3 +94,29 @@ spim2_default: spim2_default {
 ### test_node/zephyr/dts/bindings/test/vnd,spi-device.yaml
 
 1. This is the "interface" file with the expected properties of a device living on the SPI controller. Not to be confused with the spi controller itself! 
+2. It's generic, not built for the esp32 specifically, but it works.
+
+## Step 2: Creating our own DTS overlay file.
+Controllers such as SPI expect a 'bus' device to use. So we will have the main SPI controller node, and the device sub-node.
+
+### Specify and define the SPI controller node.
+
+We want to edit the default overlay for spi2. Thus, we will reference it with `&`.
+
+```dts
+&spi2 {
+   ...
+};
+```
+
+We will declare it as compatible with the `espressif,esp32-spi` interface, which will enforce the set of rules in `espressif,esp32-spi` onto this node. We will also define `cs-gpios`, which doesn't have a provided default.
+- `cs-gpios` is an array of GPIOs to specify all the chip-select devices that this SPI controller feeds into; for each chipselect, you may have another device reading from the manager (the ESP32). 
+- we only have 1 device that needs to read, so we will have an array of just 1. 
+
+```dts
+&spi2 {
+	compatible = "espressif,esp32-spi";
+    cs-gpios = <&gpio0 10 GPIO_ACTIVE_LOW>;
+};
+```
+
