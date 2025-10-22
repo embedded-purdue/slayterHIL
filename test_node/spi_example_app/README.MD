@@ -31,10 +31,25 @@ received word 3: 3
 2. https://blog.golioth.io/how-to-use-generic-spi-devices-with-zephyr/
 3. https://docs.zephyrproject.org/latest/doxygen/html/group__spi__interface.html
 4. https://docs.zephyrproject.org/latest/build/dts/bindings.html
+5. Scroll to the end of this readme for debugging tips.
 
-## Step 0: What do we need to look at?
+## Step 0: Where do we start? 
 
+### The esp32 DeviceTree files
 
+These are Zephyr's pre-defined device tree layouts for the ESP32. See Step 1 for the specific files. 
+- Looking at these will help us understand whether the drivers we are looking for exist
+- We also will get an idea of what we need to manipulate in our own overlay file to use the provided nodes and controllers. 
+
+### The binding files
+
+A DTS binding file is a `.yaml` file which declares the requirements on the contents of a node. If you're familiar with OOP, you can think of it as an interface, or a 'contract' that a specific node has to follow.
+- For example, a DTS binding file may assert that a node must have a `clock` property. 
+- If we don't include `clock`, Zephyr will throw an error upon compile-time.
+
+How do we tie nodes to binding files? 
+- the `compatible` property, which we will see later, takes in a string parameter of a binding file name. 
+- declaring a node as `compatible=mybindingfile.yaml` will lead zephyr to enforce the properties of `mybindingfile.yaml` when we compile.  
 
 ## Step 1: Gathering Reference Files
 
@@ -94,11 +109,27 @@ spim2_default: spim2_default {
 
 ### test_node/zephyr/dts/bindings/spi/espressif,esp32-spi.yaml
 
-1. This is the "interface" file with the expected properties of a SPI controller on the ESP32.
+1. This is the binding file with the expected properties of a SPI controller on the ESP32.
+```yaml
+...
+include: [spi-controller.yaml, pinctrl-device.yaml]
+
+properties:
+...
+  pinctrl-0:
+    required: true
+...
+  half-duplex:
+    type: boolean
+...
+```
+2. See `include`. This works similar to `#include` in C. `espressif,esp32-spi.yaml` inherits the properties of `spi-controller.yaml` and `pinctrl-device.yaml`. Sometimes, it may be useful to go down this include trail while debugging.  
+3. See `pinctrl-0: required: true`. This means `pinctrl-0` is a required property in any devicetree node that is compatible to this dts file. However, we may not always need to define these properties in our original overlay files if they're already specified in zephyr's default devicetree overlays, which we saw above. 
+4. See `half-duplex`, and notice that it doesn't have a `required:true`. This means that `half-duplex` is a property we can declare, but we don't always need it.
 
 ### test_node/zephyr/dts/bindings/test/vnd,spi-device.yaml
 
-1. This is the "interface" file with the expected properties of a device living on the SPI controller. Not to be confused with the spi controller itself! 
+1. This is binding file with the expected properties of a device living on the SPI controller. Not to be confused with the spi controller itself! 
 2. It's generic, not built for the esp32 specifically, but it works.
 
 ## Step 2: Creating our own DTS overlay file.
@@ -259,3 +290,20 @@ This is the final devicetree that gets built. Zephyr merges all the overlay file
 3. If so, is your node enabled with `status="okay"`? 
 4. If your nodes still are throwing errors at this point when you're attempting to use DTC fetching functions, it may be that you're trying to use an API call wrong. 
 5. If your nodes work fine with your DTC fetching functiond in your `.c` file but fail when you attempt an API call, see if all the `proj.conf` settings you need are enabled. This indicates a linking issue. 
+
+### simplifying your output
+
+Passing the `-DCONFIG_COMPILER_TRACK_MACRO_EXPANSION=n` arg to your west command or justfile will stop the error trail down macro expansions, which simplifies your output to the error sources. For example: 
+
+```bash
+build-esp32-spi-test: _verify_workspace clean
+  west build \
+    -p always \
+    -b "{{ESP_BOARD}}" \
+    -d build \
+    app \
+    {{CMAKE_CACHE_ARGS}} \
+    -DEXTRA_DTC_OVERLAY_FILE="{{justfile_directory()}}/app/boards/myspi.overlay" \
+    -DCONFIG_COMPILER_TRACK_MACRO_EXPANSION=n
+```
+
