@@ -30,6 +30,11 @@ received word 3: 3
 1. https://docs.zephyrproject.org/latest/build/dts/troubleshooting.html
 2. https://blog.golioth.io/how-to-use-generic-spi-devices-with-zephyr/
 3. https://docs.zephyrproject.org/latest/doxygen/html/group__spi__interface.html
+4. https://docs.zephyrproject.org/latest/build/dts/bindings.html
+
+## Step 0: What do we need to look at?
+
+
 
 ## Step 1: Gathering Reference Files
 
@@ -228,7 +233,7 @@ Prj.conf specifies the software dependencies that we will need, often providing 
 CONFIG_ESP32_SPIM=y
 ```
 1. See test_node/zephyr/drivers/spi/CMakeLists.txt. This is where our driver code is defined
-2. There exists `spi_esp32_spim.c`. Looking at the top of the c file, there is `#define DT_DRV_COMPAT espressif_esp32_spi`, which is related to when we declared our SPI controller as `compatible = "espressif,esp32-spi"`. 
+2. There exists `spi_esp32_spim.c`. Looking at the top of the c file, there is `#define DT_DRV_COMPAT espressif_esp32_spi`. This tells Zephyr to associate the driver with any devicetree node whos `compatible` property is `espressif,esp32-spi`. We set this earlier in `&spi2` with `compatible = "espressif,esp32-spi"`.
 3. However, notice in the CMAKE file, `spi_esp32_spim.c` is only defined if `CONFIG_ESP32_SPIM` is defined.
 4. Therefore, in our prj.conf, we will add `CONFIG_ESP32_SPIM=y`.
 
@@ -240,6 +245,17 @@ CONFIG_SPI=y
 
 We are done!
 
+## Debugging Tips for DeviceTree 
 
+1. When you run `build-esp-32...`, zephyr outputs the project build into `test_node/build`. 
+2. This is useful because we can see how our devicetree has been built, and see why nodes aren't getting found, if that's our issue. 
 
+### build/zephyr/zephyr.dts
 
+This is the final devicetree that gets built. Zephyr merges all the overlay files and provides annotations on which overlay file is responsible for each node's properties.
+
+1. Are your changes visible in this device tree?
+2. If not, then something about your device tree overlay is wrong. Maybe it isn't getting pulled in; in this case, check the justfile or your west build command to make sure you're passing in your overlay file right. 
+3. If so, is your node enabled with `status="okay"`? 
+4. If your nodes still are throwing errors at this point when you're attempting to use DTC fetching functions, it may be that you're trying to use an API call wrong. 
+5. If your nodes work fine with your DTC fetching functiond in your `.c` file but fail when you attempt an API call, see if all the `proj.conf` settings you need are enabled. This indicates a linking issue. 
