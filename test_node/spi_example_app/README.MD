@@ -52,7 +52,7 @@ spi2: spi@60024000 {
 ### test_node/zephyr/boards/espressif/esp32s3_devkitc/esp32s3_devkitc_procpu.dts
 
 1. This is where all the available, pre-defined controllers are created for us. This is board-level, not just SoC level, like `esp32s3_common.dtsi`
-2. See &spi2. This is referencing the spi2 node defined. It's &spi2, because it's referencing the already-created node of the spi hardware module in `esp32s3_common.dtsi`. 
+2. See `&spi2`. The `&` (it's easiest to think of this like a C reference) is used since teh `spi2` node is already defined in `esp32s3_common.dtsi`.
 ```dts
 &spi2 {
 	#address-cells = <1>;
@@ -124,7 +124,7 @@ We will declare it as compatible with the `espressif,esp32-spi` interface, which
 
 For our spi master controller, we also expect a device to output to (our suboordinate). This defines the existence of that device.
 - we declare it as compatible to the `vnd,spi-device,` which will enforce the set of rules in `vnd,spi-device` onto this node.
-- The name `esp32` does not matter. We are simply naming it esp32 because we will feed our output at MOSI back into MISO for testing purposes. If we were talking to a raspberry pi, for example, we'd probably label it as `pi`.
+- The node label `esp32` does not matter; this is like a variable name. We are simply naming it esp32 because we will feed our output at MOSI back into MISO for testing purposes. We could name it `pi`, `mydevice`, etc. and it would behave exactly the same. 
 - `reg = <0>` connects it to the CS at index 0 in `cs-gpios`. 
 
 ```dts
@@ -231,7 +231,8 @@ CONFIG_ESP32_SPIM=y
 CONFIG_SPI=y
 ```
 1. How to deduce this? Who knows. It was provided by a tutorial linked in the useful resources section.
-2. However, if we don't define this, `esp32` will never be registered upon link-time as a valid spi device. Zephyr will search for `esp32`, but never find it. 
+2. However, if we don't define this, `esp32` will never be registered upon link-time as a valid spi device. Zephyr will search for `esp32`, but never find it. This is because the spi subsystem doesn't get linked into the final binary. 
 
 We are done!
+
 
