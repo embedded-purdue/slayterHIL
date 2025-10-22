@@ -71,7 +71,7 @@ spi2: spi@60024000 {
 
 ### test_node/zephyr/boards/espressif/esp32s3_devkitc/esp32s3_devkitc_procpu.dts
 
-1. This is where all the available, pre-defined controllers are created for us. This is board-level, not just SoC level, like `esp32s3_common.dtsi`
+1. This is where all the available, pre-defined controllers are created for us. This is board-level, not just SoC level, like `esp32s3_common.dtsi`. Therefore, it is specialized to our board and may have more advanced properties than in the base SoC device tree. 
 2. See `&spi2`. The `&` (it's easiest to think of this like a C reference) is used since the `spi2` node is already defined in `esp32s3_common.dtsi`.
 ```dts
 &spi2 {
@@ -306,4 +306,5 @@ build-esp32-spi-test: _verify_workspace clean
     -DEXTRA_DTC_OVERLAY_FILE="{{justfile_directory()}}/app/boards/myspi.overlay" \
     -DCONFIG_COMPILER_TRACK_MACRO_EXPANSION=n
 ```
+
 
