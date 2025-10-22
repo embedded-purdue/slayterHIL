@@ -4,10 +4,10 @@
 To build, execute
 `build-esp32-spi-example`
 
-To run,execute 
+To run, execute 
 `run-esp32-spi-example`
 
-On your board, connect GPIO11 AND GPIO13. This will connect MOSI to MISO, and emulate receiving messages from the suboordinate. We are essentially printing out on MOSI and re-reading that output back in through MISO.
+On your board, connect GPIO11 AND GPIO13. This will connect MOSI to MISO, and emulate receiving messages from the subordinate. We are essentially printing out on MOSI and re-reading that output back in through MISO.
 
 ## Expected results
 In src/spi_example.c, we see a 4-byte buffer called write_buf. We will populate this with 0, 1, 2, and 3.
@@ -15,27 +15,27 @@ In src/spi_example.c, we see a 4-byte buffer called write_buf. We will populate 
 for (int i = 0; i < LEN_TRANSCEIVE; i++) write_buf[i] = i;
 ```
 
-Then, we print out read_buf. If the application is working correcty, we should read back 0, 1, 2, and 3. 
+Then, we print out read_buf. If the application is working correctly, we should read back 0, 1, 2, and 3. 
 Remember to press the RESET button to run the program.
 ```bash
 *** Booting Zephyr OS build v4.2.0-6442-gbbfd206a47ee ***
-received word 0: 0
-received word 1: 1
-received word 2: 2
-received word 3: 3
+Received word 0: 0
+Received word 1: 1
+Received word 2: 2
+Received word 3: 3
 ```
 
 # How was the device tree node constructed?
 ## Useful Resources
-1. https://docs.zephyrproject.org/latest/build/dts/troubleshooting.html
-2. https://blog.golioth.io/how-to-use-generic-spi-devices-with-zephyr/
-3. https://docs.zephyrproject.org/latest/doxygen/html/group__spi__interface.html
-4. https://docs.zephyrproject.org/latest/build/dts/bindings.html
+1. Troubleshooting Tips: https://docs.zephyrproject.org/latest/build/dts/troubleshooting.html
+2. SPI Tutorial (used as reference to create this): https://blog.golioth.io/how-to-use-generic-spi-devices-with-zephyr/
+3. SPI API: https://docs.zephyrproject.org/latest/doxygen/html/group__spi__interface.html
+4. DTS Bindings: https://docs.zephyrproject.org/latest/build/dts/bindings.html
 5. Scroll to the end of this readme for debugging tips.
 
 ## Step 0: Where do we start? 
 
-### The esp32 DeviceTree files
+### The ESP32 DeviceTree files
 
 These are Zephyr's pre-defined device tree layouts for the ESP32. See Step 1 for the specific files. 
 - Looking at these will help us understand whether the drivers we are looking for exist
@@ -104,8 +104,8 @@ spim2_default: spim2_default {
 	};
 };
 ```
-3. We can always change it to remap to the GPIOs we want. However, for sipmlicity, we will stick to this. 
-4. The reason why SPIM2_MOSI_GPIO11 is in a different group is becasue we specify a setting that sets it apart from the other 3 GPIOs: `output-low`. Grouping is just a way to group pins with the same settings together.
+3. We can always change it to remap to the GPIOs we want. However, for simplicity, we will stick to this. 
+4. The reason why SPIM2_MOSI_GPIO11 is in a different group is because we specify a setting that sets it apart from the other 3 GPIOs: `output-low`. Grouping is just a way to group pins with the same settings together.
 
 ### test_node/zephyr/dts/bindings/spi/espressif,esp32-spi.yaml
 
@@ -123,7 +123,7 @@ properties:
     type: boolean
 ...
 ```
-2. See `include`. This works similar to `#include` in C. `espressif,esp32-spi.yaml` inherits the properties of `spi-controller.yaml` and `pinctrl-device.yaml`. Sometimes, it may be useful to go down this include trail while debugging.  
+2. See `include`. This works similarly to `#include` in C. `espressif,esp32-spi.yaml` inherits the properties of `spi-controller.yaml` and `pinctrl-device.yaml`. Sometimes, it may be useful to go down this include trail while debugging.  
 3. See `pinctrl-0: required: true`. This means `pinctrl-0` is a required property in any devicetree node that is compatible to this dts file. However, we may not always need to define these properties in our original overlay files if they're already specified in zephyr's default devicetree overlays, which we saw above. 
 4. See `half-duplex`, and notice that it doesn't have a `required:true`. This means that `half-duplex` is a property we can declare, but we don't always need it.
 
@@ -158,7 +158,7 @@ We will declare it as compatible with the `espressif,esp32-spi` interface, which
 
 ### Specify the devices living at each ChipSelect.
 
-For our spi master controller, we also expect a device to output to (our suboordinate). This defines the existence of that device.
+For our spi master controller, we also expect a device to output to (our subordinate). This defines the existence of that device.
 - we declare it as compatible to the `vnd,spi-device,` which will enforce the set of rules in `vnd,spi-device` onto this node.
 - The node label `esp32` does not matter; this is like a variable name. We are simply naming it esp32 because we will feed our output at MOSI back into MISO for testing purposes. We could name it `pi`, `mydevice`, etc. and it would behave exactly the same. 
 - `reg = <0>` connects it to the CS at index 0 in `cs-gpios`. 
@@ -179,16 +179,11 @@ For our spi master controller, we also expect a device to output to (our suboord
 
 ## Step 3: Creating our C program.
 
-API details are at https://docs.zephyrproject.org/latest/doxygen/html/group__spi__interface.html. As long as we can pass our SPI device and/or controller into the functions we want, we will be able to use this API to perform pre-defined SPI drivr functions.  
+API details are at https://docs.zephyrproject.org/latest/doxygen/html/group__spi__interface.html. As long as we can pass our SPI device and/or controller into the functions we want, we will be able to use this API to perform pre-defined SPI driver functions.  
 
 ### Includes and Defines
 
-The zephyr-pro
-
-
-
-
-vided APIs we need to write our application.
+The zephyr-provided APIs we need to write our application.
 - `spi.h` defines all the SPI driver function calls that we can make, as specified in the SPI api. 
 - `devicetree.h` defines all of Zephyr's devicetree functions, such as getting the node from a label, and more.
 ```
@@ -219,7 +214,7 @@ static const struct spi_dt_spec spi_device = SPI_DT_SPEC_GET(
     DELAY);
 ```
 Operation flags is an expected parameter of us. It defines the properties of our spi controller, which will reflect in our device driver. Are we currently in `MASTER` mode while communicating to this device? What is our word length? Are we transferring the most significant or least significant bits first?
-- `SPI_OP_MODE_MASTER`: our controller is a manager, not a suboordinate. 
+- `SPI_OP_MODE_MASTER`: our controller is a manager, not a subordinate. 
 - `SPI_TRANSFER_MSB`: most significant bit first. To learn more, review the SPI protocol and how bits are transferred.
 - `SPI_WORD_SET(8)`: The expected length of each word we will send/receive is 8 bits. 
 
@@ -230,7 +225,7 @@ static const spi_operation_t operation_flags = (
     SPI_WORD_SET(8));
 ```
 
-### creating our read and write buffers
+### Creating our read and write buffers
 
 To read/write/transceive, we need a place to read from or feed to. The SPI api expects pointers to buffers of type `spi_buf_set`, so we will create these. We will do the following for both our rx buffer and our tx buffer. 
 - I want to read and write messages of `LEN_TRANSCEIVE`, so we will create buffers of that length. These are the buffers we will be interacting with in order to feed or read the SPI data. 
@@ -264,7 +259,7 @@ Prj.conf specifies the software dependencies that we will need, often providing 
 CONFIG_ESP32_SPIM=y
 ```
 1. See test_node/zephyr/drivers/spi/CMakeLists.txt. This is where our driver code is defined
-2. There exists `spi_esp32_spim.c`. Looking at the top of the c file, there is `#define DT_DRV_COMPAT espressif_esp32_spi`. This tells Zephyr to associate the driver with any devicetree node whos `compatible` property is `espressif,esp32-spi`. We set this earlier in `&spi2` with `compatible = "espressif,esp32-spi"`.
+2. There exists `spi_esp32_spim.c`. Looking at the top of the c file, there is `#define DT_DRV_COMPAT espressif_esp32_spi`. This tells Zephyr to associate the driver with any devicetree node whose `compatible` property is `espressif,esp32-spi`. We set this earlier in `&spi2` with `compatible = "espressif,esp32-spi"`.
 3. However, notice in the CMAKE file, `spi_esp32_spim.c` is only defined if `CONFIG_ESP32_SPIM` is defined.
 4. Therefore, in our prj.conf, we will add `CONFIG_ESP32_SPIM=y`.
 
@@ -289,7 +284,7 @@ This is the final devicetree that gets built. Zephyr merges all the overlay file
 2. If not, then something about your device tree overlay is wrong. Maybe it isn't getting pulled in; in this case, check the justfile or your west build command to make sure you're passing in your overlay file right. 
 3. If so, is your node enabled with `status="okay"`? 
 4. If your nodes still are throwing errors at this point when you're attempting to use DTC fetching functions, it may be that you're trying to use an API call wrong. 
-5. If your nodes work fine with your DTC fetching functiond in your `.c` file but fail when you attempt an API call, see if all the `proj.conf` settings you need are enabled. This indicates a linking issue. 
+5. If your nodes work fine with your DTC fetching functions in your `.c` file but fail when you attempt an API call, see if all the `proj.conf` settings you need are enabled. This indicates a linking issue. 
 
 ### simplifying your output
 
@@ -307,5 +302,8 @@ build-esp32-spi-test: _verify_workspace clean
     -DCONFIG_COMPILER_TRACK_MACRO_EXPANSION=n
 ```
 
+### More on tracing an error
+
+https://docs.zephyrproject.org/latest/build/dts/troubleshooting.html
 
 
