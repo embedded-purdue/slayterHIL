@@ -52,7 +52,7 @@ spi2: spi@60024000 {
 ### test_node/zephyr/boards/espressif/esp32s3_devkitc/esp32s3_devkitc_procpu.dts
 
 1. This is where all the available, pre-defined controllers are created for us. This is board-level, not just SoC level, like `esp32s3_common.dtsi`
-2. See `&spi2`. The `&` (it's easiest to think of this like a C reference) is used since teh `spi2` node is already defined in `esp32s3_common.dtsi`.
+2. See `&spi2`. The `&` (it's easiest to think of this like a C reference) is used since the `spi2` node is already defined in `esp32s3_common.dtsi`.
 ```dts
 &spi2 {
 	#address-cells = <1>;
@@ -147,7 +147,12 @@ API details are at https://docs.zephyrproject.org/latest/doxygen/html/group__spi
 
 ### Includes and Defines
 
-The zephyr-provided APIs we need to write our application.
+The zephyr-pro
+
+
+
+
+vided APIs we need to write our application.
 - `spi.h` defines all the SPI driver function calls that we can make, as specified in the SPI api. 
 - `devicetree.h` defines all of Zephyr's devicetree functions, such as getting the node from a label, and more.
 ```
@@ -234,6 +239,7 @@ CONFIG_SPI=y
 2. However, if we don't define this, `esp32` will never be registered upon link-time as a valid spi device. Zephyr will search for `esp32`, but never find it. This is because the spi subsystem doesn't get linked into the final binary. 
 
 We are done!
+
 
 
 
