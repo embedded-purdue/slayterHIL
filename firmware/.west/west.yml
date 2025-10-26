@@ -27,7 +27,7 @@ manifest:
   projects:
     - name: zephyr
       remote: upstream
-      revision: 02f180c052f7ab1eb39c9156bc7a005160147c34
+      revision: 5d4a116c44412e5ba15f9c56d2dc465746d7d3b0
       path: zephyr
       import: false
       import:
