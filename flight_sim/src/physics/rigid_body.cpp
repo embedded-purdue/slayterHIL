@@ -44,6 +44,10 @@ Eigen::Vector3d RigidBody::getPosition () const {
 	return position; 
 }
 
+Eigen::Vector3d RigidBody::getVelocity() const {
+	return velocity; 
+}
+
 void RigidBody::clearAccumulators() {
     total_force.setZero();
     total_torque_body.setZero();

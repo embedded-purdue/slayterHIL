@@ -60,6 +60,14 @@ Drone::Drone (
 }
 
 // Helpers
+void Drone::applyForce(const Eigen::Vector3d& force) {
+	this->body->applyForce(force);
+	this->m1->applyForce(force);
+	this->m2->applyForce(force);
+	this->m3->applyForce(force);
+	this->m4->applyForce(force); //TODO: make constraints later so they stay same distance apart
+}
+
 
 double Drone::calculateMass() {
     return this->body->getMass() + 
@@ -70,9 +78,12 @@ double Drone::calculateMass() {
 }
 
 Eigen::Vector3d Drone::getPosition() const {
-    return body->getPosition();
+    return this->body->getPosition();
 }
 
+Eigen::Vector3d Drone::getVelocity() const {
+	return this->body->getVelocity(); 
+}
 
 // Faith in Eigen's Vector Addition
 Eigen::Vector3d Drone::calculateNetForce() {
@@ -104,8 +115,13 @@ Eigen::Vector3d Drone::calculateAngularVelocity() {
 
 void Drone::update(double dt) {
     
-    // Calls parents update method
-    RigidBody::update(dt);
+    // Calls parents update method this calls it on Drone class itself, which deosn't affect the actual rigidbodies inside drone
+    //RigidBody::update(dt);
+	body->update(dt);
+	m1->update(dt);
+	m2->update(dt);
+	m3->update(dt);
+	m4->update(dt);
 
     // Drone updates
 

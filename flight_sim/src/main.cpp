@@ -29,15 +29,16 @@ int main() {
 	using clock = std::chrono::high_resolution_clock;
 	using duration = std::chrono::duration<double>;
 	
-    // Is the time update necessarily in terms of a minute? Or does it work this way with chrono?
+    // Is the time update necessarily in terms of a minute? Or does it work this way with chrono? its in seconds.
 	const double DELTATIME = 1.0/60.0; 
 	const double SIM_TIME = 10.0;
 	double elapsedTime = 0.0;
 	auto previousTime = std::chrono::high_resolution_clock::now(); 
 
-	PIDcalculator* control = new PIDcalculator (1, 0.1, 0.1);
+	PIDcalculator* control = new PIDcalculator (0.1, 0, 0.05);
 	Eigen::Vector3d Target(10.0, 10.0, 15.0);
 	control -> setTarget (Target);
+	std::cout << control -> getTarget() << std::endl << drone->getPosition();
     // Commented out thread for now
     // ( was creating a "terminate called without an active exception error" )
 
@@ -61,13 +62,9 @@ int main() {
 			drone->applyForce(force);
 			drone->update(DELTATIME);
 			
-			std::cout << "pos: (" << drone->position.x() << ", "
-					      << drone->position.y() << ", "
-					      << drone->position.z() << ")";
+			std::cout << "pos: (" << drone->getPosition().transpose() << ")";
 
-			std::cout << "\tvel: (" << drone->velocity.x() << ", "
-					       << drone->velocity.y() << ", "
-					       << drone->velocity.z() << ")";
+			std::cout << "\tvel: (" << drone->getVelocity().transpose() << ")";
 
 			std::cout << "\tori: [" << drone->orientation.coeffs().transpose() << "]";
 

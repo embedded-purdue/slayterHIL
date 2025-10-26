@@ -23,6 +23,7 @@ public:
     );
 
 	Eigen::Vector3d getPosition() const;
+	Eigen::Vector3d getVelocity() const; 
     // Destructor
     ~Drone() {
         delete body;
@@ -39,8 +40,10 @@ public:
     
     // *Velocity and acceleration are also separate because of internal net forces and whatnot
 
-    void update(double dt);
+    void update(double dt) override;
 
+	
+    void applyForce(const Eigen::Vector3d& force) override;
 private:
     
     // Main drone body
@@ -57,5 +60,4 @@ private:
     Eigen::Vector3d calculateNetForce();
     Eigen::Vector3d calculateNetTorque();
     Eigen::Vector3d calculateAngularVelocity();
-
 };
