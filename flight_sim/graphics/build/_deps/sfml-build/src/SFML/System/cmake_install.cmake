@@ -46,10 +46,6 @@ if(CMAKE_INSTALL_COMPONENT STREQUAL "devel" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE STATIC_LIBRARY FILES "/home/matt/Programming/slayterHIL/flight_sim/graphics/build/_deps/sfml-build/lib/libsfml-system.a")
 endif()
 
-if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/matt/Programming/slayterHIL/flight_sim/graphics/build/_deps/sfml-build/src/SFML/System/tools/pkg-config/sfml-system.pc")
-endif()
-
 if(CMAKE_INSTALL_COMPONENT STREQUAL "devel" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/cmake/SFML" TYPE FILE FILES "/home/matt/Programming/slayterHIL/flight_sim/graphics/build/_deps/sfml-build/src/SFML/System/SFMLSystemDependencies.cmake")
 endif()
