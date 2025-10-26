@@ -5,6 +5,7 @@
 #include <vector>
 #include <utility>
 
+// Basic mesh object - collection of points and indices of points to define edges
 struct Mesh {
     std::vector<sf::Vector3f> vertices;
     std::vector<std::pair<int, int>> indices;
@@ -16,6 +17,7 @@ struct Mesh {
         : vertices(verts), indices(inds) {}
 };
 
+// Camera - 5 dof - no roll (for obvious reasons)
 struct Camera {
   sf::Vector3f rotation;
   sf::Vector3f position;
@@ -24,8 +26,10 @@ struct Camera {
 };
 typedef struct Camera Camera;
 
+// typedef so i don't have to write std::vector<sf::Vector3f> everywhere
 typedef std::vector<sf::Vector3f> mat;
 
+// transforms 3d vector using 3x3 matrix
 sf::Vector3f transformMV(mat matrix, sf::Vector3f vector) {
   return (sf::Vector3f){ matrix[0].x * vector.x + matrix[0].y * vector.y + matrix[0].z * vector.z,
                          matrix[1].x * vector.x + matrix[1].y * vector.y + matrix[1].z * vector.z,
@@ -33,6 +37,7 @@ sf::Vector3f transformMV(mat matrix, sf::Vector3f vector) {
   };
 }
 
+// convert 3d point to 2d point in camera view
 sf::Vector2f projectPoint(const sf::Vector3f& point, Camera cam) {
   sf::Vector3f newPoint = point;
 
@@ -63,10 +68,12 @@ sf::Vector2f projectPoint(const sf::Vector3f& point, Camera cam) {
   return {newPoint.x, newPoint.y};
 }
 
+// put points relative to center of screen
 sf::Vector2f centerPoint(sf::Vector2f point, sf::RenderWindow &window) {
   return {point.x + window.getSize().x / 2, point.y + window.getSize().y / 2};
 }
 
+// draws the points as a red dot
 void drawPoint(sf::Vector2f pos, sf::RenderWindow &window) {
   float radius = 5;
   sf::CircleShape point(radius);
@@ -76,6 +83,7 @@ void drawPoint(sf::Vector2f pos, sf::RenderWindow &window) {
   window.draw(point);
 }
 
+// draws a one-pixel wide black line between two points
 void drawLine(sf::Vector2f p1, sf::Vector2f p2, sf::RenderWindow &window) {
   sf::VertexArray line(sf::PrimitiveType::Lines, 2);
   line[0].position = {p1.x + window.getSize().x/2, p1.y + window.getSize().y/2};
@@ -83,10 +91,11 @@ void drawLine(sf::Vector2f p1, sf::Vector2f p2, sf::RenderWindow &window) {
   window.draw(line);
 }
 
+// abstraction for drawing text on the screen
 sf::Font font("roboto_mono.ttf");
-void drawTextAtPoint(sf::String string, sf::Vector2f point, float scale, sf::RenderWindow &window) {
+void drawText(sf::String string, sf::Vector2f point, int size, sf::RenderWindow &window) {
   sf::Text text(font, string);
-  text.setCharacterSize(12 * scale);
+  text.setCharacterSize(size);
   text.setPosition(point);
   text.setFillColor(sf::Color(0x000000ff));
   window.draw(text);
@@ -105,12 +114,9 @@ void renderMesh(Mesh &mesh, sf::RenderWindow &window, Camera cam) {
     newPoint = centerPoint(newPoint, window);
     drawPoint(newPoint, window);
 
-    // drawTextAtPoint("point", newPoint, cam.zoom, window);
-
-    drawTextAtPoint("(" + std::to_string((int)mesh.vertices[i].x) + ", "
-                    + std::to_string((int)mesh.vertices[i].y) + ", "
-                    + std::to_string((int)mesh.vertices[i].z) + ")",
-                    newPoint, cam.zoom, window);
+    drawText("(" + std::to_string((int)mesh.vertices[i].x) + ", "
+                 + std::to_string((int)mesh.vertices[i].y) + ", "
+                 + std::to_string((int)mesh.vertices[i].z) + ")",
+                 newPoint, 12 * cam.zoom, window);
   }
 }
-
