@@ -74,12 +74,7 @@ static struct sensor_trigger trigger;
 static void handle_mpu6050_drdy(const struct device *dev,
 				const struct sensor_trigger *trig)
 {
-    static int last_ms; 
-    int now = k_uptime_get_32();
-    if(now - last_ms < 500) { 
-        return; 
-    }
-    last_ms = now; 
+   
 	int rc = process_mpu6050(dev);
 
 	if (rc != 0) {
@@ -87,6 +82,7 @@ static void handle_mpu6050_drdy(const struct device *dev,
 		(void)sensor_trigger_set(dev, trig, NULL);
 		return;
 	}
+	return rc; 
 }
 
 
@@ -99,14 +95,48 @@ int main(void)
 		printf("Device %s is not ready\n", mpu6050->name);
 		return 0;
 	}
+	struct sensor_value slope_treshhold= { 
+        .val1 = 0.3, 
+        .val2 = 0
+    };
+    // int rc = sensor_attr_set(mpu6050, SENSOR_CHAN_ALL,
+	// 						 SENSOR_ATTR_SAMPLING_FREQUENCY,
+	// 						 &slope_treshhold);
+	// printf("sensor_attr_set(SENSOR_CHAN_ALL) = %d\n", rc);
+    // if (rc < 0) {
+    //     printf("sensor_attr_set(SENSOR_CHAN_ALL) failed: %d\n", rc);
 
 
+    //     rc = sensor_attr_set(mpu6050, SENSOR_CHAN_ACCEL_XYZ,
+    //                          SENSOR_ATTR_SLOPE_TH,
+    //                          &slope_treshhold);
+	// 	rc = sensor_attr_set(mpu6050, SENSOR_CHAN_ACCEL_XYZ,
+    //                          SENSOR_ATTR_SLOPE_DUR,
+    //                          &slope_treshhold);
+    //     printf("sensor_attr_set(SENSOR_CHAN_ACCEL_XYZ) = %d\n", rc);
 
+    //     // rc = sensor_attr_set(mpu6050, SENSOR_CHAN_GYRO_XYZ,
+    //     //                      SENSOR_ATTR_SAMPLING_FREQUENCY,
+    //     //                      &slope_treshhold);
+    //     // printf("sensor_attr_set(SENSOR_CHAN_GYRO_XYZ) = %d\n", rc);
+
+
+    //     if (rc < 0) {
+    //         printf("Failed to set sampling frequency (driver may not support it)\n");
+    //         return 0;
+    //     }
+    // }
+	// if(rc<0){
+	// 	printf("Failed to set sampling frequency\n");
+	// 	return 0;
+	// }
 
 	trigger = (struct sensor_trigger) {
 		.type = SENSOR_TRIG_DATA_READY,
 		.chan = SENSOR_CHAN_ALL,
 	};
+	 
+	
 	if (sensor_trigger_set(mpu6050, &trigger,
 			       handle_mpu6050_drdy) < 0) {
 		printf("Cannot configure trigger\n");
