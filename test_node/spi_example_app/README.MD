@@ -283,8 +283,8 @@ This is the final devicetree that gets built. Zephyr merges all the overlay file
 1. Are your changes visible in this device tree?
 2. If not, then something about your device tree overlay is wrong. Maybe it isn't getting pulled in; in this case, check the justfile or your west build command to make sure you're passing in your overlay file right. 
 3. If so, is your node enabled with `status="okay"`? 
-4. If your nodes still are throwing errors at this point when you're attempting to use DTC fetching functions, it may be that you're trying to use an API call wrong. 
-5. If your nodes work fine with your DTC fetching functions in your `.c` file but fail when you attempt an API call, see if all the `proj.conf` settings you need are enabled. This indicates a linking issue. 
+4. If your nodes still are throwing errors at this point when you're attempting to use DTS fetching functions, it may be that you're trying to use an API call wrong. 
+5. If your nodes work fine with your DTS fetching functions in your `.c` file but fail when you attempt an API call, see if all the `proj.conf` settings you need are enabled. This indicates a linking issue. 
 
 ### simplifying your output
 
@@ -305,5 +305,6 @@ build-esp32-spi-test: _verify_workspace clean
 ### More on tracing an error
 
 https://docs.zephyrproject.org/latest/build/dts/troubleshooting.html
+
 
 
