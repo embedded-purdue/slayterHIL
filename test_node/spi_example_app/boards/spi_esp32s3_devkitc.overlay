@@ -1,0 +1,48 @@
+// spi controller
+&spi2 {
+    // This right here expects CONFIG_ESP32_SPIM=y
+	compatible = "espressif,esp32-spi";
+
+    // already defined in zephyr/boards/espressif/esp32s3_devkitc/esp32s3_devkitc_procpu.dts
+	// redundant but here for clarity
+	status = "okay";
+    pinctrl-0 = <&spim2_default>;
+    pinctrl-names = "default";
+
+	// custom settings; I have defined this myself.
+    cs-gpios = <&gpio0 10 GPIO_ACTIVE_LOW>;
+
+    // creating the spi device on the spi controller! 
+    // note; in cs_gpios, I defined an array of 1. This is the cs_gpio of index 0.
+    esp32: esp32@0 {
+        // this right here expects CONFIG_SPI=y
+        compatible = "vnd,spi-device";
+
+        // the cs gpio at index 0 in cs-gpios
+        reg = <0>;
+        spi-max-frequency = <1600000>;
+
+        // we will use this to get with DT_NODELABEL.
+        label = "esp32";
+    };
+};
+
+// already defined in zephyr/boards/espressif/esp32s3_devkitc/esp32s3_devkitc-pinctrl.dtsi
+// redundant but here for clarity
+&pinctrl {
+	spim2_default: spim2_default {
+		group1 {
+			pinmux = 
+                <SPIM2_MISO_GPIO13>,
+				 <SPIM2_SCLK_GPIO12>,
+				 <SPIM2_CSEL_GPIO10>;
+		};
+
+        // MOSI will be 0 on start.
+        // defined in a different group because it has different settings than group 1 pins.
+		group2 {
+			pinmux = <SPIM2_MOSI_GPIO11>;
+			output-low;
+		};
+	};
+};
