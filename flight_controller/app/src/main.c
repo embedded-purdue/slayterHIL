@@ -51,10 +51,10 @@ void main(void)
     printk("Starting LiDAR-Lite V4 test app...\n");
 
     /* Timer period = 50 ms ⇒ 20 Hz polling rate */
-    k_timer_start(&lidar_timer, K_MSEC(50), K_MSEC(50));
+    k_timer_start(&lidar_timer, K_MSEC(30), K_MSEC(30));
 
     while (1) {
-        printk("test to see if we get msg\n");
+        //printk("test to see if we get msg\n");
         if (k_msgq_get(&lidar_msgq, &msg, K_FOREVER) == 0) {
             printk("Distance: %u mm\n", msg.distance_mm);
 

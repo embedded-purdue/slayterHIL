@@ -28,6 +28,18 @@
 
 /* I2C controller and LIDAR device */
 /* I2C controller and LIDAR device */
+
+&pinctrl {
+    i2c0_default: i2c0_default {
+        group1 {
+            /* Pick the GPIOs you actually wired */
+            pinmux = <I2C0_SDA_GPIO8>, <I2C0_SCL_GPIO9>;
+            bias-pull-up;        /* enable internal pull-ups (still OK to use externals) */
+            drive-open-drain;    /* I2C lines are open-drain */
+        };
+    };
+};
+
 &i2c0 {
     status = "okay";
     clock-frequency = <I2C_BITRATE_STANDARD>;
