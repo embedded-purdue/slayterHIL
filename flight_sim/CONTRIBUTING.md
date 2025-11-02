@@ -16,7 +16,7 @@ The project is divided into the following key areas:
      - Implement and optimize physics algorithms.
      - Ensure accuracy and performance of the simulation.
      - Maintain modularity for easy integration with other systems.
-   - **Relevant Files**: `physics/`, `simulation_core/`
+   - **Relevant Files**: `physics/`
 
 ### 2. **SPI Communication**
    - **Description**: The SPI (Serial Peripheral Interface) communication module is responsible for transmitting simulation data to the Testnode firmware. This ensures that the hardware receives accurate and timely data for further processing.
@@ -40,14 +40,13 @@ The project is divided into the following key areas:
      - Develop and maintain the graphical interface.
      - Integrate physics data into the visualization pipeline.
      - Optimize rendering performance.
-   - **Relevant Files**: `graphics/`, `visualization/`
+   - **Relevant Files**: `graphics/`
 
 ---
 
 ## Contribution Guidelines
 
 ### General Guidelines
-- Follow the [Code of Conduct](CODE_OF_CONDUCT.md).
 - Ensure all code changes are accompanied by relevant unit tests.
 - Write clear and concise commit messages.
 - Document all new features and modules in the appropriate markdown files.
@@ -60,7 +59,6 @@ The project is divided into the following key areas:
 5. **Submit a Pull Request**: Provide a detailed description of your changes and link to any relevant issues.
 
 ### Code Style
-- Follow the coding standards outlined in the [STYLE_GUIDE.md](STYLE_GUIDE.md).
 - Use meaningful variable and function names.
 - Keep functions and classes small and focused.
 
@@ -79,4 +77,3 @@ To get started with the project, follow these steps:
 
 2. Install dependencies
 cd slayterHIL
-pip install -r requirements.txt
