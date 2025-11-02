@@ -1,0 +1,1 @@
+/Users/henrychen/zephyr-sdk-0.17.4/xtensa-espressif_esp32s3_zephyr-elf/bin/xtensa-espressif_esp32s3_zephyr-elf-ld: no input files

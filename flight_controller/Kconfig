@@ -5,4 +5,6 @@
 # as the module Kconfig entry point (see zephyr/module.yml). You can browse
 # module options by going to Zephyr -> Modules in Kconfig.
 
+source "$(ZEPHYR_BASE)/Kconfig.zephyr"
+
 rsource "drivers/Kconfig"
