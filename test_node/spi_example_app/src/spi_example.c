@@ -1,5 +1,5 @@
-#include <zephyr/drivers/spi.h>
 #include <zephyr/devicetree.h>
+#include <zephyr/drivers/spi.h>
 
 // our own specifiers
 #define LEN_TRANSCEIVE 4
@@ -9,17 +9,12 @@
 // operation flags we want
 static const spi_operation_t operation_flags = (
 
-    SPI_OP_MODE_MASTER |
-    SPI_TRANSFER_MSB |
-    SPI_WORD_SET(8));
+    SPI_OP_MODE_MASTER | SPI_TRANSFER_MSB | SPI_WORD_SET(8));
 
-static const struct spi_dt_spec spi_device = SPI_DT_SPEC_GET(
-    DT_NODELABEL(SPI_DEVICE_NAME),
-    operation_flags,
-    DELAY);
+static const struct spi_dt_spec spi_device =
+    SPI_DT_SPEC_GET(DT_NODELABEL(SPI_DEVICE_NAME), operation_flags, DELAY);
 
-int main()
-{
+int main() {
     /*
     - I want to read four bytes so I need a four-byte array.
     - That array needs to be a member of a spi_buf
@@ -40,14 +35,10 @@ int main()
         write_buf[i] = i;
 
     // transceive
-    int transceive_res = spi_transceive_dt(
-        &spi_device,
-        &tx_buf,
-        &rx_buf);
+    int transceive_res = spi_transceive_dt(&spi_device, &tx_buf, &rx_buf);
 
     // transceive result should be 0 (if master, which we are) upon end.
-    if (transceive_res)
-    {
+    if (transceive_res) {
         printk("Error on transcceiving\n");
         return 1;
     }
