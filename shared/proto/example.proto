@@ -1,5 +1,0 @@
-syntax = "proto3";
-
-message Example {
-    int32 val = 1; // 1 is just the ID of "val" field. The actual value can be any 32-bit integer.
-}
