@@ -8,7 +8,7 @@ ESP_PORT         := "/dev/tty.usbserial-110"          # adjust
 
 CMAKE_CACHE_ARGS := "-- -DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
 
-# set shell := ["bash", "-eu", "-o", "pipefail", "-c"]
+# set shell := ["b", "-eu", "-o", "pipefail", "-c"]
 
 # ------------------
 #  Helpers
