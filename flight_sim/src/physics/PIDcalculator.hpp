@@ -10,12 +10,13 @@ public:
 
 	Eigen::Vector3d compute(const Eigen::Vector3d& currentPos, double dt);
 	void setTarget(const Eigen::Vector3d& targetPos);  
-	Eigen::Vector3d getTarget(); 
+	Eigen::Vector3d getTarget();
+	Eigen::Vector3d getError();
 private: 
 	double kp, ki, kd; 
 	Eigen::Vector3d desiredPos; 
 	Eigen::Vector3d integralError;
 	Eigen::Vector3d prevError;
-
-		
+	Eigen::Vector3d prevPos;
+	Eigen::Vector3d error;
 }; 
