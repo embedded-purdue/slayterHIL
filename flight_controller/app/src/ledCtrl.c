@@ -8,6 +8,8 @@
 #define LED_COUNT 4
 
 /* DT-backed pwm specs. Requires aliases led0..led3 in your overlay. */
+
+static const struct pwm_dt_spec pwm_led0 = PWM_DT_SPEC_GET(DT_ALIAS(led0));
 static const struct pwm_dt_spec leds[LED_COUNT] = {
     PWM_DT_SPEC_GET(DT_ALIAS(led0)),
     PWM_DT_SPEC_GET(DT_ALIAS(led1)),
@@ -69,4 +71,3 @@ void set_led_intensity(int led_id, int intensity)
                led_id, intensity, rc);
     }
 }
-// ...existing code...
