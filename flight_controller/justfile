@@ -4,7 +4,7 @@
 SIM_BOARD        := "qemu_x86"
 
 ESP_BOARD        := "esp32s3_devkitc/esp32s3/procpu"
-ESP_PORT         := "/dev/tty.usbserial-110"          # adjust
+ESP_PORT         := "/dev/tty.usbserial-10"          # adjust
 
 CMAKE_CACHE_ARGS := "-- -DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
 
