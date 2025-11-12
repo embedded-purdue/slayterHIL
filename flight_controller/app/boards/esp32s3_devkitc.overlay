@@ -12,19 +12,19 @@
     my-pwm-leds {
         compatible = "pwm-leds";
         pwm_led_0: pwm_led_0 {
-            pwms = <&ledc0 0 10000 PWM_POLARITY_NORMAL>; /* channel 0 */
+            pwms = <&ledc0 0 1000000 PWM_POLARITY_NORMAL>; /* channel 0 */
             label = "LED_0";
         };
         pwm_led_1: pwm_led_1 {
-            pwms = <&ledc0 1 10000 PWM_POLARITY_NORMAL>; /* channel 1 */
+            pwms = <&ledc0 1 1000000 PWM_POLARITY_NORMAL>; /* channel 1 */
             label = "LED_1";
         };
         pwm_led_2: pwm_led_2 {
-            pwms = <&ledc0 2 10000 PWM_POLARITY_NORMAL>; /* channel 2 */
+            pwms = <&ledc0 2 1000000 PWM_POLARITY_NORMAL>; /* channel 2 */
             label = "LED_2";
         };
         pwm_led_3: pwm_led_3 {
-            pwms = <&ledc0 3 10000 PWM_POLARITY_NORMAL>; /* channel 3 */
+            pwms = <&ledc0 3 1000000 PWM_POLARITY_NORMAL>; /* channel 3 */
             label = "LED_3";
         };
     };
