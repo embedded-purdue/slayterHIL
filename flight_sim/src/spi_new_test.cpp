@@ -11,25 +11,25 @@
 #define SPI_BITS 	(8)
 #define SPI_SPEED 	(100000)
 
-void serialize_to_proto (char *msg) {
-// Meters per second
-    float acceleration_x = 0.01f;
-    float acceleration_y = 0.02f;
+void serialize_to_proto (char **msg, size_t *length) {
+    // Meters per second
+    float acceleration_x = 0.01214f;
+    float acceleration_y = 0.02040f;
     float acceleration_z = -9.81f;
 
     // Meters per second^2
-    float angular_velocity_x = 0.03f;
-    float angular_velocity_y = 0.04f;
-    float angular_velocity_z = 0.05f;
+    float angular_velocity_x = 0.03213f;
+    float angular_velocity_y = 0.0421f;
+    float angular_velocity_z = 0.0521f;
 
     // In Palscals
-    float pressure = 123000.11f;
+    float pressure = 123000.2221f;
 
     // Meters
-    float altitude = 100.15f;
+    float altitude = 0.5f;
 
     // In Celcius
-    float temperature = 22.5f;
+    float temperature = 0.5000f;
 
     // Timestamp in milliseconds from beginning
     unsigned int timestamp = 1000;
@@ -59,13 +59,17 @@ void serialize_to_proto (char *msg) {
     printf("Angular Velocity x,y,z: %f, %f, %f\n", angular_velocity_x, angular_velocity_y, angular_velocity_z);
     printf("Pressure: %f, Altitude: %f, Temperature: %f\n", pressure, altitude, temperature);
     
-
     // Serialize data into string to send over spi
     std::string serialized_data;
     if (!packet->SerializeToString(&serialized_data)) {
         std::cerr << "Failed to serialize packet." << std::endl;
-        return -1;
+        return;
     }
+
+    size_t length_msg = serialized_data.size();
+    *msg = (char*) malloc(length_msg);
+    memcpy(*msg, serialized_data.data(), length_msg);
+    *length = length_msg;
 }
 
 /*
@@ -73,12 +77,14 @@ void serialize_to_proto (char *msg) {
  */
 
 void send_spi(char *msg, size_t size, int fd, int bits, int speed, int mode) {
-    // ---- 3. Prepare data ----
-    uint8_t tx_buf[] = { 'H', 'E', 'L', 'L', 'O' };  // outbound data
-    uint8_t rx_buf[sizeof(tx_buf)] = {0};                         // inbound buffer
-    size_t length = sizeof(tx_buf);                               // total bytes
+    // Prepare data
+    uint8_t *tx_buf = (uint8_t*) msg;  // outbound data
+printf("size: %d\n", size);
+printf("Shit we send: %s\n", tx_buf);
+    uint8_t rx_buf[size] = {0}; // inbound buffer
+    size_t length = size; // total bytes 
 
-    // ---- 4. Build transaction ----
+    // Build transaction
     struct spi_ioc_transfer tr;
     memset(&tr, 0, sizeof(tr));
     tr.tx_buf = (unsigned long)tx_buf;     // pointer to transmit buffer
@@ -88,23 +94,21 @@ void send_spi(char *msg, size_t size, int fd, int bits, int speed, int mode) {
     tr.bits_per_word = bits;               // bits per word
     tr.delay_usecs = 10;                   // 10 µs delay after each CS toggle
 
-    // ---- 6. Execute SPI transaction ----
+    // Execute SPI transaction 
     int ret = ioctl(fd, SPI_IOC_MESSAGE(1), &tr);
     if (ret < 1) {
         perror("ioctl");
         close(fd);
-        return 1;
-    }
-
-    // ---- 7. Wait briefly before reading output ----
-
-    // ---- 8. Print received data ----
+        return; 
+    } 
+    
+    // Print received data
     std::cout << "RX bytes (" << length << "):";
     for (size_t i = 0; i < length; ++i)
         std::cout << " 0x" << std::hex << (int)rx_buf[i];
     std::cout << std::dec << std::endl;
 
-    // ---- 9. Cleanup ----
+    //Cleanup
     close(fd);
 }
 
@@ -116,7 +120,7 @@ void init_spi(int *fd_out, uint8_t *mode_out, uint8_t *bits_out, uint32_t *speed
     // ---- 1. Device path ----
     const char* dev = "/dev/spidev0.0";  // SPI0 bus, CS0 pin
     int fd = open(dev, O_RDWR);
-    if (fd < 0) { perror("open"); return 1; }
+    if (fd < 0) { perror("open"); return ; }
 
     // ---- 2. Basic configuration ----
     uint8_t mode = SPI_MODE_0;           // CPOL = 0, CPHA = 0 (must match ESP32)
@@ -132,5 +136,21 @@ void init_spi(int *fd_out, uint8_t *mode_out, uint8_t *bits_out, uint32_t *speed
     *mode_out = mode;
     *bits_out = bits;
     *speed_out = speed;
+}
+
+int main() {
+    int fd_out = 0;
+    size_t length = 0;
+    uint8_t mode_out = 0;
+    uint8_t bits_out = 0;
+    uint32_t speed_out = 0;
+
+    init_spi(&fd_out, &mode_out, &bits_out, &speed_out);
+
+    char *msg = 0;
+    serialize_to_proto(&msg, &length);
+
+    send_spi(msg, length, fd_out, mode_out, bits_out, speed_out);
+    
 }
 
