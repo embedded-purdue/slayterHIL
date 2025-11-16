@@ -2,19 +2,29 @@
 #include <zephyr/sys/printk.h> 
 #include "state_machine.h"
 #include "imu.h"
-
+#include <stdalign.h>
 
 // define thread
 #define STACK_SIZE      2048
 #define COMMS_PRIORITY  1
 #define IMU_STACK_SIZE 1024
 #define IMU_PRIORITY   3
+#define MAX_IMU_MSGQ_LEN 16
+#define IMU_STACK_SIZE 1024
+#define IMU_SEM_INIT_COUNT 0 
+#define IMU_SEM_MAX_COUNT 1
+#define IMU_THREAD_PRIORITY 2
+
 
 K_THREAD_STACK_DEFINE(state_machine_stack, STACK_SIZE);
 static struct k_thread state_machine_thread_data;
 
 K_THREAD_STACK_DEFINE(imu_consumer_stack, IMU_STACK_SIZE);
 static struct k_thread imu_consumer_thread_data;
+
+K_MSGQ_DEFINE(imu_msgq, sizeof(struct imu_data), MAX_IMU_MSGQ_LEN, alignof(int));
+K_SEM_DEFINE(imu_sem, IMU_SEM_INIT_COUNT, IMU_SEM_MAX_COUNT)
+K_THREAD_DEFINE(imu_thread, IMU_STACK_SIZE, imu_read_thread, NULL, NULL, NULL, IMU_THREAD_PRIORITY, 0, 0);
 
 // Demo app for the IMU Consumer 
 static void imu_consumer(void *arg1, void *arg2, void *arg3) {
