@@ -15,5 +15,9 @@ struct imu_data {
 const char *now_str(void);
 int imu_init(const struct device *dev); 
 int imu_get(struct imu_data *out, k_timeout_t timeout);
+void imu_read_thread(void *arg1, void *arg2, void *arg3);
+
+extern struct k_msgq imu_msgq; 
+extern struct k_sem imu_sem; 
 
 #endif

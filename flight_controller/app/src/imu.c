@@ -6,16 +6,7 @@
 #include <stdio.h>
 
 
-#define MAX_IMU_MSGQ_LEN 16
-#define IMU_STACK_SIZE 1024
-#define IMU_SEM_INIT_COUNT 0 
-#define IMU_SEM_MAX_COUNT 1
-#define IMU_THREAD_PRIORITY 2
-
-K_MSGQ_DEFINE(imu_msgq, sizeof(struct imu_data), MAX_IMU_MSGQ_LEN, alignof(int));
-K_SEM_DEFINE(imu_sem, IMU_SEM_INIT_COUNT, IMU_SEM_MAX_COUNT)
-K_THREAD_DEFINE(imu_thread, IMU_STACK_SIZE, imu_read_thread, NULL, NULL, NULL, IMU_THREAD_PRIORITY, 0, K_NO_WAIT); 
-
+static const struct device *imu_dev = NULL; 
 const char *now_str(void)
 {
 	static char buf[16]; /* ...HH:MM:SS.MMM */
@@ -80,17 +71,18 @@ static int process_mpu6050(const struct device *dev, struct imu_data *out) {
 static struct sensor_trigger trigger;
 
 static void handle_mpu6050_drdy(const struct device *dev,
-				const struct sensor_trigger *trig, const struct imu_sem *imu_sem)
+				const struct sensor_trigger *trig)
 {
 	k_sem_give(&imu_sem);
 }
 
-static void imu_read_thread(void *arg1, void *arg2, void *args3) { 
-	const struct device *mpu6050 = (const struct device *)arg1; 
+void imu_read_thread(void *arg1, void *arg2, void *args3) { 
+	// const struct device *mpu6050 = (const struct device *)arg1; 
 	while(1) { 
 		k_sem_take(&imu_sem, K_FOREVER); 
 		struct imu_data data; 
-		int rc = process_mpu6050(mpu6050, &data); 
+		const struct device *dev = imu_dev ? imu_dev : (const struct device *)arg1;
+		int rc = process_mpu6050(dev, &data); 
 		if(rc == 0) { 
 			int put_rc = k_msgq_put(&imu_msgq, &data, K_NO_WAIT); 
 			if(put_rc != 0) { 
@@ -114,8 +106,7 @@ int imu_init(const struct device *dev) {
 		printk("IMU device not ready\n"); 
 		return -1; 
 	}
-	// k_sem_init(&imu_sem, 0, 1);
-	// k_thread_create(&imu_thread_data, imu_stack, K_THREAD_STACK_SIZEOF(imu_stack), imu_read_thread, (void *)dev, NULL, NULL, 1, 0, K_NO_WAIT);
+	imu_dev = dev; 
 	trigger = (struct sensor_trigger) {
 		.type = SENSOR_TRIG_DATA_READY,
 		.chan = SENSOR_CHAN_ALL,
