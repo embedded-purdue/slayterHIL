@@ -7,7 +7,7 @@
 
 #define LED_COUNT 4
 
-/* DT-backed pwm specs. Requires aliases led0..led3 in your overlay. */
+
 
 static const struct pwm_dt_spec pwm_led0 = PWM_DT_SPEC_GET(DT_ALIAS(led0));
 static const struct pwm_dt_spec leds[LED_COUNT] = {
@@ -17,7 +17,7 @@ static const struct pwm_dt_spec leds[LED_COUNT] = {
     PWM_DT_SPEC_GET(DT_ALIAS(led3)),
 };
 
-/* Fallback period if DT doesn't provide one (20ms) */
+
 static const uint32_t fallback_period_ns = 20U * 1000U * 1000U;
 
 void initialize_leds(void)
@@ -32,7 +32,7 @@ void initialize_leds(void)
         }
 
         uint32_t period = spec->period ? spec->period : fallback_period_ns;
-        /* initialize to off */
+
         int rc = pwm_set_dt(spec, period, 0);
         if (rc) {
             printk("ledCtrl: pwm_set_dt init fail led=%d rc=%d\n", i, rc);
@@ -42,7 +42,7 @@ void initialize_leds(void)
     }
 }
 
-/* intensity: 0..100 */
+
 void set_led_intensity(int led_id, int intensity)
 {
     if (led_id < 0 || led_id >= LED_COUNT) {
