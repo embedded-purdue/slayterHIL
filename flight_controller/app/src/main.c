@@ -2,11 +2,13 @@
 #include <zephyr/sys/printk.h> 
 #include "state_machine.h"
 #include "imu.h"
+
+
 // define thread
 #define STACK_SIZE      2048
 #define COMMS_PRIORITY  1
 #define IMU_STACK_SIZE 1024
-#define IMU_PRIORITY   2
+#define IMU_PRIORITY   3
 
 K_THREAD_STACK_DEFINE(state_machine_stack, STACK_SIZE);
 static struct k_thread state_machine_thread_data;
@@ -14,7 +16,7 @@ static struct k_thread state_machine_thread_data;
 K_THREAD_STACK_DEFINE(imu_consumer_stack, IMU_STACK_SIZE);
 static struct k_thread imu_consumer_thread_data;
 
-
+// Demo app for the IMU Consumer 
 static void imu_consumer(void *arg1, void *arg2, void *arg3) {
     struct imu_data out; 
     while (1) {
@@ -40,6 +42,6 @@ int main(void)
     if (rc != 0) {
         printk("imu_init failed: %d\n", rc);
     }
-k_thread_create(&imu_consumer_thread_data, imu_consumer_stack, IMU_STACK_SIZE, imu_consumer, NULL, NULL, NULL, IMU_PRIORITY, 0, K_NO_WAIT);
+    k_thread_create(&imu_consumer_thread_data, imu_consumer_stack, IMU_STACK_SIZE, imu_consumer, NULL, NULL, NULL, IMU_PRIORITY, 0, K_NO_WAIT);
 	return 0;
 }
