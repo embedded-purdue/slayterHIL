@@ -18,7 +18,8 @@
 		reg = <0x68>;
 		status = "okay";
 		int-gpios = <&gpio0 11 GPIO_ACTIVE_HIGH>;
-		smplrt-div = <249>;
+		smplrt-div = <3999>;
+        gyro-fs =<2000>;
 	};
     clock-frequency = <I2C_BITRATE_STANDARD>;  
     pinctrl-0 = <&i2c0_default>;

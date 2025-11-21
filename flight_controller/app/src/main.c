@@ -37,6 +37,12 @@ static void imu_consumer(void *arg1, void *arg2, void *arg3) {
                    now_str(), out.temp,
                    out.accel[0], out.accel[1], out.accel[2],
                    out.gyro[0], out.gyro[1], out.gyro[2]);
+            // printk(">Accel x: %.2f\n", out.accel[0]);
+            // printk(">Accel y: %.2f\n", out.accel[1]);
+            // printk(">Accel z: %.2f\n", out.accel[2]);
+            // printk(">Gyro x: %.2f\n", out.gyro[0]);
+            // printk(">Gyro y: %.2f\n", out.gyro[1]);
+            // printk(">Gyro z: %.2f\n", out.gyro[2]);
         } else {
             printk("Failed to get IMU data: %d\n", rc);
         }
