@@ -33,16 +33,16 @@ static void imu_consumer(void *arg1, void *arg2, void *arg3) {
         // struct imu_data out;
         int rc = imu_get(&out, K_FOREVER);
         if (rc == 0) {
-            printk("[%s] Temp: %.2f C, Accel: [%.2f, %.2f, %.2f] m/s², Gyro: [%.2f, %.2f, %.2f] dps\n",
-                   now_str(), out.temp,
-                   out.accel[0], out.accel[1], out.accel[2],
-                   out.gyro[0], out.gyro[1], out.gyro[2]);
-            // printk(">Accel x: %.2f\n", out.accel[0]);
-            // printk(">Accel y: %.2f\n", out.accel[1]);
-            // printk(">Accel z: %.2f\n", out.accel[2]);
-            // printk(">Gyro x: %.2f\n", out.gyro[0]);
-            // printk(">Gyro y: %.2f\n", out.gyro[1]);
-            // printk(">Gyro z: %.2f\n", out.gyro[2]);
+            // printk("[%s] Temp: %.2f C, Accel: [%.2f, %.2f, %.2f] m/s², Gyro: [%.2f, %.2f, %.2f] dps\n",
+            //        now_str(), out.temp,
+            //        out.accel[0], out.accel[1], out.accel[2],
+            //        out.gyro[0], out.gyro[1], out.gyro[2]);
+            printk(">Accel x: %.2f\n", out.accel[0]);
+            printk(">Accel y: %.2f\n", out.accel[1]);
+            printk(">Accel z: %.2f\n", out.accel[2]);
+            printk(">Gyro x: %.2f\n", out.gyro[0]);
+            printk(">Gyro y: %.2f\n", out.gyro[1]);
+            printk(">Gyro z: %.2f\n", out.gyro[2]);
         } else {
             printk("Failed to get IMU data: %d\n", rc);
         }
