@@ -90,7 +90,7 @@
         reg = <0x68>;
         status = "okay";
         int-gpios = <&gpio0 11 GPIO_ACTIVE_HIGH>;
-        /* Example sample-rate divider; adjust as needed */
-        smplrt-div = <249>;
+        smplrt-div = <255>;
+        // gyro-fs =<2 000>;
     };
 };
