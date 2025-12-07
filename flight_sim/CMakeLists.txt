@@ -42,9 +42,6 @@ target_include_directories(proto_lib PUBLIC
   ${PROTO_DIR}
 )
 
-
-# ---- Binaries ---------------------------------------------------------------
-
 add_executable(${PROJECT_NAME} src/main.cpp)
 add_executable(UDPServer src/UDPServer.cpp)
 add_executable(UDPClient src/UDPClient.cpp)
