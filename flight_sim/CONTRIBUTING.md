@@ -39,6 +39,10 @@ The project is divided into the following key areas:
 
 For data communications between the ESP and RPI.
 
+The project can only be compiled from a Linux based system due to library dependencies.
+
+### Protobuf compilation
+
 The protobuf schema was manually compiled using the `protoc` compiler (v32.1) more information seen in official [documentation](https://protobuf.dev/installation/).
 
 The subproject itself can be found in `flight_sim/` compiled using CMAKE.
