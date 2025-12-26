@@ -1,0 +1,6 @@
+name: spi_test
+build:
+  cmake: .
+  kconfig: Kconfig
+  settings:
+    dts_root: .
