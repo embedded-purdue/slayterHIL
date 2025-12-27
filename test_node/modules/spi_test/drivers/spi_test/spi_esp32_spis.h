@@ -9,11 +9,12 @@
 
 #include <zephyr/drivers/pinctrl.h>
 #include <hal/spi_hal.h>
+#include <hal/spi_slave_hal.h>
 #ifdef SOC_GDMA_SUPPORTED
 #include <hal/gdma_hal.h>
 #endif
 
-struct spi_esp32_config
+struct spis_esp32_config
 {
     spi_dev_t *spi;
     const struct device *clock_dev;
@@ -40,21 +41,21 @@ struct spi_esp32_config
     spi_clock_source_t clock_source;
 };
 
-struct spi_esp32_data
+struct spis_esp32_data
 {
     struct spi_context ctx;
-    spi_hal_context_t hal;
-    spi_hal_config_t hal_config;
+    spi_slave_hal_context_t hal;       // changed
+    spi_slave_hal_config_t hal_config; // changed
 #ifdef SOC_GDMA_SUPPORTED
     gdma_hal_context_t hal_gdma;
 #endif
-    spi_hal_timing_conf_t timing_config;
-    spi_hal_dev_config_t dev_config;
-    spi_hal_trans_config_t trans_config;
+    // spi_hal_timing_conf_t timing_config;
+    // spi_hal_dev_config_t dev_config;        already in slave config
+    // spi_hal_trans_config_t trans_config;     master transactions
     uint8_t dfs;
     lldesc_t dma_desc_tx;
     lldesc_t dma_desc_rx;
-    uint32_t clock_source_hz;
+    // uint32_t clock_source_hz;
 };
 
 #endif /* DRIVERS_SPI_ESP32_SPIS_H_ */

@@ -1,7 +1,7 @@
 // spi controller
 &spi2 {
     // This right here expects CONFIG_ESP32_SPIM=y
-	compatible = "test,espressif,esp32-spi";
+	compatible = "espressif,esp32-spis";
 
     // already defined in zephyr/boards/espressif/esp32s3_devkitc/esp32s3_devkitc_procpu.dts
 	// redundant but here for clarity
