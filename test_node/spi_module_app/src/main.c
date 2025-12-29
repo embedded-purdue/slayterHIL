@@ -45,16 +45,16 @@ int main()
         &tx_buf,
         &rx_buf);
 
-    // transceive result should be 0 (if master, which we are) upon end.
-    if (transceive_res)
-    {
-        printk("Error on transcceiving\n");
-        return 1;
-    }
+    // // transceive result should be 0 (if master, which we are) upon end.
+    // if (transceive_res)
+    // {
+    //     printk("Error on transcceiving\n");
+    //     return 1;
+    // }
 
-    // print out what has been read
-    for (int i = 0; i < LEN_TRANSCEIVE; i++)
-        printk("received word %d: %d\n", i, read_buf[i]);
+    // // print out what has been read
+    // for (int i = 0; i < LEN_TRANSCEIVE; i++)
+    //     printk("received word %d: %d\n", i, read_buf[i]);
 
-    return 0;
+    // return 0;
 }
