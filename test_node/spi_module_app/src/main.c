@@ -2,21 +2,26 @@
 #include <zephyr/devicetree.h>
 
 // our own specifiers
-#define LEN_TRANSCEIVE 4
+#define LEN_TRANSCEIVE 12
 #define DELAY 0
-#define SPI_DEVICE_NAME esp32
+#define SPI_DEVICE_NAME spi2
 
 // operation flags we want
 static const spi_operation_t operation_flags = (
 
-    SPI_OP_MODE_MASTER |
+    SPI_OP_MODE_SLAVE |
     SPI_TRANSFER_MSB |
     SPI_WORD_SET(8));
 
-static volatile const struct spi_dt_spec spi_device = SPI_DT_SPEC_GET(
-    DT_NODELABEL(SPI_DEVICE_NAME),
-    operation_flags,
-    DELAY);
+static const struct device *spis_device = DEVICE_DT_GET(DT_NODELABEL(SPI_DEVICE_NAME));
+static const struct spi_config spis_config = {
+    .operation = operation_flags,
+    .frequency = 1000000};
+
+// static volatile const struct spi_dt_spec spi_device = SPI_DT_SPEC_GET(
+//     DT_NODELABEL(SPI_DEVICE_NAME),
+//     operation_flags,
+//     DELAY);
 
 int main()
 {
@@ -37,24 +42,21 @@ int main()
 
     // populate the write buffer
     for (int i = 0; i < LEN_TRANSCEIVE; i++)
-        write_buf[i] = i;
+        write_buf[i] = i + 4;
 
     // transceive
-    int transceive_res = spi_transceive_dt(
-        &spi_device,
-        &tx_buf,
-        &rx_buf);
+    int transceive_res = spi_transceive(spis_device, &spis_config, &tx_buf, &rx_buf);
 
-    // // transceive result should be 0 (if master, which we are) upon end.
-    // if (transceive_res)
-    // {
-    //     printk("Error on transcceiving\n");
-    //     return 1;
-    // }
+    // transceive result should be 0 (if master, which we are) upon end.
+    if (transceive_res)
+    {
+        printk("Error on transcceiving\n");
+        return 1;
+    }
 
-    // // print out what has been read
-    // for (int i = 0; i < LEN_TRANSCEIVE; i++)
-    //     printk("received word %d: %d\n", i, read_buf[i]);
+    // print out what has been read
+    for (int i = 0; i < LEN_TRANSCEIVE; i++)
+        printk("received word %d: %d\n", i, read_buf[i]);
 
-    // return 0;
+    return 0;
 }

@@ -17,7 +17,7 @@
 #include <esp_clk_tree.h>
 
 #include <zephyr/logging/log.h>
-LOG_MODULE_REGISTER(esp32_spi, CONFIG_SPI_LOG_LEVEL);
+LOG_MODULE_REGISTER(esp32_spis, CONFIG_SPI_LOG_LEVEL);
 
 #include <soc.h>
 #include <esp_memory_utils.h>
@@ -36,7 +36,214 @@ LOG_MODULE_REGISTER(esp32_spi, CONFIG_SPI_LOG_LEVEL);
 #define SPI_DMA_RX 0
 #define SPI_DMA_TX 1
 
-static inline uint8_t spi_esp32_get_frame_size(const struct spi_config *spi_cfg)
+/* -------------------- SANITY CHECK DEFINES ---------------------------*/
+/* sanity check for cpu-driven mode 0 MSB slave single transfer transaction */
+
+/* everythign should be a 0 */
+/* but keep an eye on conf_bitlen and update, which seem like they're for master mode, but might be needed */
+#define CMD_PRESTART_EXPECTED(hw) (hw->cmd.val == 0)
+
+/* addr empty given that there's no addr phase in single cpu-driven transfer */
+#define ADDR_EXPECTED(hw) (hw->addr == 0)
+
+/* q_pol and d_pol */
+#define CTRL_ALLOWED_MASK     \
+	((1u << 18) | /* q_pol */ \
+	 (1u << 19))  /* d_pol */
+/* q_pol and d_pol are expected to be high */
+#define CTRL_EXPECTED(hw) (                       \
+	((hw->ctrl.val & ~CTRL_ALLOWED_MASK) == 0) && \
+	(hw->ctrl.d_pol == 1) && (hw->ctrl.q_pol == 1))
+
+/* clock reg should be 0 bcz these are all master sclk timing tools */
+#define CLOCK_EXPECTED(hw) ( \
+	hw->clock.val == 0)
+
+/* doutdin = 1 for full duplex communication
+ * tsck_i_edge = 0 for mode 0
+ * rsck_i_edge = 0 for mode 0
+ * usr_conf_nxt = 0 to indicate a non-segmented transfer
+ * sio = 0 to disbale 3-line half duplex
+ * usr_dummy_idle = 0
+ * usr_mosi and usr_miso = 1 to enable full duplex transfer
+ * usr_dummy = 0
+ * usr_addr = 0
+ * usr_command = 0
+ */
+#define USER_ALLOWED_MASK        \
+	((1u << 0) |  /* doutdin */  \
+	 (1u << 27) | /* usr_mosi */ \
+	 (1u << 28))  /* usr_miso */
+#define USER_EXPECTED(hw) (                       \
+	((hw->user.val & ~USER_ALLOWED_MASK) == 0) && \
+	(hw->user.doutdin == 1) && (hw->user.usr_mosi == 1) && (hw->user.usr_miso == 1))
+
+/* user1 and 2 seems to be mostly master settings, or non-full-duplex-single-transfer slave settings */
+#define USER1_EXPECTED(hw) ( \
+	(hw->user1.val == 0))
+
+#define USER2_EXPECTED(hw) ( \
+	(hw->user2.val == 0))
+
+/* ms_data_bitlen is used in slave dma transfers, but not cpu-controlled transfer */
+#define MS_DLEN_EXPECTED(hw) ( \
+	(hw->ms_dlen.val == 0))
+
+/* cs0_dis = 0: cs0 we need and cannot disable it
+ * cs1-5 =1? are unused on slave. However, it's unspecified whether they need to be explicitly disabled.
+ * ck_dis = 1? This is relevant to master but doens't say whether should be explicitly disabled
+ * clk_data_dtr_en, data_dtr_en, addr_dtr_en, cmd_dtr_en = 0: we want single data trasnfer mode
+ * slave_cs_pol = 0
+ */
+#define MISC_ALLOWED_MASK      \
+	((1u << 1) | /* cs1_dis */ \
+	 (1u << 2) | /* cs2_dis */ \
+	 (1u << 3) | /* cs3_dis */ \
+	 (1u << 4) | /* cs4_dis */ \
+	 (1u << 5) | /* cs5_dis */ \
+	 (1u << 6))	 /* ck_dis */
+#define MISC_EXPECTED(hw) ( \
+	(hw->misc.val & ~MISC_ALLOWED_MASK) == 0)
+
+/* we want 0 input delay */
+#define DIN_DOUT_EXPECTED(hw) (                          \
+	(hw->din_mode.val == 0) && (hw->din_num.val == 0) && \
+	(hw->dout_mode.val == 0))
+
+/* non DMA transfer */
+#define DMA_CONF_EXPECTED(hw) ( \
+	hw->dma_conf.val == 0)
+
+/* we are going no interrupts for now, and just polling raw */
+#define DMA_INTS_EXPECTED(hw) (                                 \
+	(hw->dma_int_ena.val == 0) && (hw->dma_int_clr.val == 0) && \
+	(hw->dma_int_raw.val == 0) && (hw->dma_int_st.val == 0))
+
+/* clk_mode: 0 for now bcz we are operating in mode 0
+ * clk_mode_13: 0
+ * rsck_data_out: 0
+ * rdbuf_bitlen_en: 0; this stores master-read-slave data len
+ * wrbuf_bitlen_en: 1; this stores master-write-slave data len
+ * slave_mode: 1
+ * usr_conf: 0
+ */
+
+#define SLAVE_ALLOWED_MASK              \
+	((1u << 11) | /* wrbuf_bitlen_en */ \
+	 (1u << 26))  /* slave_mode */
+#define SLAVE_EXPECTED(hw) (                        \
+	((hw->slave.val & ~SLAVE_ALLOWED_MASK) == 0) && \
+	(hw->slave.slave_mode == 1) && (hw->slave.wrbuf_bitlen_en == 1))
+
+/* clock should be enabled for periph (likely) */
+#define CLK_GATE_EXPECTED(hw) (           \
+	(hw->clk_gate.clk_en == 1) &&         \
+	(hw->clk_gate.mst_clk_active == 1) && \
+	(hw->clk_gate.mst_clk_sel == 1))
+
+static inline void log_sanity_check(spi_dev_t *hw)
+{
+	LOG_ERR("Beginning log sanity check ------");
+	LOG_ERR("Expected configuration: Mode 0, CPU-driven Slave Single Transfer");
+
+	if (!CMD_PRESTART_EXPECTED(hw))
+		LOG_ERR("CMD reg prestart fail");
+
+	if (!ADDR_EXPECTED(hw))
+		LOG_ERR("ADDR reg fail");
+
+	if (!CTRL_EXPECTED(hw))
+		LOG_ERR("CTRL reg fail");
+
+	if (!CLOCK_EXPECTED(hw))
+		LOG_ERR("CLOCK reg fail");
+
+	if (!USER_EXPECTED(hw))
+		LOG_ERR("USER reg fail");
+
+	if (!USER1_EXPECTED(hw))
+	{
+		LOG_ERR("USER1 reg fail");
+		LOG_ERR("dummy_cyclelen: %u | mst_wfull: %u | cs_setup: %u | cs_hold: %u | usr_bitlen: %u",
+				hw->user1.usr_dummy_cyclelen, hw->user1.mst_wfull_err_end_en, hw->user1.cs_setup_time, hw->user1.cs_hold_time, hw->user1.usr_addr_bitlen);
+	}
+
+	if (!USER2_EXPECTED(hw))
+	{
+		LOG_ERR("USER2 reg fail");
+		LOG_ERR("usr_cmd: %u | mst_rempty: %u | usr_cmd: %u",
+				hw->user2.usr_command_value, hw->user2.mst_rempty_err_end_en, hw->user2.usr_command_bitlen);
+	}
+
+	if (!MS_DLEN_EXPECTED(hw))
+		LOG_ERR("MS_DLEN reg fail");
+
+	if (!MISC_EXPECTED(hw))
+		LOG_ERR("MISC reg fail");
+
+	if (!DIN_DOUT_EXPECTED(hw))
+		LOG_ERR("DIN/DOUT regs fail");
+
+	if (!DMA_CONF_EXPECTED(hw))
+	{
+		LOG_ERR("DMA_CONF reg fail; val is %u", hw->dma_conf.val);
+		LOG_ERR("outfifo_empty: %u | infifo_full: %u", hw->dma_conf.outfifo_empty, hw->dma_conf.infifo_full);
+	}
+
+	if (!DMA_INTS_EXPECTED(hw))
+		LOG_ERR("DMA_INT regs fail");
+
+	if (!SLAVE_EXPECTED(hw))
+	{
+		LOG_ERR("SLAVE reg fail; val is %u", hw->slave.val);
+		LOG_ERR("clk_mode: %u | clk_mode_13: %u | rsck_data_out: %u | "
+				"rdma_bitlen_en: %u | wrdma_bitlen_en: %u | rdbuf_bitlen_en: %u | "
+				"wrbuf_bitlen_en: %u | dma_seg_magic: %u | slave_mode: %u | "
+				"soft_reset: %u | usr_conf: %u",
+				hw->slave.clk_mode, hw->slave.clk_mode_13, hw->slave.rsck_data_out,
+				hw->slave.rddma_bitlen_en, hw->slave.wrdma_bitlen_en, hw->slave.rdbuf_bitlen_en,
+				hw->slave.wrbuf_bitlen_en, hw->slave.dma_seg_magic_value, hw->slave.slave_mode,
+				hw->slave.soft_reset, hw->slave.usr_conf);
+	}
+
+	if (!CLK_GATE_EXPECTED(hw))
+		LOG_ERR("CLK_GATE reg fail");
+
+	LOG_ERR("Ending log sanity check ---------");
+}
+
+/* -------------------- SANITY CHECK DEFINES ---------------------------*/
+
+static void spis_ll_clk_ena(spi_dev_t *hw)
+{
+	/* enables internal clock gate */
+	/* may or may not be needed for slave ? Unspecified. not in slave_ll_init */
+	hw->clk_gate.clk_en = 1;
+	hw->clk_gate.mst_clk_active = 1;
+	hw->clk_gate.mst_clk_sel = 1;
+}
+
+static void spis_hal_setup_trans(spi_slave_hal_context_t *hal)
+{
+	/* reflects spi_hal_setup_trans and internal fucntiosn */
+	/* refactor to (maybe) include that */
+	hal->hw->user1.val = 0;
+	hal->hw->user2.val = 0;
+	hal->hw->ctrl.val &= ~SPI_LL_ONE_LINE_CTRL_MASK;
+	hal->hw->user.val &= ~SPI_LL_ONE_LINE_USER_MASK;
+	hal->hw->dma_conf.val = 0;
+	hal->hw->slave.dma_seg_magic_value = 0;
+	spi_ll_cpu_tx_fifo_reset(hal->hw);
+	spi_ll_cpu_rx_fifo_reset(hal->hw);
+	spi_ll_enable_mosi(hal->hw, (hal->rx_buffer == NULL) ? 0 : 1);
+	spi_ll_enable_miso(hal->hw, (hal->tx_buffer == NULL) ? 0 : 1);
+	hal->hw->slave.wrbuf_bitlen_en = 1; // enable tracking of read from master
+}
+
+/* -------------------- DUPLICATE CODE WITH MASTER ---------------------------*/
+
+static inline uint8_t
+spi_esp32_get_frame_size(const struct spi_config *spi_cfg)
 {
 	uint8_t dfs = SPI_WORD_SIZE_GET(spi_cfg->operation);
 
@@ -49,6 +256,8 @@ static inline uint8_t spi_esp32_get_frame_size(const struct spi_config *spi_cfg)
 	return dfs;
 }
 
+/* -------------------- MAIN DRIVER ---------------------------*/
+
 static int IRAM_ATTR spis_esp32_configure(const struct device *dev,
 										  const struct spi_config *spi_cfg)
 {
@@ -56,7 +265,6 @@ static int IRAM_ATTR spis_esp32_configure(const struct device *dev,
 	struct spis_esp32_data *data = dev->data;
 	struct spi_context *ctx = &data->ctx;
 	spi_slave_hal_context_t *hal = &data->hal;
-	// spi_hal_dev_config_t *hal_dev = &data->dev_config;
 	int freq;
 
 	if (spi_context_configured(ctx, spi_cfg))
@@ -65,6 +273,18 @@ static int IRAM_ATTR spis_esp32_configure(const struct device *dev,
 	}
 
 	ctx->config = spi_cfg;
+
+	if ((spi_cfg->operation & SPI_LINES_MASK) != SPI_LINES_SINGLE)
+	{
+		LOG_ERR("Line mode not supported");
+		return -ENOTSUP;
+	}
+
+	if (spi_cfg->operation & SPI_OP_MODE_MASTER)
+	{
+		LOG_ERR("Master mode not supported");
+		return -ENOTSUP;
+	}
 
 	if (spi_cfg->operation & SPI_HALF_DUPLEX)
 	{
@@ -78,7 +298,6 @@ static int IRAM_ATTR spis_esp32_configure(const struct device *dev,
 		return -ENOTSUP;
 	}
 
-	// hal_dev->cs_pin_id = ctx->config->slave;
 	int ret = pinctrl_apply_state(cfg->pcfg, PINCTRL_STATE_DEFAULT);
 
 	if (ret)
@@ -87,29 +306,8 @@ static int IRAM_ATTR spis_esp32_configure(const struct device *dev,
 		return ret;
 	}
 
-	// /* input parameters to calculate timing configuration */
-	// spi_hal_timing_param_t timing_param = {
-	// 	.half_duplex = hal_dev->half_duplex,
-	// 	.no_compensate = hal_dev->no_compensate,
-	// 	.expected_freq = spi_cfg->frequency,
-	// 	.duty_cycle = cfg->duty_cycle == 0 ? 128 : cfg->duty_cycle,
-	// 	.input_delay_ns = cfg->input_delay_ns,
-	// 	.use_gpio = !cfg->use_iomux,
-	// 	.clk_src_hz = data->clock_source_hz,
-	// };
-
-	// spi_hal_cal_clock_conf(&timing_param, &freq, &hal_dev->timing_conf);
-
-	// data->trans_config.dummy_bits = hal_dev->timing_conf.timing_dummy;
-
 	hal->tx_lsbfirst = spi_cfg->operation & SPI_TRANSFER_LSB ? 1 : 0;
 	hal->rx_lsbfirst = spi_cfg->operation & SPI_TRANSFER_LSB ? 1 : 0;
-
-	// data->trans_config.line_mode.data_lines = spi_esp32_get_line_mode(spi_cfg->operation);
-
-	// /* multiline for command and address not supported */
-	// data->trans_config.line_mode.addr_lines = 1;
-	// data->trans_config.line_mode.cmd_lines = 1;
 
 	/* SPI mode */
 	hal->mode = 0;
@@ -122,13 +320,11 @@ static int IRAM_ATTR spis_esp32_configure(const struct device *dev,
 		hal->mode |= BIT(1);
 	}
 
-	// /* Chip select setup and hold times */
-	// /* GPIO CS have their own delay parameter*/
-	// if (!spi_cs_is_gpio(spi_cfg))
-	// {
-	// 	hal_dev->cs_hold = cfg->cs_hold;
-	// 	hal_dev->cs_setup = cfg->cs_setup;
-	// }
+	if (hal->mode != 0)
+	{
+		LOG_ERR("Expecting mode 0 for the purposes of initial driver setup");
+		return -ENOTSUP;
+	}
 
 	spi_slave_hal_setup_device(hal);
 
@@ -157,9 +353,7 @@ static int IRAM_ATTR spis_esp32_configure(const struct device *dev,
 	!defined(DT_SPI_CTX_HAS_NO_CS_GPIOS)
 	if ((ctx->num_cs_gpios != 0) && (hal->mode & (SPI_MODE_CPOL | SPI_MODE_CPHA)))
 	{
-		// TODO: ADDRESS
 		return -ENOTSUP;
-		// spi_esp32_transfer(dev);
 	}
 #endif
 
@@ -168,35 +362,12 @@ static int IRAM_ATTR spis_esp32_configure(const struct device *dev,
 
 static int IRAM_ATTR spis_esp32_transfer(const struct device *dev)
 {
-	LOG_ERR("TRANSFER FUNC");
 	struct spis_esp32_data *data = dev->data;
 	const struct spis_esp32_config *cfg = dev->config;
 	struct spi_context *ctx = &data->ctx;
 	spi_slave_hal_context_t *hal = &data->hal;
-	// spi_hal_dev_config_t *hal_dev = &data->dev_config;
-	// transfer context needed for slave is alr in ctx or cfg
-	// spi_hal_trans_config_t *hal_trans = &data->trans_config;
 
-	// length of min(len(tx), len(rx)) * frame size = max transaction in bytes
-	// limit is defensive in slave; in master, used for data sending reasons
-	// size_t chunk_len_bytes = spi_context_max_continuous_chunk(&data->ctx) * data->dfs;
-	// size_t max_buf_sz =
-	// 	cfg->dma_enabled ? SPI_DMA_MAX_BUFFER_SIZE : SOC_SPI_MAXIMUM_BUFFER_SIZE;
-	// size_t transfer_len_bytes = MIN(chunk_len_bytes, max_buf_sz);
-	// size_t transfer_len_frames = transfer_len_bytes / data->dfs;
-	// size_t bit_len = transfer_len_bytes << 3;
-	// uint8_t *rx_temp = NULL;
-	// uint8_t *tx_temp = NULL;
-	// size_t dma_len_tx = MIN(ctx->tx_len * data->dfs, SPI_DMA_MAX_BUFFER_SIZE);
-	// size_t dma_len_rx = MIN(ctx->rx_len * data->dfs, SPI_DMA_MAX_BUFFER_SIZE);
-	// bool prepare_data = true;
 	int err = 0;
-
-	if (cfg->dma_enabled)
-	{
-		LOG_ERR("dma enabled existit");
-		return -ENOTSUP;
-	}
 
 	/* clean up and prepare SPI hal */
 	for (size_t i = 0; i < ARRAY_SIZE(hal->hw->data_buf); ++i)
@@ -210,89 +381,24 @@ static int IRAM_ATTR spis_esp32_transfer(const struct device *dev)
 
 	hal->tx_buffer = (uint8_t *)ctx->tx_buf;
 	hal->rx_buffer = ctx->rx_buf;
+	hal->bitlen = 96; // configure this; max bitlen should be rd and wr buf
 
-	// /* keep cs line active until last transmission */
-	// hal_trans->cs_keep_active =
-	// 	(UTIL_OR(IS_ENABLED(DT_SPI_CTX_HAS_NO_CS_GPIOS), (ctx->num_cs_gpios == 0)) &&
-	// 	 (ctx->rx_count > 1 || ctx->tx_count > 1 || ctx->rx_len > transfer_len_frames ||
-	// 	  ctx->tx_len > transfer_len_frames));
-
-	/* configure SPI */
-	// spi_hal_setup_trans(hal, hal_dev, hal_trans);
-
-	// #if defined(SOC_GDMA_SUPPORTED)
-	// 	LOG_ERR("gdma supported exit");
-	// 	return -ENOTSUP;
-	// 	// if (cfg->dma_enabled && hal_trans->rcv_buffer && hal_trans->send_buffer)
-	// 	// {
-	// 	// 	/* setup DMA channels via DMA driver */
-	// 	// 	spi_ll_dma_rx_fifo_reset(hal->hw);
-	// 	// 	spi_ll_infifo_full_clr(hal->hw);
-	// 	// 	spi_ll_dma_rx_enable(hal->hw, 1);
-
-	// 	// 	err = spi_esp32_gdma_start(dev, SPI_DMA_RX, hal_trans->rcv_buffer,
-	// 	// 							   transfer_len_bytes);
-	// 	// 	if (err)
-	// 	// 	{
-	// 	// 		goto free;
-	// 	// 	}
-
-	// 	// 	spi_ll_dma_tx_fifo_reset(hal->hw);
-	// 	// 	spi_ll_outfifo_empty_clr(hal->hw);
-	// 	// 	spi_ll_dma_tx_enable(hal->hw, 1);
-
-	// 	// 	err = spi_esp32_gdma_start(dev, SPI_DMA_TX, hal_trans->send_buffer,
-	// 	// 							   transfer_len_bytes);
-	// 	// 	if (err)
-	// 	// 	{
-	// 	// 		goto free;
-	// 	// 	}
-	// 	// }
-
-	// 	// prepare_data = !cfg->dma_enabled;
-	// #endif
-
-	// if (prepare_data)
-	// {
-	// 	/* only for plain transfers or DMA transfers w/o GDMA */
-	// 	spi_hal_prepare_data(hal, hal_dev, hal_trans);
-	// }
-	LOG_ERR("PREPARING DATA");
+	// clears afifos for cpus
+	// doesnt set rx and tx bitlen for slave (internal funcs are empty), but I don't see it in s3 regs anyways
+	// configures MOSI and MISO if CONFIG_IDF_TARGET_ESP32
+	spis_hal_setup_trans(hal);
 	spi_slave_hal_prepare_data(hal);
 
-	/* send data */
-	LOG_ERR("STARTING");
+	log_sanity_check(hal->hw);
+
 	spi_slave_hal_user_start(hal);
-
-	// bring this back alter when starting to do chunks
-	// spi_context_update_tx(&data->ctx, data->dfs, transfer_len_frames);
-
-	log_panic();
 
 	while (!spi_slave_hal_usr_is_done(hal))
 	{
-		printk("blocking!");
-		LOG_ERR("BLOCKING");
-		log_panic();
+		/* nop */
 	}
-	LOG_ERR("AFTER BLOCK");
-
-	// if (!cfg->dma_enabled)
-	// {
-	// 	/* read data */
-	// 	spi_hal_fetch_result(hal);
-	// }
-
-	// if (rx_temp)
-	// {
-	// 	memcpy(&ctx->rx_buf[0], rx_temp, transfer_len_bytes);
-	// }
-
-	// spi_context_update_rx(&data->ctx, data->dfs, transfer_len_frames);
-
-	// free:
-	// 	k_free(tx_temp);
-	// 	k_free(rx_temp);
+	LOG_ERR("AFTER BLOCK received %u", spi_ll_slave_get_rcv_bitlen(hal->hw));
+	hal->hw->slave1.data_bitlen = 96;
 
 	return err;
 }
@@ -304,8 +410,6 @@ static int spis_transceive(const struct device *dev,
 						   spi_callback_t cb,
 						   void *userdata)
 {
-	LOG_ERR("TRANSCEIVE FUNC");
-
 	const struct spis_esp32_config *cfg = dev->config;
 	struct spis_esp32_data *data = dev->data;
 	int ret = 0;
@@ -313,15 +417,9 @@ static int spis_transceive(const struct device *dev,
 #ifndef CONFIG_SPI_ESP32_INTERRUPT
 	if (asynchronous)
 	{
-		LOG_ERR("ASYNC");
 		return -ENOTSUP;
 	}
 #endif
-
-	if ((spi_cfg->operation & SPI_LINES_MASK) != SPI_LINES_SINGLE)
-	{
-		return -ENOTSUP;
-	}
 
 	spi_context_lock(&data->ctx, asynchronous, cb, userdata, spi_cfg);
 
@@ -332,40 +430,25 @@ static int spis_transceive(const struct device *dev,
 
 	if (data->ctx.tx_buf == NULL && data->ctx.rx_buf == NULL)
 	{
-		LOG_ERR("TX/RX NULL");
 		goto done;
 	}
 
 	ret = spis_esp32_configure(dev, spi_cfg);
 	if (ret)
 	{
-		LOG_ERR("RET TRIGGERED");
 		goto done;
 	}
 
-	// TODO: SEE SLAVE RELPLACEMENT; EHRE I PROBABLY BLOCK
-	// spi_context_cs_control(&data->ctx, true);
+#ifdef CONFIG_SPI_ESP32_INTERRUPT
+	return -ENOTSUP;
+#else
 
-	// #ifdef CONFIG_SPI_ESP32_INTERRUPT
-	// 	return -ENOTSUP;
-	// 	// spi_ll_enable_int(cfg->spi);
-	// 	// spi_ll_set_int_stat(cfg->spi);
-	// #else
-
-	LOG_ERR("JUST BEFORE TRANSFER FUNC");
 	spis_esp32_transfer(dev);
 
-	// do
-	// {
-	// 	spis_esp32_transfer(dev);
-	// } while (spi_esp32_transfer_ongoing(data));
+#endif /* CONFIG_SPI_ESP32_INTERRUPT */
 
-	// spi_esp32_complete(dev, data, cfg->spi, 0);
 	spi_slave_hal_store_result(&data->hal);
-
-	// #endif /* CONFIG_SPI_ESP32_INTERRUPT */
-
-	printk("hello world!\n");
+	LOG_ERR("bitlen is %u", data->hal.rcv_bitlen);
 
 done:
 	spi_context_release(&data->ctx, ret);
@@ -407,25 +490,20 @@ static int spis_esp32_init(const struct device *dev)
 		return err;
 	}
 
+	spi_ll_slave_init(hal->hw);
+	spis_ll_clk_ena(hal->hw);
+
+	/* Figure out how to set this via DT ...? Given that we need to know at init */
 	if (cfg->dma_enabled)
 	{
 		LOG_ERR("DMA on slave not supported");
 		return -ENOTSUP;
 	}
 
-	spi_ll_slave_init(hal->hw);
-
 #ifdef CONFIG_SPI_ESP32_INTERRUPT
-	LOG_ERR("INTERRUPT on slave not supported");
+	LOG_ERR("Interrupts on slave not supported");
 	return -ENOTSUP;
 #endif
-
-	// // TODO: figure out how to make bindings file only expect 1 gpio
-	// err = configure_slave_cs(&data->ctx);
-	// if (err < 0)
-	// {
-	// 	return err;
-	// }
 
 	spi_context_unlock_unconditionally(&data->ctx);
 
@@ -467,20 +545,13 @@ static DEVICE_API(spi, spi_api) = {
 		SPI_CONTEXT_INIT_SYNC(spis_data_##idx, ctx),                                                                                                                 \
 		SPI_CONTEXT_CS_GPIOS_INITIALIZE(DT_DRV_INST(idx), ctx)                                                                                                       \
 			.hal = {                                                                                                                                                 \
-			.hw = (spi_dev_t *)DT_INST_REG_ADDR(idx),                                                                                                                \
-			.dma_in = NULL,                                                                                                                                          \
-			.dma_out = NULL, /* the following should be configured at initialization */                                                                              \
+			.hw = (spi_dev_t *)DT_INST_REG_ADDR(idx), /* the following should be configured at initialization */                                                     \
 			.dmadesc_rx = NULL,                                                                                                                                      \
 			.dmadesc_tx = NULL,                                                                                                                                      \
 			.dmadesc_n = 0,                                                                                                                                          \
 			.tx_dma_chan = 0,                                                                                                                                        \
 			.rx_dma_chan = 0,                                                                                                                                        \
-			/* the following to be filled after spi_slave_hal_init */ /* updated to peripheral registers whenspi_slave_hal_setup_device called  */                   \
-			.use_dma = 0,											  /* the following will be updated at each transaction*/                                         \
-			.bitlen = 0,                                                                                                                                             \
-			.tx_buffer = NULL,                                                                                                                                       \
-			.rx_buffer = NULL,                                                                                                                                       \
-			.rcv_bitlen = 0,                                                                                                                                         \
+			.use_dma = 0 /* configure before spi_slave_hal_init, or figure out how to reset dma setup */                                                             \
 		},                                                                                                                                                           \
 		.hal_config = {.host_id = DT_INST_PROP(idx, dma_host) + 1, .dma_in = NULL, .dma_out = NULL}}; /* DMA_HOST + 1 was a pattern reflected in the master driver*/ \
                                                                                                                                                                      \
