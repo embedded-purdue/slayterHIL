@@ -490,8 +490,8 @@ static int spis_esp32_init(const struct device *dev)
 		return err;
 	}
 
-	spi_ll_slave_init(hal->hw);
 	spis_ll_clk_ena(hal->hw);
+	spi_ll_slave_init(hal->hw);
 
 	/* Figure out how to set this via DT ...? Given that we need to know at init */
 	if (cfg->dma_enabled)
