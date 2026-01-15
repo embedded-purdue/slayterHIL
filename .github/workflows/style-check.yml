@@ -1,0 +1,54 @@
+name: Code Style Check
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  style-check:
+    name: Check Code Style
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Install clang-format
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y clang-format
+
+    - name: Check C/C++ formatting
+      run: |
+        echo "Checking code formatting..."
+        
+        MISMATCHED=0
+        
+        # Find all C/C++ files, excluding build directories
+        while IFS= read -r file; do
+          # Check if formatting is needed
+          FORMATTED=$(mktemp)
+          clang-format "$file" > "$FORMATTED" 2>/dev/null || continue
+          if ! diff -q "$file" "$FORMATTED" > /dev/null 2>&1; then
+            echo "❌ Formatting issue: $file"
+            echo "Fix with: clang-format -i $file"
+            MISMATCHED=1
+          fi
+          rm -f "$FORMATTED"
+        done < <(find . -type f \( -name '*.c' -o -name '*.cpp' -o -name '*.h' -o -name '*.hpp' \) \
+          -not -path '*/build/*' \
+          -not -path '*/zephyrproject/*' \
+          -not -path '*/.west/*' \
+          -not -path '*/.git/*')
+        
+        if [ $MISMATCHED -eq 1 ]; then
+          echo ""
+          echo "Some files need formatting. Run: find . -type f \\( -name '*.c' -o -name '*.cpp' -o -name '*.h' -o -name '*.hpp' \\) -not -path '*/build/*' -not -path '*/zephyrproject/*' -not -path '*/.west/*' -not -path '*/.git/*' | xargs clang-format -i"
+          exit 1
+        fi
+        
+        echo "✅ All files are properly formatted"
