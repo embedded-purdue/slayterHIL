@@ -91,6 +91,6 @@
         status = "okay";
         int-gpios = <&gpio0 11 GPIO_ACTIVE_HIGH>;
         smplrt-div = <255>;
-        // gyro-fs =<2 000>;
+        gyro-fs =<2000>;
     };
 };

@@ -9,6 +9,7 @@
 #include <stdalign.h>
 #include "ledCtrl.h"
 #include <math.h>
+#include "kalman.h"
 // define thread
 #define STACK_SIZE      2048
 #define COMMS_PRIORITY  1
@@ -37,8 +38,6 @@ static struct k_thread imu_consumer_thread_data;
 K_MSGQ_DEFINE(imu_msgq, sizeof(struct imu_data), MAX_IMU_MSGQ_LEN, alignof(int));
 K_SEM_DEFINE(imu_sem, IMU_SEM_INIT_COUNT, IMU_SEM_MAX_COUNT)
 K_THREAD_DEFINE(imu_thread, IMU_STACK_SIZE, imu_read_thread, NULL, NULL, NULL, IMU_THREAD_PRIORITY, 0, 0);
-static int driftx = 0; 
-static int drifty = 0;
 
 static void imu_consumer(void *arg1, void *arg2, void *arg3) {
     struct imu_data out;
