@@ -80,14 +80,17 @@ CMakeFiles/main.dir/src/main.cpp.o: /home/matt/Programming/slayterHIL/flight_sim
   _deps/sfml-src/include/SFML/Window/WindowBase.inl \
   _deps/sfml-src/include/SFML/Window/WindowEnums.hpp \
   _deps/sfml-src/include/SFML/Window/WindowHandle.hpp \
+  /home/matt/Programming/slayterHIL/flight_sim/graphics/src/mesh.cpp \
   /usr/include/alloca.h \
   /usr/include/asm-generic/errno-base.h \
   /usr/include/asm-generic/errno.h \
   /usr/include/assert.h \
+  /usr/include/c++/13/algorithm \
   /usr/include/c++/13/array \
   /usr/include/c++/13/backward/auto_ptr.h \
   /usr/include/c++/13/backward/binders.h \
   /usr/include/c++/13/bit \
+  /usr/include/c++/13/bits/algorithmfwd.h \
   /usr/include/c++/13/bits/align.h \
   /usr/include/c++/13/bits/alloc_traits.h \
   /usr/include/c++/13/bits/allocated_ptr.h \
@@ -150,12 +153,15 @@ CMakeFiles/main.dir/src/main.cpp.o: /home/matt/Programming/slayterHIL/flight_sim
   /usr/include/c++/13/bits/shared_ptr.h \
   /usr/include/c++/13/bits/shared_ptr_atomic.h \
   /usr/include/c++/13/bits/shared_ptr_base.h \
+  /usr/include/c++/13/bits/specfun.h \
   /usr/include/c++/13/bits/sstream.tcc \
   /usr/include/c++/13/bits/std_abs.h \
+  /usr/include/c++/13/bits/stl_algo.h \
   /usr/include/c++/13/bits/stl_algobase.h \
   /usr/include/c++/13/bits/stl_bvector.h \
   /usr/include/c++/13/bits/stl_construct.h \
   /usr/include/c++/13/bits/stl_function.h \
+  /usr/include/c++/13/bits/stl_heap.h \
   /usr/include/c++/13/bits/stl_iterator.h \
   /usr/include/c++/13/bits/stl_iterator_base_funcs.h \
   /usr/include/c++/13/bits/stl_iterator_base_types.h \
@@ -170,6 +176,7 @@ CMakeFiles/main.dir/src/main.cpp.o: /home/matt/Programming/slayterHIL/flight_sim
   /usr/include/c++/13/bits/streambuf_iterator.h \
   /usr/include/c++/13/bits/string_view.tcc \
   /usr/include/c++/13/bits/stringfwd.h \
+  /usr/include/c++/13/bits/uniform_int_dist.h \
   /usr/include/c++/13/bits/unique_ptr.h \
   /usr/include/c++/13/bits/unordered_map.h \
   /usr/include/c++/13/bits/uses_allocator.h \
@@ -181,6 +188,7 @@ CMakeFiles/main.dir/src/main.cpp.o: /home/matt/Programming/slayterHIL/flight_sim
   /usr/include/c++/13/cerrno \
   /usr/include/c++/13/chrono \
   /usr/include/c++/13/clocale \
+  /usr/include/c++/13/cmath \
   /usr/include/c++/13/codecvt \
   /usr/include/c++/13/compare \
   /usr/include/c++/13/cstddef \
@@ -205,6 +213,7 @@ CMakeFiles/main.dir/src/main.cpp.o: /home/matt/Programming/slayterHIL/flight_sim
   /usr/include/c++/13/iomanip \
   /usr/include/c++/13/ios \
   /usr/include/c++/13/iosfwd \
+  /usr/include/c++/13/iostream \
   /usr/include/c++/13/istream \
   /usr/include/c++/13/iterator \
   /usr/include/c++/13/limits \
@@ -214,6 +223,7 @@ CMakeFiles/main.dir/src/main.cpp.o: /home/matt/Programming/slayterHIL/flight_sim
   /usr/include/c++/13/optional \
   /usr/include/c++/13/ostream \
   /usr/include/c++/13/pstl/execution_defs.h \
+  /usr/include/c++/13/pstl/glue_algorithm_defs.h \
   /usr/include/c++/13/pstl/glue_memory_defs.h \
   /usr/include/c++/13/pstl/pstl_config.h \
   /usr/include/c++/13/ratio \
@@ -223,6 +233,18 @@ CMakeFiles/main.dir/src/main.cpp.o: /home/matt/Programming/slayterHIL/flight_sim
   /usr/include/c++/13/string \
   /usr/include/c++/13/string_view \
   /usr/include/c++/13/system_error \
+  /usr/include/c++/13/tr1/bessel_function.tcc \
+  /usr/include/c++/13/tr1/beta_function.tcc \
+  /usr/include/c++/13/tr1/ell_integral.tcc \
+  /usr/include/c++/13/tr1/exp_integral.tcc \
+  /usr/include/c++/13/tr1/gamma.tcc \
+  /usr/include/c++/13/tr1/hypergeometric.tcc \
+  /usr/include/c++/13/tr1/legendre_function.tcc \
+  /usr/include/c++/13/tr1/modified_bessel_func.tcc \
+  /usr/include/c++/13/tr1/poly_hermite.tcc \
+  /usr/include/c++/13/tr1/poly_laguerre.tcc \
+  /usr/include/c++/13/tr1/riemann_zeta.tcc \
+  /usr/include/c++/13/tr1/special_function_util.h \
   /usr/include/c++/13/tuple \
   /usr/include/c++/13/type_traits \
   /usr/include/c++/13/typeinfo \
@@ -238,6 +260,7 @@ CMakeFiles/main.dir/src/main.cpp.o: /home/matt/Programming/slayterHIL/flight_sim
   /usr/include/libintl.h \
   /usr/include/linux/errno.h \
   /usr/include/locale.h \
+  /usr/include/math.h \
   /usr/include/pthread.h \
   /usr/include/sched.h \
   /usr/include/stdc-predef.h \
@@ -256,9 +279,18 @@ CMakeFiles/main.dir/src/main.cpp.o: /home/matt/Programming/slayterHIL/flight_sim
   /usr/include/x86_64-linux-gnu/bits/errno.h \
   /usr/include/x86_64-linux-gnu/bits/floatn-common.h \
   /usr/include/x86_64-linux-gnu/bits/floatn.h \
+  /usr/include/x86_64-linux-gnu/bits/flt-eval-method.h \
+  /usr/include/x86_64-linux-gnu/bits/fp-fast.h \
+  /usr/include/x86_64-linux-gnu/bits/fp-logb.h \
+  /usr/include/x86_64-linux-gnu/bits/iscanonical.h \
   /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
+  /usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h \
   /usr/include/x86_64-linux-gnu/bits/locale.h \
   /usr/include/x86_64-linux-gnu/bits/long-double.h \
+  /usr/include/x86_64-linux-gnu/bits/math-vector.h \
+  /usr/include/x86_64-linux-gnu/bits/mathcalls-helper-functions.h \
+  /usr/include/x86_64-linux-gnu/bits/mathcalls-narrow.h \
+  /usr/include/x86_64-linux-gnu/bits/mathcalls.h \
   /usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h \
   /usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h \
   /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h \
@@ -381,8 +413,6 @@ CMakeFiles/main.dir/src/main.cpp.o: /home/matt/Programming/slayterHIL/flight_sim
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_itimerspec.h:
 
-/usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h:
-
 /usr/include/x86_64-linux-gnu/bits/types/sigset_t.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/locale_t.h:
@@ -398,8 +428,6 @@ CMakeFiles/main.dir/src/main.cpp.o: /home/matt/Programming/slayterHIL/flight_sim
 /usr/include/x86_64-linux-gnu/bits/types/__fpos_t.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/__fpos64_t.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/__FILE.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/FILE.h:
 
@@ -435,7 +463,47 @@ CMakeFiles/main.dir/src/main.cpp.o: /home/matt/Programming/slayterHIL/flight_sim
 
 /usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h:
 
-/usr/include/x86_64-linux-gnu/bits/long-double.h:
+/usr/include/x86_64-linux-gnu/bits/mathcalls-narrow.h:
+
+/usr/include/x86_64-linux-gnu/bits/mathcalls-helper-functions.h:
+
+/usr/include/x86_64-linux-gnu/bits/math-vector.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h:
+
+/usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h:
+
+/usr/include/x86_64-linux-gnu/bits/libc-header-start.h:
+
+/usr/include/x86_64-linux-gnu/bits/fp-logb.h:
+
+/usr/include/x86_64-linux-gnu/bits/floatn.h:
+
+/usr/include/x86_64-linux-gnu/bits/cpu-set.h:
+
+/usr/include/x86_64-linux-gnu/bits/atomic_wide_counter.h:
+
+/usr/include/x86_64-linux-gnu/asm/errno.h:
+
+/usr/include/x86_64-linux-gnu/bits/setjmp.h:
+
+/usr/include/time.h:
+
+/usr/include/stdlib.h:
+
+/usr/include/stdc-predef.h:
+
+/usr/include/wctype.h:
+
+/usr/include/sched.h:
+
+/usr/include/pthread.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/__FILE.h:
+
+/usr/include/math.h:
+
+/usr/include/locale.h:
 
 /usr/include/x86_64-linux-gnu/bits/timesize.h:
 
@@ -455,15 +523,7 @@ _deps/sfml-src/include/SFML/Graphics/Rect.inl:
 
 /usr/include/c++/13/bits/memoryfwd.h:
 
-/usr/include/x86_64-linux-gnu/bits/setjmp.h:
-
-/usr/include/time.h:
-
 /usr/include/c++/13/bits/exception_ptr.h:
-
-/usr/include/c++/13/bits/locale_conv.h:
-
-/usr/include/c++/13/bits/istream.tcc:
 
 /usr/include/c++/13/bits/hashtable_policy.h:
 
@@ -485,9 +545,13 @@ _deps/sfml-src/include/SFML/Graphics/Transform.inl:
 
 _deps/sfml-src/include/SFML/Window/ContextSettings.hpp:
 
+/usr/include/x86_64-linux-gnu/bits/endianness.h:
+
+/usr/include/c++/13/bits/chrono.h:
+
 /usr/include/c++/13/bits/atomic_lockfree_defines.h:
 
-/usr/include/x86_64-linux-gnu/asm/errno.h:
+/home/matt/Programming/slayterHIL/flight_sim/graphics/src/mesh.cpp:
 
 /usr/include/c++/13/bits/concept_check.h:
 
@@ -497,11 +561,19 @@ _deps/sfml-src/include/SFML/Window/ContextSettings.hpp:
 
 /usr/include/c++/13/bits/uses_allocator_args.h:
 
+/usr/include/x86_64-linux-gnu/bits/long-double.h:
+
+/usr/include/c++/13/bits/algorithmfwd.h:
+
 /usr/include/x86_64-linux-gnu/bits/types/__sigset_t.h:
 
 /usr/include/c++/13/bits/charconv.h:
 
 /usr/include/c++/13/bits/fs_path.h:
+
+/usr/include/x86_64-linux-gnu/bits/errno.h:
+
+/usr/include/c++/13/bits/stl_pair.h:
 
 /usr/include/c++/13/cstdio:
 
@@ -521,11 +593,11 @@ _deps/sfml-src/include/SFML/Graphics/Font.hpp:
 
 _deps/sfml-src/include/SFML/Window/WindowEnums.hpp:
 
+/usr/include/wchar.h:
+
+/usr/include/c++/13/bits/shared_ptr_base.h:
+
 _deps/sfml-src/include/SFML/Graphics/RenderTarget.hpp:
-
-/usr/include/c++/13/bits/stl_pair.h:
-
-/usr/include/x86_64-linux-gnu/bits/errno.h:
 
 _deps/sfml-src/include/SFML/Window/Vulkan.hpp:
 
@@ -533,11 +605,7 @@ _deps/sfml-src/include/SFML/Window/Vulkan.hpp:
 
 /usr/include/c++/13/bits/string_view.tcc:
 
-_deps/sfml-src/include/SFML/Window/Touch.hpp:
-
 _deps/sfml-src/include/SFML/Graphics/RenderTexture.hpp:
-
-_deps/sfml-src/include/SFML/Window/Sensor.hpp:
 
 _deps/sfml-src/include/SFML/Window/Mouse.hpp:
 
@@ -549,6 +617,8 @@ _deps/sfml-src/include/SFML/Window/GlResource.hpp:
 
 _deps/sfml-src/include/SFML/Window/Export.hpp:
 
+/usr/include/c++/13/algorithm:
+
 _deps/sfml-src/include/SFML/Window/Event.inl:
 
 /usr/include/c++/13/bit:
@@ -557,9 +627,11 @@ _deps/sfml-src/include/SFML/Window/Event.inl:
 
 /usr/include/c++/13/clocale:
 
-/usr/include/c++/13/bits/locale_facets.h:
-
 _deps/sfml-src/include/SFML/Window/Event.hpp:
+
+/usr/include/x86_64-linux-gnu/bits/locale.h:
+
+_deps/sfml-src/include/SFML/Window/Cursor.hpp:
 
 /usr/include/c++/13/bits/stl_algobase.h:
 
@@ -581,6 +653,10 @@ _deps/sfml-src/include/SFML/Graphics/CircleShape.hpp:
 
 /usr/include/c++/13/sstream:
 
+/usr/include/x86_64-linux-gnu/bits/byteswap.h:
+
+_deps/sfml-src/include/SFML/Graphics/Transform.hpp:
+
 /usr/include/x86_64-linux-gnu/bits/waitstatus.h:
 
 /usr/include/c++/13/bits/exception_defines.h:
@@ -593,7 +669,11 @@ _deps/sfml-src/include/SFML/Graphics/RectangleShape.hpp:
 
 _deps/sfml-src/include/SFML/Graphics/StencilMode.hpp:
 
-/usr/include/stdc-predef.h:
+_deps/sfml-src/include/SFML/Window/Sensor.hpp:
+
+/usr/include/c++/13/tr1/special_function_util.h:
+
+/usr/include/c++/13/bits/locale_facets.h:
 
 /usr/include/c++/13/bits/enable_special_members.h:
 
@@ -614,6 +694,8 @@ _deps/sfml-src/include/SFML/Graphics/Glyph.hpp:
 /usr/include/c++/13/bits/invoke.h:
 
 _deps/sfml-src/include/SFML/Window/Window.hpp:
+
+/usr/include/x86_64-linux-gnu/bits/iscanonical.h:
 
 /usr/include/c++/13/string_view:
 
@@ -639,11 +721,9 @@ _deps/sfml-src/include/SFML/System/Vector3.inl:
 
 /usr/include/c++/13/bits/basic_string.h:
 
+/usr/include/c++/13/tr1/poly_laguerre.tcc:
+
 /usr/include/libintl.h:
-
-/usr/include/c++/13/bits/chrono.h:
-
-/usr/include/x86_64-linux-gnu/bits/endianness.h:
 
 _deps/sfml-src/include/SFML/Graphics/Texture.hpp:
 
@@ -683,13 +763,11 @@ _deps/sfml-src/include/SFML/Graphics/VertexBuffer.hpp:
 
 /usr/include/c++/13/bits/stl_iterator.h:
 
-/usr/include/x86_64-linux-gnu/bits/libc-header-start.h:
+/usr/include/x86_64-linux-gnu/bits/fp-fast.h:
 
 _deps/sfml-src/include/SFML/Graphics/Transformable.hpp:
 
 /usr/include/c++/13/ext/aligned_buffer.h:
-
-/usr/include/locale.h:
 
 _deps/sfml-src/include/SFML/Graphics/Vertex.hpp:
 
@@ -703,9 +781,9 @@ _deps/sfml-src/include/SFML/Graphics/Text.hpp:
 
 _deps/sfml-src/include/SFML/System/InputStream.hpp:
 
-/usr/include/c++/13/debug/debug.h:
-
 /usr/include/linux/errno.h:
+
+/usr/include/c++/13/debug/debug.h:
 
 _deps/sfml-src/include/SFML/System/Angle.inl:
 
@@ -713,7 +791,9 @@ _deps/sfml-src/include/SFML/Window/WindowBase.inl:
 
 _deps/sfml-src/include/SFML/Graphics/BlendMode.hpp:
 
-/usr/include/c++/13/bits/locale_classes.tcc:
+/usr/include/x86_64-linux-gnu/bits/endian.h:
+
+_deps/sfml-src/include/SFML/System/Err.hpp:
 
 /usr/include/c++/13/bits/stl_bvector.h:
 
@@ -737,8 +817,6 @@ _deps/sfml-src/include/SFML/Window/Clipboard.hpp:
 
 _deps/sfml-src/include/SFML/System/String.hpp:
 
-/usr/include/stdlib.h:
-
 _deps/sfml-src/include/SFML/Graphics/Rect.hpp:
 
 /usr/include/c++/13/bits/locale_facets_nonio.h:
@@ -747,17 +825,13 @@ _deps/sfml-src/include/SFML/Graphics/Rect.hpp:
 
 _deps/sfml-src/include/SFML/System/Vector2.hpp:
 
-/usr/include/c++/13/bits/locale_facets.tcc:
-
-_deps/sfml-src/include/SFML/Graphics/VertexArray.hpp:
-
-_deps/sfml-src/include/SFML/Graphics/Shader.hpp:
-
 /usr/include/c++/13/cerrno:
 
 _deps/sfml-src/include/SFML/System/Time.hpp:
 
 _deps/sfml-src/include/SFML/Graphics/Sprite.hpp:
+
+/usr/include/c++/13/bits/specfun.h:
 
 _deps/sfml-src/include/SFML/System.hpp:
 
@@ -765,25 +839,37 @@ _deps/sfml-src/include/SFML/Window/WindowBase.hpp:
 
 /usr/include/c++/13/bits/streambuf.tcc:
 
+/usr/include/stdint.h:
+
+/usr/include/endian.h:
+
+_deps/sfml-src/include/SFML/Graphics/VertexArray.hpp:
+
+_deps/sfml-src/include/SFML/Graphics/Shader.hpp:
+
+/usr/include/c++/13/bits/locale_facets.tcc:
+
+/usr/include/x86_64-linux-gnu/bits/floatn-common.h:
+
+/usr/include/c++/13/bits/requires_hosted.h:
+
 _deps/sfml-src/include/SFML/System/Time.inl:
 
 _deps/sfml-src/include/SFML/Graphics/Export.hpp:
 
 /usr/include/c++/13/bits/stl_vector.h:
 
-/usr/include/c++/13/bits/locale_facets_nonio.tcc:
+/usr/include/c++/13/bits/istream.tcc:
 
-/usr/include/c++/13/utility:
+/usr/include/c++/13/bits/locale_conv.h:
+
+/usr/include/c++/13/bits/locale_facets_nonio.tcc:
 
 /usr/include/c++/13/bits/localefwd.h:
 
 /usr/include/c++/13/streambuf:
 
 /usr/include/c++/13/bits/memory_resource.h:
-
-/usr/include/c++/13/bits/shared_ptr_base.h:
-
-/usr/include/wchar.h:
 
 _deps/sfml-src/include/SFML/Window/VideoMode.hpp:
 
@@ -819,8 +905,6 @@ _deps/sfml-src/include/SFML/System/Sleep.hpp:
 
 /usr/include/c++/13/bits/unordered_map.h:
 
-/usr/include/c++/13/bits/range_access.h:
-
 /usr/include/c++/13/bits/refwrap.h:
 
 /usr/include/c++/13/bits/shared_ptr.h:
@@ -830,6 +914,12 @@ _deps/sfml-src/include/SFML/System/Sleep.hpp:
 /usr/include/c++/13/cwctype:
 
 /usr/include/c++/13/ratio:
+
+/usr/include/c++/13/bits/stl_algo.h:
+
+_deps/sfml-src/include/SFML/Graphics/ConvexShape.hpp:
+
+/usr/include/c++/13/cstddef:
 
 /usr/include/c++/13/bits/stl_construct.h:
 
@@ -841,11 +931,19 @@ _deps/sfml-src/include/SFML/System/Export.hpp:
 
 /usr/include/c++/13/bits/utility.h:
 
+/usr/include/c++/13/tr1/beta_function.tcc:
+
+/usr/include/c++/13/utility:
+
+/usr/include/c++/13/bits/stl_heap.h:
+
 /usr/include/stdio.h:
 
 /usr/include/c++/13/bits/stl_iterator_base_types.h:
 
 /usr/include/c++/13/bits/stl_raw_storage_iter.h:
+
+/usr/include/x86_64-linux-gnu/bits/mathcalls.h:
 
 /usr/include/c++/13/bits/stl_relops.h:
 
@@ -857,11 +955,21 @@ _deps/sfml-src/include/SFML/System/Export.hpp:
 
 /usr/include/c++/13/locale:
 
+/usr/include/x86_64-linux-gnu/bits/flt-eval-method.h:
+
 /usr/include/c++/13/bits/streambuf_iterator.h:
 
 /usr/include/c++/13/ostream:
 
+_deps/sfml-src/include/SFML/Window/Touch.hpp:
+
+/usr/include/c++/13/tr1/riemann_zeta.tcc:
+
 /usr/include/c++/13/bits/stringfwd.h:
+
+/usr/include/c++/13/bits/locale_classes.tcc:
+
+/usr/include/c++/13/bits/uniform_int_dist.h:
 
 /usr/include/c++/13/optional:
 
@@ -873,6 +981,8 @@ _deps/sfml-src/include/SFML/System/Export.hpp:
 
 /usr/include/c++/13/cassert:
 
+/usr/include/c++/13/tr1/poly_hermite.tcc:
+
 /usr/include/c++/13/cctype:
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_tm.h:
@@ -881,7 +991,11 @@ _deps/sfml-src/include/SFML/Window/WindowHandle.hpp:
 
 /usr/include/c++/13/ext/atomicity.h:
 
+/usr/include/c++/13/tr1/gamma.tcc:
+
 /usr/include/c++/13/chrono:
+
+/usr/include/c++/13/cmath:
 
 /usr/include/c++/13/codecvt:
 
@@ -894,10 +1008,6 @@ _deps/sfml-src/include/SFML/System/Vector2.inl:
 /usr/include/c++/13/compare:
 
 /usr/include/c++/13/filesystem:
-
-_deps/sfml-src/include/SFML/Graphics/ConvexShape.hpp:
-
-/usr/include/c++/13/cstddef:
 
 /usr/include/c++/13/cstdint:
 
@@ -917,11 +1027,17 @@ _deps/sfml-src/include/SFML/Graphics/Glsl.inl:
 
 /usr/include/c++/13/ext/concurrence.h:
 
+/usr/include/c++/13/pstl/glue_algorithm_defs.h:
+
 /usr/include/c++/13/ext/type_traits.h:
+
+/usr/include/c++/13/tr1/bessel_function.tcc:
 
 /usr/include/c++/13/initializer_list:
 
 /usr/include/c++/13/ios:
+
+/usr/include/c++/13/iostream:
 
 /usr/include/c++/13/istream:
 
@@ -936,8 +1052,6 @@ _deps/sfml-src/include/SFML/Graphics/Color.inl:
 /usr/include/c++/13/limits:
 
 /usr/include/c++/13/memory:
-
-/usr/include/x86_64-linux-gnu/bits/floatn.h:
 
 /usr/include/c++/13/exception:
 
@@ -955,40 +1069,22 @@ _deps/sfml-src/include/SFML/System/FileInputStream.hpp:
 
 /usr/include/c++/13/string:
 
+/usr/include/c++/13/tr1/ell_integral.tcc:
+
+/usr/include/c++/13/tr1/exp_integral.tcc:
+
+/usr/include/c++/13/bits/range_access.h:
+
+/usr/include/c++/13/tr1/hypergeometric.tcc:
+
 /usr/include/c++/13/type_traits:
+
+/usr/include/c++/13/tr1/legendre_function.tcc:
+
+/usr/include/c++/13/tr1/modified_bessel_func.tcc:
 
 /usr/include/c++/13/bits/allocator.h:
 
 /usr/include/c++/13/unordered_map:
 
 /usr/include/ctype.h:
-
-/usr/include/pthread.h:
-
-/usr/include/wctype.h:
-
-/usr/include/sched.h:
-
-/usr/include/endian.h:
-
-/usr/include/stdint.h:
-
-/usr/include/x86_64-linux-gnu/bits/atomic_wide_counter.h:
-
-_deps/sfml-src/include/SFML/Graphics/Transform.hpp:
-
-/usr/include/x86_64-linux-gnu/bits/byteswap.h:
-
-/usr/include/x86_64-linux-gnu/bits/cpu-set.h:
-
-_deps/sfml-src/include/SFML/System/Err.hpp:
-
-/usr/include/x86_64-linux-gnu/bits/endian.h:
-
-/usr/include/c++/13/bits/requires_hosted.h:
-
-/usr/include/x86_64-linux-gnu/bits/floatn-common.h:
-
-_deps/sfml-src/include/SFML/Window/Cursor.hpp:
-
-/usr/include/x86_64-linux-gnu/bits/locale.h:

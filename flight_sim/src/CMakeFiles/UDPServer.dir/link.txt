@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/UDPServer.dir/UDPServer.cpp.o -o UDPServer  libproto_lib.a /usr/lib/aarch64-linux-gnu/libprotobuf.so 
