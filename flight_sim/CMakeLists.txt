@@ -42,9 +42,16 @@ target_include_directories(proto_lib PUBLIC
   ${PROTO_DIR}
 )
 
-add_executable(${PROJECT_NAME} src/main.cpp)
-add_executable(UDPServer src/UDPServer.cpp)
-add_executable(UDPClient src/UDPClient.cpp)
+# Source files (relative paths)
+add_executable(${PROJECT_NAME}
+    src/main.cpp
+)
+add_executable(UDPServer
+    src/UDPServer.cpp
+)
+add_executable(UDPClient
+    src/UDPClient.cpp
+)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE proto_lib Eigen3::Eigen)
 target_link_libraries(UDPServer PRIVATE proto_lib)
