@@ -61,6 +61,9 @@ int main() {
     velocityController* velocityControl = new velocityController(0.1, 0, 0);
     Eigen::Vector3d Target(100.0, 100.0, 100.0);
     positionControl -> setTarget (Target);
+    // Is the time update necessarily in terms of a minute? Or does it work this way with chrono?
+    const double DELTATIME = 1.0/60.0;
+    auto previousTime = std::chrono::high_resolution_clock::now();
 
     // Commented out thread for now
     // ( was creating a "terminate called without an active exception error" )
@@ -93,6 +96,25 @@ int main() {
             std::cout << "pos: (" << drone->getPosition().transpose() << ")";
 
             std::cout << "\tvel: (" << drone->getVelocity().transpose() << ")";
+    while( !drone->isColliding(ground) ){
+
+        auto currentTime = clock::now();
+        duration elapsedTime = currentTime - previousTime;
+
+        if(elapsedTime.count() >= DELTATIME){
+            //TODO: logic and the actual physics
+            drone->applyForce( Eigen::Vector3d( 0, 0, -9.81 * drone->getMass() ) );
+            drone->update(DELTATIME);
+
+            std::cout << "pos: (" << drone->position.x() << ", "
+                << drone->position.y() << ", "
+                << drone->position.z() << ")";
+
+            std::cout << "\tvel: (" << drone->velocity.x() << ", "
+                << drone->velocity.y() << ", "
+                << drone->velocity.z() << ")";
+
+            std::cout << "\tori: [" << drone->orientation.coeffs().transpose() << "]";
 
             std::cout << "\tori: [" << drone->orientation.coeffs().transpose() << "]";
 
@@ -109,6 +131,11 @@ int main() {
                std::cout << std::endl;
 
                previousTime = currentTime; */
+        }
+
+            std::cout << std::endl;
+
+            previousTime = currentTime;
         }
 
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
@@ -151,6 +178,12 @@ void closeLogging(){
 // Old Collision detection test code
 
 /*RigidBody* body = new RigidBody();
+<<<<<<< HEAD
+=======
+
+    // Set the body to hover
+    body->position = Eigen::Vector3d(0, 0, 200.0);
+>>>>>>> 548a483b6fffec0957585793b220aae781cf54f4
 
 // Set the body to hover
 body->position = Eigen::Vector3d(0, 0, 200.0);
@@ -173,7 +206,12 @@ y_wall->setBounds(50, 5, 50); // Plane perpendicular to the y-axis with dimensio
 ground->setBounds(50, 50, 5); // Plane perpendicular to the z-axis with dimensions 100x100x10
 
 
+<<<<<<< HEAD
 // Apply Movements for collision testing
 //applyGravity(body, ground);
 body->goToXWall(body, x_wall);
 //goToYWall(body, y_wall);*/
+    // Apply Movements for collision testing
+    //applyGravity(body, ground);
+    // body->goToXWall(body, x_wall);
+    //goToYWall(body, y_wall);*/
