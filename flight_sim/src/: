@@ -1,0 +1,43 @@
+#include <fcntl.h>
+#include <linux/spi/spidev.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
+#include <iostream>
+#include <cstring>
+
+int main() {
+    const char* device = "/dev/spidev0.0";
+    uint8_t mode = SPI_MODE_0;
+    uint8_t bits = 8;
+    uint32_t speed = 500000;
+
+    int fd = open(device, O_RDWR);
+    if (fd < 0) { perror("open"); return 1; }
+
+    ioctl(fd, SPI_IOC_WR_MODE, &mode);
+    ioctl(fd, SPI_IOC_WR_BITS_PER_WORD, &bits);
+    ioctl(fd, SPI_IOC_WR_MAX_SPEED_HZ, &speed);
+
+    uint8_t tx[4] = {0xAA, 0xBB, 0xCC, 0xDD};
+    uint8_t rx[4] = {0};
+
+    struct spi_ioc_transfer tr = {};
+    tr.tx_buf = (unsigned long)tx;
+    tr.rx_buf = (unsigned long)rx;
+    tr.len = sizeof(tx);
+    tr.speed_hz = speed;
+    tr.bits_per_word = bits;
+
+    int ret = ioctl(fd, SPI_IOC_MESSAGE(1), &tr);
+    if (ret < 1) { perror("SPI_IOC_MESSAGE"); return 1; }
+
+    std::cout << "TX: ";
+    for (auto b : tx) std::cout << std::hex << (int)b << " ";
+    std::cout << "\nRX: ";
+    for (auto b : rx) std::cout << std::hex << (int)b << " ";
+    std::cout << std::endl;
+
+    close(fd);
+    return 0;
+}
+

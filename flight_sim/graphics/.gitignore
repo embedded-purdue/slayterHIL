@@ -35,3 +35,6 @@ obj/
 # ---- Generated Config ----
 compile_commands.json
 
+=======
+/build/
+.cache
