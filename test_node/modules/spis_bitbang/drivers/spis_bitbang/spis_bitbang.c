@@ -108,8 +108,12 @@ static int spis_bitbang_transceive(const struct device *dev,
 		lsb = true;
 	}
 
+  LOG_DBG("before cs");
+
 	// wait for CS to go low
 	while (gpio_pin_get_dt(cs) == 0) {
+    LOG_DBG("waiting");
+    log_panic();
 		/* no op */
 	}
 

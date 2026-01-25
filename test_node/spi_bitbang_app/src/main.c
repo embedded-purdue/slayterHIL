@@ -1,7 +1,7 @@
 #include <zephyr/devicetree.h>
 #include <zephyr/drivers/spi.h>
 
-#define LEN_TRANSCEIVE 12
+#define LEN_TRANSCEIVE 4
 #define SPIBB_NODE	DT_NODELABEL(spibb0)
 
 int main(void)

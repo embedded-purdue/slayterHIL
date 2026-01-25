@@ -20,7 +20,7 @@
 
         // the cs gpio at index 0 in cs-gpios
         reg = <0>;
-        spi-max-frequency = <1600000>;
+        spi-max-frequency = <90000>;
 
         // we will use this to get with DT_NODELABEL.
         label = "esp32";
