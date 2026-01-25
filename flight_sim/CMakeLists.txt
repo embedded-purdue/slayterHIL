@@ -57,3 +57,10 @@ target_link_libraries(${PROJECT_NAME} PRIVATE proto_lib Eigen3::Eigen)
 target_link_libraries(UDPServer PRIVATE proto_lib)
 target_link_libraries(UDPClient PRIVATE proto_lib)
 
+add_executable(${PROJECT_NAME}
+    src/main.cpp
+    src/physics/rigid_body.cpp)
+
+target_include_directories(${PROJECT_NAME} PRIVATE ${EIGEN3_INCLUDE_DIR})
+
+target_link_libraries(${PROJECT_NAME} PRIVATE Eigen3::Eigen)
