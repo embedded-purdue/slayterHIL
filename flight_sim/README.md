@@ -10,5 +10,5 @@ Flight simulation branch.
     - `../shared/sensor_data.proto` defines the fields to package sensor data for transfer to the testnode
     - `../../testnode/.../spi_slave_protobuf.c`: Code for the esp32 side of the SPI communication
 
-    
-
+**Flight sim**
+    - For now i just compile with g++ -std=c++17 main.cpp physics/*.cpp -Iphysics -I/Users/[path]/cpp_libraries/eigen-master -o main then ./main

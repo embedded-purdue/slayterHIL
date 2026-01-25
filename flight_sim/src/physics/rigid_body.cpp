@@ -1,18 +1,20 @@
 #include "rigid_body.hpp"
 
-// default constructor with unit mass and identity inertia
-RigidBody::RigidBody() {
-    mass = 1.0;
-    inertiaBody = Eigen::Matrix3d::Identity();
-    inertiaBodyInv = inertiaBody.inverse();
-    position.setZero();
-    velocity.setZero();
-    acceleration.setZero();
-    total_force.setZero();
-    total_torque_body.setZero();
-    orientation = Eigen::Quaterniond::Identity();
-    angularVelocity.setZero();
-}
+RigidBody::RigidBody()
+  : PhysicsBody(
+        1.0,                            // mass
+        Eigen::Vector3d::Zero(),        // position
+        Eigen::Vector3d::Zero(),        // velocity
+        Eigen::Vector3d::Zero(),        // acceleration
+        Eigen::Quaterniond::Identity()  // orientation
+    ),
+    inertiaBody(Eigen::Matrix3d::Identity()),
+    inertiaBodyInv(Eigen::Matrix3d::Identity()),
+    total_torque_body(Eigen::Vector3d::Zero()),
+    angularVelocity(Eigen::Vector3d::Zero())
+{}
+
+
 
 RigidBody::RigidBody(double m,
                      const Eigen::Matrix3d& inertia,
@@ -36,6 +38,14 @@ void RigidBody::applyForce(const Eigen::Vector3d& force) {
 
 void RigidBody::applyTorque(const Eigen::Vector3d& torque) {
     total_torque_body += torque; // body frame
+}
+
+Eigen::Vector3d RigidBody::getPosition () const {
+	return position; 
+}
+
+Eigen::Vector3d RigidBody::getVelocity() const {
+	return velocity; 
 }
 
 void RigidBody::clearAccumulators() {

@@ -43,7 +43,8 @@ public:
     // get/set angular velocity in body frame
     Eigen::Vector3d getAngularVelocity() const { return angularVelocity; }
     void setAngularVelocity(const Eigen::Vector3d& w) { angularVelocity = w; }
-
+	Eigen::Vector3d getPosition() const;
+	Eigen::Vector3d getVelocity() const;
     // inertia (body frame)
     Eigen::Matrix3d inertiaBody;    // I
     Eigen::Matrix3d inertiaBodyInv; // I^-1
