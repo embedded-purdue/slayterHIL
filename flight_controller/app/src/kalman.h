@@ -2,10 +2,10 @@
 #define KALMAN_H
 
 typedef struct { 
-    float x; 
-    float P; 
-    float Q; 
-    float R; 
+    float x[4];  
+    float P[4][4]; 
+    float Q[4][4]; 
+    float R[2][2]; 
 } EKF_State; 
 
 void ekf_init(EKF_State *ekf); 

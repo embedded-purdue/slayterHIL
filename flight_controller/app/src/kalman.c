@@ -1,5 +1,7 @@
 #define G 9.81f
 #define DT 0.01f
+#include <string.h>
+#include <math.h>
 #include "matrix.h"
 
 typedef struct {
@@ -57,7 +59,7 @@ void ekf_predict(EKF_State *ekf, float gx, float gy){
     }; 
 
     float P_temp[4][4];
-    mat_mult_4x4(F, ekf->P, P_temp); 
+    mat_mult((float*)F, 4, 4, (float*)ekf->P, 4, (float*)P_temp); 
 
     float FT[4][4] = { 
         {1.0f, 0.0f, 0.0f, 0.0f},
@@ -65,9 +67,9 @@ void ekf_predict(EKF_State *ekf, float gx, float gy){
         {-DT, 0.0f, 1.0f, 0.0f},
         {0.0f, -DT, 0.0f, 1.0f}
     }; 
-    mat_mult_4x4(P_temp, FT, ekf->P);
+    mat_mult((float*)P_temp, 4, 4, (float*)FT, 4, (float*)ekf->P);
     float P_with_Q[4][4]; 
-    mat_add_4x4(ekf->P, ekf->Q, P_with_Q); 
+    mat_add((float*)ekf->P, (float*)ekf->Q, 4, 4, (float*)P_with_Q); 
     memcpy(ekf->P, P_with_Q, sizeof(P_with_Q)); 
 }
 
@@ -120,7 +122,7 @@ void ekf_update(EKF_State *ekf, float ax, float ay, float az) {
   memset(K_y, 0, sizeof(K_y));
   for (int i = 0; i < 4; i++) {
     for (int j = 0; j < 2; j++) {
-      K_y[i] += K[i * 2 + j] * y[j];
+      K_y[i] += K[i][j] * y[j];
     }
   }
 
