@@ -1,4 +1,4 @@
-#include "velocityController.hpp"
+#include "include/slayter/physics/velocityController.hpp"
 
 velocityController::velocityController () : 
 	kp(0.0), ki(0.0), kd(0.0),

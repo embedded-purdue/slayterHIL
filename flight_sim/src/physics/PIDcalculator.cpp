@@ -1,4 +1,4 @@
-#include "PIDcalculator.hpp"
+#include "include/slayter/physics/PIDcalculator.hpp"
 
 PIDcalculator::PIDcalculator () : 
 	kp(0.0), ki(0.0), kd(0.0),

@@ -1,4 +1,4 @@
-#include "rigid_body.hpp"
+#include "include/slayter/physics/rigid_body.hpp"
 
 RigidBody::RigidBody()
   : PhysicsBody(

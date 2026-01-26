@@ -1,1 +1,58 @@
+# --- Build Directories ---
+build/
+cmake-build-*/
+bin/
+out/
+debug/
+release/
+
+# --- CMake Artifacts ---
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+compile_commands.json
+*.cmake
+!cmake/  # Do not ignore custom cmake modules folder
+
+# --- C++ Compiled Objects & Libraries ---
+*.o
+*.obj
+*.so
+*.so.*
+*.a
+*.lib
+*.dll
+*.dylib
+*.exe
+*.out
+*.app
+a.out
+
+# --- Protobuf Generated Files ---
+# Ignore these because CMake generates them at build time
+*.pb.cc
+*.pb.h
+generated/
+proto_lib/
+
+# --- Python (Virtual Envs & Cache) ---
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+
+# --- Editors & IDEs ---
+.vscode/
+.idea/
+*.swp
+*~
+*.DS_Store
+Thumbs.db
+
+# --- Temporary/Log Files ---
+*.log
+*.tmp
 .venv

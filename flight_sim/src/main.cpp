@@ -10,11 +10,11 @@
 #include <thread>
 #include <iostream>
 #include <fstream>
-#include "physics/rigid_body.hpp"
-#include "physics/drone.hpp"
-#include "physics/PIDcalculator.hpp"
-#include "physics/positionController.hpp"
-#include "physics/velocityController.hpp"
+#include "include/slayter/physics/rigid_body.hpp"
+#include "include/slayter/physics/drone.hpp"
+#include "include/slayter/physics/PIDcalculator.hpp"
+#include "include/slayter/physics/positionController.hpp"
+#include "include/slayter/physics/velocityController.hpp"
 
 void initializeLogging();
 void logData(double t, const Eigen::Vector3d& desiredPos,

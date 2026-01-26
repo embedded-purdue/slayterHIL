@@ -1,2 +1,0 @@
-/usr/bin/ar qc libproto_lib.a CMakeFiles/proto_lib.dir/home/slayterhill/shared/proto/sensor_data.pb.cc.o
-/usr/bin/ranlib libproto_lib.a

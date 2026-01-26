@@ -1,6 +1,0 @@
-/home/slayterhill/slayterHIL/flight_sim/src/CMakeFiles/proto_lib.dir
-/home/slayterhill/slayterHIL/flight_sim/src/CMakeFiles/flight_sim.dir
-/home/slayterhill/slayterHIL/flight_sim/src/CMakeFiles/UDPServer.dir
-/home/slayterhill/slayterHIL/flight_sim/src/CMakeFiles/UDPClient.dir
-/home/slayterhill/slayterHIL/flight_sim/src/CMakeFiles/edit_cache.dir
-/home/slayterhill/slayterHIL/flight_sim/src/CMakeFiles/rebuild_cache.dir
