@@ -4,11 +4,18 @@
 #include <sensor_data.pb.h> // protobuf struct definition header
 #include <pb_decode.h> // protobuf decode header
 #include <zephyr/kernel.h>
+#include <zephyr/logging/log.h>
+
+// register logging module
+LOG_MODULE_REGISTER(scheduler_thread, LOG_LEVEL_INF);
 
 static void scheduler_thread(void *, void *, void *) {
     OrchestratorCommsPacket packet;
 
     while(1) {
+        // dummy printing for sanity
+        LOG_INF("Scheduler hello world\n");
+
         // Get data from orchestrator_receive_q
         k_msgq_get(&orchestrator_receive_q, &packet, K_FOREVER);
 
@@ -23,6 +30,9 @@ struct k_thread scheduler_data;
 
 // Initialize and start thread
 void scheduler_init() {
+    // dummy printing for sanity
+    LOG_INF("Scheduler init\n");
+
     // Any initialization
 
     k_thread_create(&scheduler_data, scheduler_stack, 

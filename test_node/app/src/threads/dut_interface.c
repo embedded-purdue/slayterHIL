@@ -2,6 +2,10 @@
 #include "threads/sensor_emulation.h" // for sensor_bus_q
 #include "threads/orchestrator_comms.h" // for orchestrator_send_q
 #include <zephyr/kernel.h>
+#include <zephyr/logging/log.h>
+
+// register logging module
+LOG_MODULE_REGISTER(dut_thread, LOG_LEVEL_INF);
 
 K_MSGQ_DEFINE(dut_interface_command_q, DUT_INTERFACE_COMMAND_QUEUE_PACKET_SIZE, DUT_INTERFACE_COMMAND_QUEUE_LEN, 1);
 
@@ -11,7 +15,11 @@ static void dut_interface_thread(void *, void *, void *) {
     DutInterfaceCommandPacket command;
 
     while(1) {
+        // dummy printing for sanity
+        LOG_INF("DUT hello world\n");
+
         // Get commands from dut_interface_command_q
+        // blocking
         k_msgq_get(&dut_interface_command_q, &command, K_FOREVER);
 
         // Output on peripherals - ideally non-blocking
@@ -26,6 +34,9 @@ struct k_thread dut_interface_data;
 
 // Initialize and start thread
 void dut_interface_init() {
+    // dummy printing for sanity
+    LOG_INF("DUT init\n");
+
     // Any initialization
 
     k_thread_create(&dut_interface_data, dut_interface_stack, 

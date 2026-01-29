@@ -1,5 +1,9 @@
 #include "threads/sensor_emulation.h"
 #include <zephyr/kernel.h>
+#include <zephyr/logging/log.h>
+
+// register logging module
+LOG_MODULE_REGISTER(sensor_thread, LOG_LEVEL_INF);
 
 K_MSGQ_DEFINE(sensor_update_q, SENSOR_UPDATE_QUEUE_PACKET_SIZE, SENSOR_UPDATE_QUEUE_LEN, 1);
 K_MSGQ_DEFINE(sensor_bus_q, SENSOR_BUS_QUEUE_PACKET_SIZE, SENSOR_BUS_QUEUE_LEN, 1);
@@ -14,6 +18,9 @@ static void sensor_emulation_thread(void *, void *, void *) {
     SensorBusPacket bus_packet;
 
     while (1) {
+        // dummy printing for sanity
+        LOG_INF("Sensor hello world\n");
+
         // Get data from sensor_update_q or sensor_bus_q
         k_poll(events, 2, K_FOREVER);
         
@@ -42,6 +49,9 @@ struct k_thread sensor_emulation_data;
 
 // Initialize and start thread
 void sensor_emulation_init() {
+    // dummy printing for sanity
+    LOG_INF("Sensor init\n");
+
     // Any initialization
 
     k_thread_create(&sensor_emulation_data, sensor_emulation_stack, 
