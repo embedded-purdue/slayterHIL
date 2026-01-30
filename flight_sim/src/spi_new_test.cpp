@@ -81,6 +81,7 @@ void send_spi(char *msg, size_t size, int fd, int bits, int speed, int mode) {
     uint8_t *tx_buf = (uint8_t*) msg;  // outbound data
 printf("size: %d\n", size);
 printf("Shit we send: %s\n", tx_buf);
+printf("%d,%d,%d,%d,%d\n", msg[0],msg[1],msg[2],msg[3],msg[4]);
     uint8_t rx_buf[size] = {0}; // inbound buffer
     size_t length = size; // total bytes 
 
@@ -125,7 +126,7 @@ void init_spi(int *fd_out, uint8_t *mode_out, uint8_t *bits_out, uint32_t *speed
     // ---- 2. Basic configuration ----
     uint8_t mode = SPI_MODE_0;           // CPOL = 0, CPHA = 0 (must match ESP32)
     uint8_t bits = 8;                    // 8 bits per word
-    uint32_t speed = 100000;             // 100 kHz start (slow for stability)
+    uint32_t speed = 50000;             // 50 kHz start (slow for stability)
 
     // Apply configuration using ioctl()
     if (ioctl(fd, SPI_IOC_WR_MODE, &mode) < 0)  perror("mode");
@@ -149,8 +150,14 @@ int main() {
 
     char *msg = 0;
     serialize_to_proto(&msg, &length);
+    int k = 10;
+    char *msgg = (char *) calloc(1, 8);
+    char *msggg = "Hello Wo";
+    // memcpy(msgg, 0, 8);
+    //*msgg =  *msgg | (0x1 << 7);   
+    //memcpy(msgg, (const void *)0x10, 1);
 
-    send_spi(msg, length, fd_out, mode_out, bits_out, speed_out);
-    
+    send_spi(msggg, 8, fd_out, mode_out, bits_out, speed_out);
+    free(msgg);
 }
 
