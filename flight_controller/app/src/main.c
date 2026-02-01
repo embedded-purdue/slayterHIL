@@ -74,13 +74,7 @@ static void imu_consumer(void *arg1, void *arg2, void *arg3) {
         //     // printk("[%s] Temp: %.2f C, Accel: [%.2f, %.2f, %.2f] m/s², Gyro: [%.2f, %.2f, %.2f] dps\n",
         //     //        now_str(), out.temp,
         //     //        out.accel[0], out.accel[1], out.accel[2],
-        //     //        out.gyro[0], out.gyro[1], out.gyro[2]);
-            printk(">Accel x: %.2f\n", out.accel[0]);
-            printk(">Accel y: %.2f\n", out.accel[1]);
-            printk(">Accel z: %.2f\n", out.accel[2]);
-            printk(">Gyro x: %.2f\n", out.gyro[0]);
-            printk(">Gyro y: %.2f\n", out.gyro[1]);
-            printk(">Gyro z: %.2f\n", out.gyro[2]);
+        //     //        out.gyro[0], out.gyro[1], out.gyro[2])
         //     driftx += out.gyro[0];
         //     drifty += out.gyro[1];
         //     printk(">Drift x: %d\n", driftx);
@@ -127,8 +121,8 @@ static void imu_consumer(void *arg1, void *arg2, void *arg3) {
         printk(">Gyro x: %.2f\n", out.gyro[0]);
         printk(">Gyro y: %.2f\n", out.gyro[1]);
         printk(">Gyro z: %.2f\n", out.gyro[2]);
-        printk(">Roll est.: %.2f\n", (double)pwm_roll);
-        printk(">Pitch est.: %.2f\n", (double)pwm_pitch);
+        printk(">Roll est.: %.2f\n", (double)roll_estimated);
+        printk(">Pitch est.: %.2f\n", (double)pitch_estimated);
         k_msleep(10);
 
     }

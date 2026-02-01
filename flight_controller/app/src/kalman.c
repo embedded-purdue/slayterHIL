@@ -29,16 +29,16 @@ void ekf_init(EKF_State *ekf) {
     memcpy(ekf->P, P_init, sizeof(P_init)); 
     
     float Q_init[4][4] = { 
-        {0.01f, 0.0f, 0.0f, 0.0f},
-        {0.01f, 0.001f, 0.0f, 0.0f},
-        {0.01f, 0.0f, 0.0001f, 0.0f},
-        {0.01f, 0.0f, 0.0f, 0.0001f},
+        {0.001f, 0.0f, 0.0f, 0.0f},
+        {0.000f, 0.001f, 0.0f, 0.0f},
+        {0.00f, 0.0f, 0.0001f, 0.0f},
+        {0.00f, 0.0f, 0.0f, 0.0001f},
     }; 
     memcpy(ekf->Q, Q_init, sizeof(Q_init));
 
     float R_init[2][2] = { 
-        {0.1f, 0.0f}, 
-        {0.0f, 0.1f}
+        {0.5f, 0.0f}, 
+        {0.0f, 0.5f}
     };
     memcpy(ekf->R, R_init, sizeof(R_init)); 
 }
