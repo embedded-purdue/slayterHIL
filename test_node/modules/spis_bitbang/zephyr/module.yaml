@@ -1,0 +1,6 @@
+name: spis_bitbang
+build:
+  cmake: .
+  kconfig: Kconfig
+  settings:
+    dts_root: .

@@ -10,7 +10,11 @@ project(my_zephyr_app)
 
 project(app LANGUAGES C)
 
-target_sources(app PRIVATE src/main.c)
+file(GLOB THREAD_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/src/threads/*.c)
+target_sources(app PRIVATE src/main.c ${THREAD_SRCS})
+
+# All #includes to files in src directory should be relative to src directory root
+zephyr_include_directories(src)
 
 # Protobuf
 list(APPEND CMAKE_MODULE_PATH ${ZEPHYR_BASE}/modules/nanopb)

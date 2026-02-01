@@ -1,5 +1,9 @@
-# Out-of-tree drivers root
+# Copyright (c) 2021 Nordic Semiconductor ASA
+# SPDX-License-Identifier: Apache-2.0
+
+menu "Drivers"
 menu "Out-of-tree drivers"
 rsource "sensor/Kconfig"
+endmenu
 endmenu
 

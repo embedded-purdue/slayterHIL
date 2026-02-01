@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Automation</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Top Navigation -->
+    <nav class="top-nav">
+        <div class="nav-left">
+            <button class="menu-btn">☰</button>
+            <span class="nav-title">TEST AUTOMATION</span>
+        </div>
+        <div class="nav-right">
+            <button class="icon-btn">🔍</button>
+            <button class="icon-btn">👤</button>
+        </div>
+    </nav>
+
+    <div class="layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <h3>Tests</h3>
+                <ul class="test-list">
+                    <li class="active">All tests</li>
+                    <li>Recent</li>
+                    <li>Pinned</li>
+                    <li>Suites/Tags</li>
+                </ul>
+            </div>
+            
+            <div class="sidebar-section">
+                <div class="test-item">
+                    <div class="test-header">
+                        <span class="test-name">Login Test</span>
+                        <span class="test-tag">Smoke</span>
+                    </div>
+                    <div class="test-status">
+                        <span class="test-category">UI Tests</span>
+                        <span class="status-badge failed">FAILED</span>
+                    </div>
+                </div>
+                
+                <div class="test-item">
+                    <div class="test-header">
+                        <span class="test-name">Checkout Test</span>
+                        <span class="test-tag">Stress</span>
+                    </div>
+                    <div class="test-status">
+                        <span class="test-category">UI Tests</span>
+                        <span class="status-badge passed">PASSED</span>
+                    </div>
+                </div>
+                
+                <div class="test-item">
+                    <span class="test-name">Purchase Test</span>
+                </div>
+                
+                <div class="test-item">
+                    <div class="test-header">
+                        <span class="test-name">Search Test</span>
+                        <span class="test-duration">5m 47s</span>
+                    </div>
+                </div>
+                
+                <div class="test-item">
+                    <div class="test-header">
+                        <span class="test-name">User Registration Test</span>
+                        <span class="test-duration">9m 02s</span>
+                    </div>
+                </div>
+                
+                <div class="test-item">
+                    <div class="test-header">
+                        <span class="test-name">Payment Test</span>
+                        <span class="test-duration">5m 19s</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sidebar-tabs">
+                <button class="tab-btn active">Steps</button>
+                <button class="tab-btn">Artifacts</button>
+                <button class="tab-btn">Metrics</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Search Section -->
+            <section class="search-section">
+                <div class="section-header">
+                    <h1>Search Test</h1>
+                    <span class="status-badge passed large">PASSED</span>
+                </div>
+                <p class="test-category">UI Tests</p>
+                
+                <div class="test-controls">
+                    <div class="control-group">
+                        <label>Environment</label>
+                        <select>
+                            <option>Development</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label>Retry on flake</label>
+                        <input type="checkbox">
+                    </div>
+                    <div class="control-group">
+                        <label>Seed</label>
+                        <input type="text" placeholder="e.g., 360" value="">
+                    </div>
+                    <div class="control-group">
+                        <label>Use seed</label>
+                        <input type="checkbox">
+                    </div>
+                    <div class="control-group">
+                        <label>Run as user</label>
+                        <input type="text" placeholder="email or username" value="">
+                    </div>
+                    <button class="run-btn">RUN</button>
+                </div>
+            </section>
+
+            <!-- Run Overview -->
+            <section class="overview-section">
+                <h2>Run Overview</h2>
+                <table class="overview-table">
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>Start Time</th>
+                            <th>Duration</th>
+                            <th>Triggered By</th>
+                            <th>Commit</th>
+                            <th>Agent</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="status-badge passed">PASSED</span></td>
+                            <td>Apr 23, 2024</td>
+                            <td>00:03:21</td>
+                            <td>user2</td>
+                            <td>abc123</td>
+                            <td>node-03</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="progress-phases">
+                    <div class="phase">
+                        <span>Setup</span>
+                        <div class="phase-bar setup"></div>
+                    </div>
+                    <div class="phase">
+                        <span>Execute</span>
+                        <div class="phase-bar execute"></div>
+                    </div>
+                    <div class="phase">
+                        <span>Teardown</span>
+                        <div class="phase-bar"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Logs Section -->
+            <section class="logs-section">
+                <h2>Logs</h2>
+                <div class="logs-controls">
+                    <div class="search-box">
+                        <input type="text" placeholder="🔍 Search">
+                    </div>
+                    <select class="log-filter">
+                        <option>INFO</option>
+                    </select>
+                    <div class="log-actions">
+                        <span>Step</span>
+                        <span>Source</span>
+                        <button class="icon-btn">⬇</button>
+                        <button class="icon-btn">🔄</button>
+                    </div>
+                </div>
+                
+                <table class="logs-table">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Level</th>
+                            <th>Step</th>
+                            <th>Message</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logTableBody">
+                        <tr>
+                            <td>01:15:48</td>
+                            <td><span class="log-level info">INFO</span></td>
+                            <td>setup</td>
+                            <td>Initializing browser</td>
+                        </tr>
+                        <tr>
+                            <td>01:15:47</td>
+                            <td><span class="log-level warn">WARN</span></td>
+                            <td>execute</td>
+                            <td>Intermittent network delay</td>
+                        </tr>
+                        <tr>
+                            <td>01:15:30</td>
+                            <td><span class="log-level warn">WARN</span></td>
+                            <td>browser</td>
+                            <td>Search for "gavids" — prequery</td>
+                        </tr>
+                        <tr>
+                            <td>01:16:33</td>
+                            <td><span class="log-level info">INFO</span></td>
+                            <td>browser</td>
+                            <td>Result value: pass</td>
+                        </tr>
+                        <tr>
+                            <td>01:16:36</td>
+                            <td><span class="log-level info">INFO</span></td>
+                            <td>setup</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
