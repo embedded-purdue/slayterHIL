@@ -2,7 +2,7 @@
 #include <zephyr/drivers/sensor.h>
 #include <zephyr/sys/printk.h>
 
-/* ======= Synchronization Objects ======= */
+/* ======= Synchronization Objects ======= *//
 K_SEM_DEFINE(lidar_sem, 0, 1);
 
 struct lidar_msg {
