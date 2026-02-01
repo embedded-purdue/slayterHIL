@@ -18,3 +18,5 @@ include(nanopb)
 
 FILE(GLOB proto_sources ${CMAKE_CURRENT_SOURCE_DIR}/../../shared/proto/*.proto)
 zephyr_nanopb_sources(app ${proto_sources})
+target_include_directories(app  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../include)
+target_sources(app PRIVATE src/main.c src/state_machine.c src/imu.c)
