@@ -8,6 +8,7 @@
 #include <zephyr/sys/clock.h>
 #include <zephyr/sys/time_units.h>
 
+
 #define MAX_TIMEOUT_MS 100
 
 #define LIDAR_LITE_V4_REG_MEASURE       0x00

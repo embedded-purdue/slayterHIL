@@ -1,6 +1,7 @@
 # Copyright (c) 2021 Nordic Semiconductor ASA
 # SPDX-License-Identifier: Apache-2.0
 
+
 config LIDAR_LITE_V4
 	bool "Lidar Lite V4 support"
 	depends on I2c

@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # Out-of-tree drivers for existing driver classes
-# SPDX-License-Identifier: Apache-2.0
 # Out-of-tree drivers for flight_controller
 
 cmake_minimum_required(VERSION 3.20.0)

@@ -6,6 +6,7 @@ set(ESPTOOL_PY_PATH
     CACHE FILEPATH "esptool.py path override"
 )
 
+
 # --- Load Zephyr ---
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 project(flight_controller)
