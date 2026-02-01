@@ -1,6 +1,6 @@
-# Copyright (c) 2025
+# Copyright (c) 2021 Nordic Semiconductor ASA
 # SPDX-License-Identifier: Apache-2.0
 
-menu "Out-of-tree sensor drivers"
-rsource "lidar_lite_v4/Kconfig"
-endmenu
+if SENSOR
+rsource "example_sensor/Kconfig"
+endif # SENSOR
