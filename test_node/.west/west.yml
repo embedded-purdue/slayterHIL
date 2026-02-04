@@ -21,13 +21,15 @@ manifest:
   remotes:
     - name: upstream
       url-base: https://github.com/zephyrproject-rtos
+    - name: mcuboot 
+      url-base: https://github.com/mcu-tools
 
   group-filter: [-optional]
 
   projects:
     - name: zephyr
       remote: upstream
-      revision: 5d4a116c44412e5ba15f9c56d2dc465746d7d3b0
+      revision: main
       path: zephyr
       import: false
       import:
@@ -36,6 +38,15 @@ manifest:
         name-allowlist:
           - hal_espressif # required for ESP32-based boards
           - nanopb # protobuf
+
+          # dependencies for mcuboot (for dual-core usage)
+          - cmsis
+          - tinycrypt
+          - mbedtls
+    - name: mcuboot 
+      remote: mcuboot 
+      revision: v1.9.0
+      path: zephyr/bootloader/mcuboot
 
   self:
     path: zephyr
