@@ -17,6 +17,8 @@ LOG_MODULE_REGISTER(spis_bitbang, CONFIG_SPI_LOG_LEVEL);
 #include <zephyr/drivers/spi/rtio.h>
 #include "spis_context.h"
 
+#define CS_ABORT_THRESHOLD  500
+
 struct spis_bitbang_data {
 	struct spi_context ctx;
 	int bits;
@@ -29,6 +31,15 @@ struct spis_bitbang_config {
 	struct gpio_dt_spec mosi_gpio;
 	struct gpio_dt_spec miso_gpio;
 };
+
+#define UPDATE_CS_HIGH(cs, cs_high)                     \
+    do {                                                \
+        if (gpio_pin_get_dt(cs)) {                      \
+            (cs_high) = MIN((cs_high) + 1, CS_ABORT_THRESHOLD); \
+        } else if ((cs_high) > 0) {                     \
+            (cs_high)--;                                \
+        }                                               \
+    } while (0)
 
 static int spis_bitbang_configure(const struct spis_bitbang_config *info,
 			    struct spis_bitbang_data *data,
@@ -108,13 +119,19 @@ static int spis_bitbang_transceive(const struct device *dev,
 		lsb = true;
 	}
 
+	int cs_high = CS_ABORT_THRESHOLD;
+
 	// wait for CS to go low
 	while (gpio_pin_get_dt(cs) == 0) {
 		/* no op */
 	}
 
-	while (gpio_pin_get_dt(cs) && 
+	// printk("now cs is logic %d\n", gpio_pin_get_dt(cs));
+	// printk("tx context on %d | rx context on %d\n", spi_context_tx_buf_on(ctx), spi_context_rx_buf_on(ctx));
+// gpio_pin_get_dt(cs) && 
+	while (
 		(spi_context_tx_buf_on(ctx) || spi_context_rx_buf_on(ctx))) {
+
 		uint32_t w = 0;
 
 		if (ctx->tx_len) {
@@ -131,7 +148,7 @@ static int spis_bitbang_transceive(const struct device *dev,
 				break;
 			}
 		}
-
+ 
 		uint32_t r = 0;
 		uint8_t i = 0;
 		int b = 0;
@@ -139,7 +156,10 @@ static int spis_bitbang_transceive(const struct device *dev,
 
 		if (spi_context_rx_buf_on(ctx)) do_read = true;
 
-		while (gpio_pin_get_dt(cs) == 1 && i < data->bits) {
+		// gpio_pin_get_dt(cs) && 
+		while (cs_high && i < data->bits) {
+			UPDATE_CS_HIGH(cs, cs_high);
+
 			const int shift = lsb ? i : (data->bits - 1 - i);
 			const int d = (w >> shift) & 0x1;
 
@@ -149,18 +169,22 @@ static int spis_bitbang_transceive(const struct device *dev,
 			gpio_pin_set_dt(miso, d);
 
 			/* wait until first (leading) clock edge */
-			while (gpio_pin_get_dt(&info->clk_gpio) == clock_state) {
+			while (cs_high && gpio_pin_get_dt(&info->clk_gpio) == clock_state) {
+				UPDATE_CS_HIGH(cs, cs_high);
 				/* no op */
 			}
+			if (!cs_high) break;
 
 			if (!loop && do_read && !cpha) {
 				b = gpio_pin_get_dt(mosi);
 			}
 
 			/* wait until second (trailing) clock edge */
-			while (gpio_pin_get_dt(&info->clk_gpio) != clock_state) {
+			while (cs_high && gpio_pin_get_dt(&info->clk_gpio) != clock_state) {
+				UPDATE_CS_HIGH(cs, cs_high);
 				/* no op */
 			}
+			if (!cs_high) break;
 
 			if (!loop && do_read && cpha) {
 				b = gpio_pin_get_dt(mosi);
