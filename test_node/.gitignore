@@ -10,6 +10,8 @@
 /build*
 /twister-out*
 /modules*
+/bootloader/*
+/tools/*
 
 __pycache__/
 
