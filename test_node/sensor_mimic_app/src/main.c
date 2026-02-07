@@ -10,8 +10,6 @@
 #include <zephyr/device.h>
 #include <string.h>
 
-static const char request[] = {"PRO_CPU: request to APP_CPU"};
-
 static const struct device *ipm_dev;
 static char received_string[64];
 static struct k_sem sync;
@@ -28,7 +26,7 @@ static void ipm_receive_callback(const struct device *ipmdev, void *user_data, u
 
 int main(void)
 {
-	int ret;
+	// int ret;
 
 	k_sem_init(&sync, 0, 1);
 
@@ -44,19 +42,8 @@ int main(void)
 	k_sleep(K_MSEC(50));
 
 	while (1) {
-		printk("PRO_CPU is sending a request, waiting remote response...\n\r");
-
-		ipm_send(ipm_dev, -1, sizeof(request), &request, sizeof(request));
-
-		ret = k_sem_take(&sync, K_MSEC(5000));
-
-		if (ret) {
-			printk("No response from APP_CPU - trying again.\r\n");
-		} else {
-			printk("PRO_CPU received a message from APP_CPU : %s\n\r", received_string);
-		}
-
-		k_sleep(K_MSEC(1000));
+		k_sem_take(&sync, K_FOREVER);
+		printk("PRO_CPU received a message from APP_CPU : %s\n\r", received_string);
 	}
 	return 0;
 }
