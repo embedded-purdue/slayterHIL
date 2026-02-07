@@ -1,0 +1,1 @@
+add_subdirectory_ifdef(CONFIG_I2C_GPIO i2c_bitbang)
