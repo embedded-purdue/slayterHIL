@@ -69,6 +69,13 @@ build-esp32-ipm-esp32: _verify_workspace clean
     -d build \
     ipm_esp32  --sysbuild
 
+build-esp32-sensor-mimic-app: _verify_workspace clean
+  west build \
+    -p always \
+    -b esp32s3_devkitc/esp32s3/procpu \
+    -d build \
+    sensor_mimic_app  --sysbuild
+
 flash-esp32:
   west flash --build-dir build
 
@@ -82,6 +89,8 @@ run-esp32-spi-example: build-esp32-spi-example flash-esp32 monitor-esp32
 run-esp32-spi-bitbang: build-esp32-spi-bitbang flash-esp32 monitor-esp32
 
 run-esp32-ipm-esp32: build-esp32-ipm-esp32 flash-esp32 monitor-esp32
+
+run-esp32-sensor-mimic-app: build-esp32-sensor-mimic-app flash-esp32 monitor-esp32
 
 attach-wsl-usb-port:
   #!/usr/bin/env bash
