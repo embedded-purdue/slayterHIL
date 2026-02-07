@@ -116,8 +116,6 @@
     
 
 // }
-
-
 #include <zephyr/kernel.h>
 #include <zephyr/sys/printk.h> 
 #include <zephyr/drivers/sensor.h>
@@ -153,7 +151,6 @@ K_TIMER_DEFINE(lidar_timer, lidar_timer_handler, NULL);
 /* ======= LiDAR Read Thread ======= */
 void lidar_thread(void)
 {
-    // Use the proper device tree reference based on your overlay
     const struct device *dev = DEVICE_DT_GET(DT_NODELABEL(lidar));
     struct sensor_value val;
     struct lidar_msg msg;
@@ -166,9 +163,10 @@ void lidar_thread(void)
     printk("LiDAR initialized successfully\n");
 
     while (1) {
-        /* Wait until ISR releases semaphore */
         k_sem_take(&lidar_sem, K_FOREVER);
-
+        printk("sensor_sample fetch %d: ", sensor_sample_fetch(dev));
+        printk("sensor_channel_get %d\n", sensor_channel_get(dev, SENSOR_CHAN_DISTANCE, &val));
+        printk("LiDAR read: val1=%d, val2=%d\n", val.val1, val.val2);
         if (sensor_sample_fetch(dev) == 0 &&
             sensor_channel_get(dev, SENSOR_CHAN_DISTANCE, &val) == 0) {
             msg.distance_mm = val.val1 * 1000 + val.val2 / 1000;
@@ -186,6 +184,10 @@ K_THREAD_DEFINE(lidar_tid, 2048, lidar_thread, NULL, NULL, NULL, 7, 0, 0);
 K_THREAD_STACK_DEFINE(state_machine_stack, STACK_SIZE);
 static struct k_thread state_machine_thread_data;
 
+// Separate stacks for IMU producer and consumer threads
+K_THREAD_STACK_DEFINE(imu_producer_stack, IMU_STACK_SIZE);
+static struct k_thread imu_producer_thread_data;
+
 K_THREAD_STACK_DEFINE(imu_consumer_stack, IMU_STACK_SIZE);
 static struct k_thread imu_consumer_thread_data;
 
@@ -195,6 +197,8 @@ K_SEM_DEFINE(imu_sem, IMU_SEM_INIT_COUNT, IMU_SEM_MAX_COUNT);
 // Demo app for the IMU Consumer 
 static void imu_consumer(void *arg1, void *arg2, void *arg3) {
     struct imu_data out; 
+    printk("IMU consumer thread started\n");
+    
     while (1) {
         int rc = imu_get(&out, K_FOREVER);
         if (rc == 0) {
@@ -205,24 +209,24 @@ static void imu_consumer(void *arg1, void *arg2, void *arg3) {
         } else {
             printk("Failed to get IMU data: %d\n", rc);
         }
+        k_msleep(100); // Add small delay to prevent spam
     }
 }
 
 int main(void)
 {
-    struct lidar_msg msg;
+    printk("Checking I2C devices...\n");
 
+    const struct device *i2c0_dev = DEVICE_DT_GET(DT_NODELABEL(i2c0));
+    const struct device *i2c1_dev = DEVICE_DT_GET(DT_NODELABEL(i2c1));
+
+    printk("I2C0 ready: %s\n", device_is_ready(i2c0_dev) ? "YES" : "NO");
+    printk("I2C1 ready: %s\n", device_is_ready(i2c1_dev) ? "YES" : "NO");
+    struct lidar_msg msg;
+    
     printk("Starting LiDAR-Lite V4 and IMU test app...\n");
 
-    /* Timer period = 30 ms ⇒ ~33 Hz polling rate */
-    k_timer_start(&lidar_timer, K_MSEC(30), K_MSEC(30));
-
-    // Initialize and start state machine thread
-    k_thread_create(&state_machine_thread_data, state_machine_stack, STACK_SIZE,
-                    state_machine_thread, NULL, NULL, NULL,
-                    COMMS_PRIORITY, 0, K_NO_WAIT);
-
-    // Initialize IMU
+    // Initialize IMU first
     const struct device *const mpu6050 = DEVICE_DT_GET_ONE(invensense_mpu6050);
     int rc = imu_init(mpu6050);
     if (rc != 0) {
@@ -230,23 +234,39 @@ int main(void)
         return rc;
     }
 
-    // Start IMU producer thread manually with device parameter
-    k_tid_t imu_producer_tid = k_thread_create(&imu_consumer_thread_data, 
-                                               imu_consumer_stack, 
-                                               IMU_STACK_SIZE,
-                                               imu_read_thread, 
-                                               (void *)mpu6050, NULL, NULL,
-                                               IMU_THREAD_PRIORITY, 0, K_NO_WAIT);
+    // Start state machine thread
+    k_thread_create(&state_machine_thread_data, state_machine_stack, STACK_SIZE,
+                    state_machine_thread, NULL, NULL, NULL,
+                    COMMS_PRIORITY, 0, K_NO_WAIT);
 
-    // Start IMU consumer thread
-    k_thread_create(&imu_consumer_thread_data, imu_consumer_stack, IMU_STACK_SIZE, 
-                    imu_consumer, NULL, NULL, NULL, IMU_PRIORITY, 0, K_NO_WAIT);
+    // Start IMU producer thread (the one that reads from sensor)
+    k_thread_create(&imu_producer_thread_data, 
+                    imu_producer_stack, 
+                    IMU_STACK_SIZE,
+                    imu_read_thread, 
+                    (void *)mpu6050, NULL, NULL,
+                    IMU_THREAD_PRIORITY, 0, K_NO_WAIT);
 
-    printk("All threads started, monitoring LiDAR data...\n");
+    // Start IMU consumer thread (the one that prints data)
+    k_thread_create(&imu_consumer_thread_data, 
+                    imu_consumer_stack, 
+                    IMU_STACK_SIZE, 
+                    imu_consumer, 
+                    NULL, NULL, NULL, 
+                    IMU_PRIORITY, 0, K_NO_WAIT);
+
+    printk("All threads started\n");
+
+    // Start LiDAR timer after everything is initialized
+    k_timer_start(&lidar_timer, K_MSEC(30), K_MSEC(30));
+    
+    printk("LiDAR timer started, monitoring data...\n");
 
     while (1) {
-        if (k_msgq_get(&lidar_msgq, &msg, K_FOREVER) == 0) {
+        if (k_msgq_get(&lidar_msgq, &msg, K_MSEC(1000)) == 0) {
             printk("Distance: %u mm\n", msg.distance_mm);
+        } else {
+            printk("No LiDAR data received in last second\n");
         }
     }
     
