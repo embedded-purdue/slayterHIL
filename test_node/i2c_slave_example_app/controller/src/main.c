@@ -82,14 +82,14 @@ int main(void)
 	//exercise_i2c(i2c0);
 	int ret;
 
-	const uint8_t write_pat[] = {0xAA, 0x55, 0x0F, 0xF0};
+	const uint8_t write_pat[] = {0x1, 0x2, 0x3, 0x4};
 	ret = i2c_write(i2c0, write_pat, sizeof(write_pat), TARGET_ADDR);
 	printk("i2c_write -> %d\n", ret);
 
-	uint8_t read_buf[sizeof(write_pat)] = {0};
+	/*uint8_t read_buf[sizeof(write_pat)] = {0};
 	ret = i2c_read(i2c0, read_buf, sizeof(read_buf), TARGET_ADDR);
 	printk("i2c_read -> %d\n", ret);
-	dump_buf("i2c_read data:", read_buf, sizeof(read_buf));
+	dump_buf("i2c_read data:", read_buf, sizeof(read_buf));*/
 
 	return 0;
 }
