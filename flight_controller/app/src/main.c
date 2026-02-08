@@ -95,6 +95,7 @@ int main(void)
         printk("uart0 not ready\n");
         return -1;
     }
+    printk("hahahahahaha\n");
     uart_irq_callback_user_data_set(uart, uart_callback,&uart_rx_msgq ); //idk what to put for user_data | check if null is okay
     uart_irq_rx_enable(uart);
     

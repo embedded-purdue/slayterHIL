@@ -56,12 +56,11 @@
       }
       
       struct uart_msg myMessage;
-          
+    
       myMessage.length = bytes_read;
 
       memcpy(myMessage.data,rx_buf, bytes_read);
       
-
       //is the fifo_read not directly going into my rx_buf ?
       k_msgq_put(user_data, &myMessage, K_NO_WAIT); //this is not done but i need to define the message quee 
       /*
