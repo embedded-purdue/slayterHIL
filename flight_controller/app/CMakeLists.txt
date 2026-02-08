@@ -11,4 +11,6 @@ project(my_zephyr_app)
 
 project(app LANGUAGES C)
 target_include_directories(app  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../include)
-target_sources(app PRIVATE src/main.c src/state_machine.c src/imu.c)
+target_sources(app PRIVATE src/main.c src/state_machine.c src/imu.c src/lidar.c)
+
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../drivers drivers)
