@@ -64,10 +64,12 @@ struct i2c_bitbang {
 	uint32_t			delays[2];
 	uint32_t			dev_config;
 
+	/* target configuration */
 	struct k_work target_work;
 	struct i2c_target_config* target_cfg;
 	enum i2c_target_state target_state;
 	struct gpio_callback sda_cb;
+	uint8_t data_byte;
 };
 
 /**

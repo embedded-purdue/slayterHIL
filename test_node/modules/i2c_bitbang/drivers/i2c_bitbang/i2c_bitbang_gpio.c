@@ -66,11 +66,37 @@ static int i2c_gpio_get_scl(void *io_context)
 	return rc != 0;
 }
 
-static void i2c_gpio_set_sda(void *io_context, int state)
+/*static void i2c_gpio_set_sda(void *io_context, int state)
 {
 	const struct i2c_gpio_config *config = io_context;
 
 	gpio_pin_set_dt(&config->sda_gpio, state);
+}*/
+static void i2c_gpio_set_sda(void *io_context, int state)
+{
+    const struct i2c_gpio_config *config = io_context;
+    int before, after, err;
+    
+    /* Read current state */
+    before = gpio_pin_get_dt(&config->sda_gpio);
+    
+    if (state) {
+        /* Release SDA (Hi-Z) - configure as INPUT to let pull-up take over */
+        err = gpio_pin_configure_dt(&config->sda_gpio, GPIO_INPUT);
+        LOG_DBG("set_sda(1): INPUT mode, err=%d", err);
+    } else {
+        /* Pull SDA LOW - configure as OUTPUT and drive LOW */
+        err = gpio_pin_configure_dt(&config->sda_gpio, GPIO_OUTPUT_LOW);
+        LOG_DBG("set_sda(0): OUTPUT_LOW mode, err=%d", err);
+    }
+    
+    /* Small delay to let pin settle */
+    k_busy_wait(1);
+    
+    /* Read back to verify */
+    after = gpio_pin_get_dt(&config->sda_gpio);
+    
+    LOG_DBG("set_sda(%d): before=%d, after=%d, err=%d", state, before, after, err);
 }
 
 static int i2c_gpio_get_sda(void *io_context)
@@ -256,6 +282,7 @@ static int i2c_gpio_init(const struct device *dev)
 	uint32_t bitrate_cfg;
 	int err;
 	context->config_state = I2C_GPIO_UNCONFIGURED;
+	context->bitbang.data_byte = 0;
 
 	if (!gpio_is_ready_dt(&config->scl_gpio)) {
 		LOG_ERR("SCL GPIO device not ready");

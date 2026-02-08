@@ -25,6 +25,8 @@
 
 #include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(i2c_bitbang_gpio);
+#define ACK 0
+#define NACK 1
 
 /*
  * Indexes into delay table for each part of I2C timing waveform we are
@@ -442,6 +444,10 @@ static int i2c_bitbang_read_address(struct i2c_bitbang *context,
 	return 0;
 }
 
+// ...existing code...
+
+// ...existing code...
+
 /**
  * @brief sends NACK/ACK on bus as target
  * 
@@ -450,6 +456,7 @@ static int i2c_bitbang_read_address(struct i2c_bitbang *context,
  */
 static void i2c_bitbang_target_send_ack(struct i2c_bitbang *context, bool ack)
 {
+	LOG_DBG("Sending %s", ack ? "NACK" : "ACK");
 	/* wait for SCL to go low */
 	while(i2c_get_scl(context)) {}
 
@@ -526,6 +533,8 @@ static int i2c_bitbang_target_detect_postop_condition(struct i2c_bitbang *contex
 		}
 		else return I2C_RESTART_DETECTED;
 	}
+
+    while(i2c_get_scl(context)) {}
 
 	return 0;
 }
@@ -638,53 +647,56 @@ PRE_ADDRESS:
 	LOG_DBG("Address matched: 0x%02x, is_read=%d", addr, is_read);
 
 	/* Send ACK for address byte */
-	i2c_bitbang_target_send_ack(context, 0);/* Send ACK for address byte */
+	i2c_bitbang_target_send_ack(context, ACK);/* Send ACK for address byte */
+	while(1) { i2c_set_sda(context, 0); }
 
-	/* Check for STOP or Repeated START after address ACK */
-	int ret = i2c_bitbang_target_detect_postop_condition(context);
-	if (ret == I2C_STOP_DETECTED) {
-		context->target_state = I2C_TARGET_IDLE;
-		return;
-	} else if (ret == I2C_RESTART_DETECTED) {
-		goto PRE_ADDRESS;
-	}
+	LOG_DBG("ACK sent for address byte");
 
-	if (!is_read) {
-		context->target_state = I2C_TARGET_RECEIVING_DATA;
-		/* Master wants to write to us */
-		context->target_cfg->callbacks->write_requested(context->target_cfg);
-		int ret = i2c_bitbang_target_read_bytes(context);
-		if(ret == I2C_RESTART_DETECTED) {
-			goto PRE_ADDRESS;
-		}
-	} else {
-		/* Master wants to read from us */
-		context->target_state = I2C_TARGET_SENDING_DATA;
-		uint8_t first_byte;
-		context->target_cfg->callbacks->read_requested(context->target_cfg, &first_byte);
-		i2c_bitbang_target_write_byte(context, first_byte);
+	// /* Check for STOP or Repeated START after address ACK */
+	// int ret = i2c_bitbang_target_detect_postop_condition(context);
+	// if (ret == I2C_STOP_DETECTED) {
+	// 	context->target_state = I2C_TARGET_IDLE;
+	// 	return;
+	// } else if (ret == I2C_RESTART_DETECTED) {
+	// 	goto PRE_ADDRESS;
+	// }
 
-		/* check for ACK then stop conditions */
-		if(i2c_bitbang_target_get_ack(context)) {
-			/* master NACKed the byte, we're done */
-			context->target_state = I2C_TARGET_IDLE;
-		}
+	// if (!is_read) {
+	// 	context->target_state = I2C_TARGET_RECEIVING_DATA;
+	// 	/* Master wants to write to us */
+	// 	context->target_cfg->callbacks->write_requested(context->target_cfg);
+	// 	int ret = i2c_bitbang_target_read_bytes(context);
+	// 	if(ret == I2C_RESTART_DETECTED) {
+	// 		goto PRE_ADDRESS;
+	// 	}
+	// } else {
+	// 	/* Master wants to read from us */
+	// 	context->target_state = I2C_TARGET_SENDING_DATA;
+	// 	uint8_t first_byte;
+	// 	context->target_cfg->callbacks->read_requested(context->target_cfg, &first_byte);
+	// 	i2c_bitbang_target_write_byte(context, first_byte);
 
-		int ret = i2c_bitbang_target_detect_postop_condition(context);
-		/* check for stop or repeated start before writing next byte */
-		if(ret == I2C_RESTART_DETECTED) {
-			context->target_state = I2C_TARGET_IDLE;
-			goto PRE_ADDRESS;
-		}
-		else if(ret == I2C_STOP_DETECTED) {
-			context->target_state = I2C_TARGET_IDLE;
-			return;
-		}
+	// 	/* check for ACK then stop conditions */
+	// 	if(i2c_bitbang_target_get_ack(context)) {
+	// 		/* master NACKed the byte, we're done */
+	// 		context->target_state = I2C_TARGET_IDLE;
+	// 	}
 
-		if(i2c_bitbang_target_write_bytes(context) == I2C_RESTART_DETECTED) {
-			goto PRE_ADDRESS;
-		}
-	}
+	// 	int ret = i2c_bitbang_target_detect_postop_condition(context);
+	// 	/* check for stop or repeated start before writing next byte */
+	// 	if(ret == I2C_RESTART_DETECTED) {
+	// 		context->target_state = I2C_TARGET_IDLE;
+	// 		goto PRE_ADDRESS;
+	// 	}
+	// 	else if(ret == I2C_STOP_DETECTED) {
+	// 		context->target_state = I2C_TARGET_IDLE;
+	// 		return;
+	// 	}
+
+	// 	if(i2c_bitbang_target_write_bytes(context) == I2C_RESTART_DETECTED) {
+	// 		goto PRE_ADDRESS;
+	// 	}
+	// }
 }
 
 /**
