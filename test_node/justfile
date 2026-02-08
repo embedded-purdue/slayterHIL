@@ -7,6 +7,7 @@ ESP_BOARD        := "esp32s3_devkitc/esp32s3/procpu"
 ESP_PORT         := "/dev/tty.USB0"          # adjust
 
 CMAKE_CACHE_ARGS := "-- -DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
+SAMPLE_DIR := "sample_apps"
 
 # set shell := ["bash", "-eu", "-o", "pipefail", "-c"]
 
@@ -49,25 +50,25 @@ build-esp32-spi-example: _verify_workspace clean
     -p always \
     -b "{{ESP_BOARD}}" \
     -d build \
-    spi_example_app \
+    -s {{SAMPLE_DIR}}/spi_example_app \
     {{CMAKE_CACHE_ARGS}} \
-    -DEXTRA_DTC_OVERLAY_FILE="{{justfile_directory()}}/spi_example_app/boards/spi_esp32s3_devkitc.overlay"
+    -DEXTRA_DTC_OVERLAY_FILE="{{justfile_directory()}}/{{SAMPLE_DIR}}/spi_example_app/boards/spi_esp32s3_devkitc.overlay"
 
 build-esp32-spi-bitbang: _verify_workspace clean
   west build \
     -p always \
     -b "{{ESP_BOARD}}" \
     -d build \
-    spi_bitbang_app \
+    -s {{SAMPLE_DIR}}/spi_bitbang_app \
     {{CMAKE_CACHE_ARGS}} \
-    -DEXTRA_DTC_OVERLAY_FILE="{{justfile_directory()}}/spi_bitbang_app/boards/spi_esp32s3_devkitc.overlay"
+    -DEXTRA_DTC_OVERLAY_FILE="{{justfile_directory()}}/{{SAMPLE_DIR}}/spi_bitbang_app/boards/spi_esp32s3_devkitc.overlay"
 
 build-esp32-ipm-esp32: _verify_workspace clean
   west build \
     -p always \
     -b esp32s3_devkitc/esp32s3/procpu \
     -d build \
-    ipm_esp32  --sysbuild
+    -s {{SAMPLE_DIR}}/ipm_esp32  --sysbuild
 
 flash-esp32:
   west flash --build-dir build
