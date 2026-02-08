@@ -8,7 +8,7 @@ def generate_circular_test():
     timestamp = 0.0
 
     # Parameters
-    Z_max = 7.5       # meters
+    Z_max = 75       # meters
     radius = 10.0     # circle radius (meters)
 
     # Phase durations

@@ -7,8 +7,8 @@ def generate_trapezoidal_test():
     timestamp = 0.0
 
     # Velocities
-    Z_velocity = 7.5 / 5  # m/s
-    X_velocity = 15 / 5   # m/s
+    Z_velocity = 75 / 5  # m/s
+    X_velocity = 75 / 5   # m/s
 
     # Phase 1: Ascend + move forward (0-5 s)
     t = 0.0
@@ -34,10 +34,10 @@ def generate_trapezoidal_test():
         entry = {
             "Message_id": message_id,
             "Timestamp": round(timestamp, 2),
-            "X_pos": 15,
+            "X_pos": round(75 + X_velocity * t, 2),
             "Y_pos": 0,
-            "Z_pos": 7.5,
-            "X_vel_ext": 0,
+            "Z_pos": 75,
+            "X_vel_ext": X_velocity,
             "Y_vel_ext": 0,
             "Z_vel_ext": 0
         }
@@ -53,10 +53,10 @@ def generate_trapezoidal_test():
             
             "Message_id": message_id,
             "Timestamp": round(timestamp, 2),
-            "X_pos": 15,
+            "X_pos": round(150 + Z_velocity * t, 2),
             "Y_pos": 0,
-            "Z_pos": round(7.5 - Z_velocity * t, 2),
-            "X_vel_ext": 0,
+            "Z_pos": round(75 - Z_velocity * t, 2),
+            "X_vel_ext": Z_velocity,
             "Y_vel_ext": 0,
             "Z_vel_ext": -Z_velocity
         }

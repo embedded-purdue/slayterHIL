@@ -9,8 +9,8 @@ def generate_step_test():
     # Phase durations
     phase_time = 5.0  # seconds
     # Velocities
-    Z_velocity = 7.5 / 5  # m/s
-    X_velocity = 15 / 5   # m/s
+    Z_velocity = 75 / 5  # m/s
+    X_velocity = 75 / 5   # m/s
 
     # Phase 1: Ascend (Z increases, X=0)
     t = 0.0
@@ -30,7 +30,7 @@ def generate_step_test():
         timestamp += dt
         message_id += 1
 
-    # Phase 2: Move forward (X increases, Z=7.5)
+    # Phase 2: Move forward (X increases, Z=75)
     t = 0.0
     while t < phase_time:
         entry = {
@@ -38,7 +38,7 @@ def generate_step_test():
             "Timestamp": round(timestamp, 2),
             "X_pos": round(X_velocity * t, 2),
             "Y_pos": 0,
-            "Z_pos": 7.5,
+            "Z_pos": 75,
             "X_vel_ext": X_velocity,
             "Y_vel_ext": 0,
             "Z_vel_ext": 0
@@ -48,15 +48,15 @@ def generate_step_test():
         timestamp += dt
         message_id += 1
 
-    # Phase 3: Descend (Z decreases, X=15)
+    # Phase 3: Descend (Z decreases, X=75)
     t = 0.0
     while t <= phase_time:  # include endpoint to reach Z=0
         entry = {
             "Message_id": message_id,
             "Timestamp": round(timestamp, 2),
-            "X_pos": 15,
+            "X_pos": 75,
             "Y_pos": 0,
-            "Z_pos": round(7.5 - Z_velocity * t, 2),
+            "Z_pos": round(75 - Z_velocity * t, 2),
             "X_vel_ext": 0,
             "Y_vel_ext": 0,
             "Z_vel_ext": -Z_velocity
