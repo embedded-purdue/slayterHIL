@@ -1,11 +1,11 @@
 #include "positionController.hpp" 
 
 positionController::positionController () : 
-	kp(0.0),
+	kp(Eigen::Vector3d::Zero()),
 	desiredPos(Eigen::Vector3d::Zero())
 {}
 
-positionController::positionController (double p) :
+positionController::positionController (const Eigen::Vector3d& p) :
 	kp(p),
 	desiredPos(Eigen::Vector3d::Zero())
 {}
@@ -20,5 +20,5 @@ Eigen::Vector3d positionController::getTarget() {
 
 Eigen::Vector3d positionController::compute(const Eigen::Vector3d& currentPos, double dt) {
 	Eigen::Vector3d pos_error = desiredPos - currentPos;
-	return kp * pos_error;
+	return kp.cwiseProduct(pos_error);
 }

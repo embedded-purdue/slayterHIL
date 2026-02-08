@@ -1,12 +1,12 @@
 #include "velocityController.hpp"
 
 velocityController::velocityController () : 
-	kp(0.0), ki(0.0), kd(0.0),
+	kp(Eigen::Vector3d::Zero()), ki(Eigen::Vector3d::Zero()), kd(Eigen::Vector3d::Zero()),
 	velocityIntegral(Eigen::Vector3d::Zero()),
 	previousError(Eigen::Vector3d::Zero())
 {}
 
-velocityController::velocityController (double p, double i, double d) :
+velocityController::velocityController (const Eigen::Vector3d& p, const Eigen::Vector3d& i, const Eigen::Vector3d& d) :
 	kp(p), ki(i), kd(d),
 	velocityIntegral(Eigen::Vector3d::Zero()),
 	previousError(Eigen::Vector3d::Zero())
@@ -20,7 +20,7 @@ Eigen::Vector3d velocityController::compute (const Eigen::Vector3d& currentVeloc
 	Eigen::Vector3d velocityDerivative = (velocityError - previousError) /dt;
 	previousError = velocityError;
 
-	return kp * velocityError + ki * velocityIntegral + kd * velocityDerivative;
+	return kp.cwiseProduct(velocityError) + ki.cwiseProduct(velocityIntegral) + kd.cwiseProduct(velocityDerivative);
 
 }
 
