@@ -1,0 +1,17 @@
+description: Bosch Sensortec GmbH BNO055 9-axis absolute orientation sensor
+
+compatible: "bosch,bno055"
+
+include:
+  - name: sensor-device.yaml
+  - name: i2c-device.yaml
+
+properties:
+    irq-gpios:
+        type: phandle-array
+        description: Configures BNO055 interrupt signal.
+
+    use_xtal:
+        type: boolean
+        description: |
+            Enable the use of external crystal.

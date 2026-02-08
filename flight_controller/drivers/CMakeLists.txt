@@ -10,3 +10,7 @@ project(drivers)
 if(CONFIG_LIDAR_LITE_V4)
   add_subdirectory(sensor/lidar_lite_v4)
 endif()
+
+if(CONFIG_BNO055)
+  add_subdirectory(sensor/bno055)
+endif()
