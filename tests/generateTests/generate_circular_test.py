@@ -83,7 +83,7 @@ def generate_circular_test():
         message_id += 1
 
     # Write to JSON file
-    with open("circular_test.json", "w") as f:
+    with open(r"JSONTests\circular_test.json", "w") as f:
         json.dump(data, f, indent=4)
 
     print(f"Generated {len(data)} points → circular_test.json")

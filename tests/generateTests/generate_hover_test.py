@@ -75,7 +75,7 @@ def generate_hover_test():
         message_id += 1
 
     # Write JSON
-    with open("hover_test.json", "w") as f:
+    with open(r"JSONTests\hover_test.json", "w") as f:
         json.dump(data, f, indent=4)
 
     print(f"Generated {len(data)} points → hover_test.json")

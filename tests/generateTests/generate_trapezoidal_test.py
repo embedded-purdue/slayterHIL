@@ -66,7 +66,7 @@ def generate_trapezoidal_test():
         message_id += 1
 
     # Save JSON
-    with open("trapezoidal_test.json", "w") as f:
+    with open(r"JSONTests\trapezoidal_test.json", "w") as f:
         json.dump(data, f, indent=4)
 
     print(f"Generated {len(data)} points → trapezoidal_test.json")

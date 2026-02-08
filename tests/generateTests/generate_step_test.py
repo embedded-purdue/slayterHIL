@@ -67,7 +67,7 @@ def generate_step_test():
         message_id += 1
 
     # Write to JSON file
-    with open("step_test.json", "w") as f:
+    with open(r"JSONTests\step_test.json", "w") as f:
         json.dump(data, f, indent=4)
 
     print(f"Generated {len(data)} points → step_test.json")
