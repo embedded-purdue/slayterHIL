@@ -10,8 +10,13 @@
 #include <zephyr/device.h>
 #include <string.h>
 
+/* constants */
+// TODO: put in global .h file later
+#define TRANS_SIZE (12)
+
+
 static const struct device *ipm_dev;
-static char received_string[64];
+static char received_string[TRANS_SIZE];
 static struct k_sem sync;
 
 static void ipm_receive_callback(const struct device *ipmdev, void *user_data, uint32_t id,
@@ -26,8 +31,6 @@ static void ipm_receive_callback(const struct device *ipmdev, void *user_data, u
 
 int main(void)
 {
-	// int ret;
-
 	k_sem_init(&sync, 0, 1);
 
 	ipm_dev = DEVICE_DT_GET(DT_NODELABEL(ipm0));
@@ -43,7 +46,8 @@ int main(void)
 
 	while (1) {
 		k_sem_take(&sync, K_FOREVER);
-		printk("PRO_CPU received a message from APP_CPU : %s\n\r", received_string);
+		printk("PRO_CPU received a message from APP_CPU :\n");
+		for (int i = 0; i < TRANS_SIZE; i++) printk("received word %d: %d\n", i, received_string[i]);
 	}
 	return 0;
 }

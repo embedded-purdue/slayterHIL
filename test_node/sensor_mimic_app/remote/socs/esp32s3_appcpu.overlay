@@ -1,3 +1,17 @@
+/* note that these shouldn't be 10-13 given that the spi module uses them and enables itself */
+/ {
+	spibb0: spibb0 {
+		compatible = "zephyr,spis-bitbang";
+		status = "okay";
+		#address-cells = <1>;
+		#size-cells = <0>;
+		cs-gpios = <&gpio0 16 (GPIO_ACTIVE_LOW | GPIO_PULL_DOWN)>;
+		mosi-gpios = <&gpio0 17 GPIO_ACTIVE_HIGH>;
+		clk-gpios = <&gpio0 18 GPIO_ACTIVE_HIGH>;
+		miso-gpios = <&gpio0 8 0>;
+	};
+};
+
 &ipm0 {
 	status = "okay";
 };
