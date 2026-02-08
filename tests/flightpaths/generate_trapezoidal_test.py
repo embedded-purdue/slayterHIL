@@ -50,6 +50,7 @@ def generate_trapezoidal_test():
     t = 0.0
     while t <= 5.0:  # include endpoint
         entry = {
+            
             "Message_id": message_id,
             "Timestamp": round(timestamp, 2),
             "X_pos": 15,
