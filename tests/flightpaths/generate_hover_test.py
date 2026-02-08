@@ -8,7 +8,7 @@ def generate_hover_test():
 
     # Parameters
     phase_time = 5.0   # seconds per phase
-    Z_max = 7.5        # meters
+    Z_max = 75        # meters
 
     # Velocities (linear)
     Z_velocity_up = Z_max / phase_time      # +1.5 m/s
