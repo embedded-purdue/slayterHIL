@@ -6,13 +6,13 @@
 class velocityController {
 public:
     // Constructors
+    double maxForce;
     velocityController();
-    velocityController(const Eigen::Vector3d& p, const Eigen::Vector3d& i, const Eigen::Vector3d& d);
+    velocityController(const Eigen::Vector3d& p, const Eigen::Vector3d& i, const Eigen::Vector3d& d, double maxF);
 
     // Compute PID output: acceleration command
     Eigen::Vector3d compute(const Eigen::Vector3d& currentVelocity,
-                            const Eigen::Vector3d& targetVelocity,
-                            double dt);
+                            const Eigen::Vector3d& targetVelocity, double dt);
 
     // PID gains
     Eigen::Vector3d kp;
