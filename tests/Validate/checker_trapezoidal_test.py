@@ -1,23 +1,23 @@
 import json
 import os
-print("checker_step_test.py is running")
+print("checker_trapezoidal_test.py is running")
 
-# Directory of checker_step_test.py
+# Directory of checker_trap_test.py
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Paths to JSON files
-STEP_TEST_PATH = os.path.join(
+TRAPEZOIDAL_TEST_PATH = os.path.join(
     BASE_DIR,
-    "..", "generateTests", "JSONtests", "step_test.json"
+    "..", "generateTests", "JSONtests", "trapezoidal_test.json"
 )
 
 DUMMY_TEST_PATH = os.path.join(
     BASE_DIR,
-    "dummy_step_test.json"
+    "dummy_trapezoidal_test.json"
 )
 
 # Load JSON files
-with open(STEP_TEST_PATH, "r") as f:
+with open(TRAPEZOIDAL_TEST_PATH, "r") as f:
     original_data = json.load(f)
 
 with open(DUMMY_TEST_PATH, "r") as f:

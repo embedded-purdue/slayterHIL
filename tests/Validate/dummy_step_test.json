@@ -1,0 +1,42 @@
+[
+    {
+        "Message_id": 1,
+        "Timestamp": 0.0,
+        "X_pos": 0,
+        "Y_pos": 0,
+        "Z_pos": 0.0,
+        "X_vel_ext": 0,
+        "Y_vel_ext": 0,
+        "Z_vel_ext": 15.0
+    },
+    {
+        "Message_id": 2,
+        "Timestamp": 0.5,
+        "X_pos": 0,
+        "Y_pos": 0,
+        "Z_pos": 7.6,  
+        "X_vel_ext": 0,
+        "Y_vel_ext": 0,
+        "Z_vel_ext": 15.0
+    },
+    {
+        "Message_id": 3,
+        "Timestamp": 1.0,
+        "X_pos": 0,
+        "Y_pos": 0,
+        "Z_pos": 15.0,
+        "X_vel_ext": 1.0,  
+        "Y_vel_ext": 0,
+        "Z_vel_ext": 15.0
+    },
+    {
+        "Message_id": 4,
+        "Timestamp": 1.5,
+        "X_pos": 0,
+        "Y_pos": 0,
+        "Z_pos": 22.5,
+        "X_vel_ext": 0,
+        "Y_vel_ext": 0,
+        "Z_vel_ext": 14.5  
+    }
+]
