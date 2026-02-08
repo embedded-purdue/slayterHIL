@@ -93,7 +93,7 @@ int main(void)
     printk("Starting LiDAR-Lite V4 and IMU test app...\n");
 
     // Initialize IMU 
-    const struct device *const mpu6050 = DEVICE_DT_GET_ONE(invensense_mpu6050);
+    const struct device *const mpu6050 = DEVICE_DT_GET_ONE(DT_NODELABEL(mpu6050));
     int rc = imu_init(mpu6050);
     if (rc != 0) {
         printk("imu_init failed: %d\n", rc);
