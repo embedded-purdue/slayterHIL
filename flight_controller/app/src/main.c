@@ -57,7 +57,7 @@ static void uart_consumer(void *arg1,  void *arg2, void *arg3) {
 
     while(1)
     {
-        if(k_msgq_get(&uart_rx_msgq, &msg, K_FOREVER))
+        if(k_msgq_get(&uart_rx_msgq, &msg, K_FOREVER) == 0 )
         {
             char c = msg.data[0];
                 switch (c) {
@@ -89,14 +89,14 @@ static void uart_consumer(void *arg1,  void *arg2, void *arg3) {
 int main(void)
 {
 
-    const struct device *const uart = DEVICE_DT_GET(DT_NODELABEL(uart0));
+    const struct device *const uart = DEVICE_DT_GET(DT_NODELABEL(uart1));
     if (!device_is_ready(uart))
     {
-        printk("uart0 not ready\n");
+        printk("uart1 not ready\n");
         return -1;
     }
     printk("hahahahahaha\n");
-    uart_irq_callback_user_data_set(uart, uart_callback,&uart_rx_msgq ); //idk what to put for user_data | check if null is okay
+    uart_irq_callback_user_data_set(uart, uart_callback,&uart_rx_msgq); //idk what to put for user_data | check if null is okay
     uart_irq_rx_enable(uart);
     
     k_thread_create(&state_machine_thread_data, state_machine_stack, STACK_SIZE,

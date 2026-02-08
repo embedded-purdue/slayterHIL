@@ -14,7 +14,7 @@
     leds: leds {
         compatible = "gpio-leds";
         myled0: led_0 {
-            gpios = <&gpio0 17 GPIO_ACTIVE_HIGH>;
+            gpios = <&gpio0 19 GPIO_ACTIVE_HIGH>;
         };
     };
 
@@ -36,6 +36,12 @@
             pinmux = <I2C0_SDA_GPIO8>, <I2C0_SCL_GPIO9>;
             bias-pull-up;
             drive-open-drain;
+            output-high;
+        };
+    };
+    uart1_pins: uart1_pins {
+        group1 {
+            pinmux = <UART1_TX_GPIO4>, <UART1_RX_GPIO5>; 
             output-high;
         };
     };
@@ -68,6 +74,9 @@
     status = "okay";
 };
 
-&uart0 {
+&uart1 {
     status = "okay";
+    pinctrl-0 = <&uart1_pins>;
+    pinctrl-names = "default";
+    current-speed = <115200>;
 };

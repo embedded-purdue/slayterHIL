@@ -39,11 +39,12 @@
 
   void uart_callback(const struct device *dev, void *user_data)
   {
+    printk("callback trigger\n");
     uint8_t rx_buf[8]; //this is problem i need a variable 
     uart_irq_update(dev);
     if(!uart_irq_rx_ready(dev))
     {
-      // printk("Uart is not ready\n"); -> find another way to print or call out there is an error 
+      printk("Uart is not ready\n"); //-> find another way to print or call out there is an error 
       return;
     } //this is also unneccesaryt 
     while(uart_irq_rx_ready(dev))
@@ -51,7 +52,9 @@
       //defensive 
       //when the fifo_read returns a 0 then we break out of the loo p
       int bytes_read = uart_fifo_read(dev, rx_buf, sizeof(rx_buf)); //get all the messages in the message buffer 
+        printk("%d\n",bytes_read);
       if(bytes_read == 0){
+        printk("byte 0\n");
         break;
       }
       
@@ -60,9 +63,14 @@
       myMessage.length = bytes_read;
 
       memcpy(myMessage.data,rx_buf, bytes_read);
+      for(int z = 0; z<= myMessage.length; z++)
+      {
+        printk("%c \n",myMessage.data[z]);
+
+    }
       
       //is the fifo_read not directly going into my rx_buf ?
-      k_msgq_put(user_data, &myMessage, K_NO_WAIT); //this is not done but i need to define the message quee 
+      k_msgq_put((struct k_msgq *)user_data, &myMessage, K_NO_WAIT); //this is not done but i need to define the message quee 
       /*
       K_MSGQ_DEFINE(uart_rx_msgq,
                 sizeof(struct uart_msg),
