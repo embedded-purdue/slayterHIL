@@ -129,8 +129,6 @@ void sensor_emulation_init() {
 		.callbacks = &sample_target_callbacks,
 	};
 
-    printk("i2c custom target sample\n");
-
 	if (i2c_target_register(bus, &lidar_cfg) < 0) {
 		printk("Failed to register target\n");
         return;
