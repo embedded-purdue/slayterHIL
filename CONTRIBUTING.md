@@ -18,17 +18,17 @@ git clone --recurse-submodules https://github.com/embedded-purdue/slayterHIL.git
 
 Then check out the main branch inside the module used to access the flight simulation repository.
 
+### Currently active git submodules
+
+A lot of code for flight simulation is being developed in parallel inside of the ```flight_sim_repo``` submodule, which can be accessed through the submodule [link](https://github.com/embedded-purdue/slayterHIL-flight-sim).
+
 ### Currently active branches
 
-Flightsim/FS/flight_sim
+Flightsim/FS/flight_sim.
 
 ### Branch backups
 
-physics_sim_environment_setup_bak
-simulator_PIDcontrol_bak
-spi-comp-bak
-spi-comp-bak-bak
-flight-graphics-bak
+physics_sim_environment_setup_bak, simulator_PIDcontrol_bak, spi-comp-bak, spi-comp-bak-bak, flight-graphics-bak.
 
 ## Team members
 
@@ -39,26 +39,39 @@ Murtaza R. Haque
 ### Active members
 
 Murtaza R. Haque
+
 Frank Lee Schlehofer
+
 Sebastian Ting
+
 Ramazan Kaan Cetin
+
 Benjamin Lobos Lertpunyaroj
+
 Maanav Jugal Shah
+
 Gautam Aravindan
 
 ### All members
 
 Murtaza R. Haque
+
 Frank Lee Schlehofer
+
 Sebastian Ting
+
 Ramazan Kaan Cetin
+
 Benjamin Lobos Lertpunyaroj
+
 Maanav Jugal Shah
+
 Gautam Aravindan
+
 Matt Stein
 
-
 Flight Sim will never forget Alex Aylward 🐐
+
 
 ## SSH Connection for RPI
 
@@ -68,13 +81,13 @@ Connections to RPI are handled through Tailscale. It is a mesh VPN that makes it
 
 To add your device to the Tailscale network, you can use the SlayterHil Google account and password that are seen below to sign in inside the Tailscale website.
 
-EMAIL: slayterhil2026@gmail.com
-PASSWORD: closedloopotw!
+**EMAIL:** slayterhil2026@gmail.com
+**PASSWORD:** closedloopotw!
 
 The RPI, which is named `raspi-5-orcheslayter` at the time of writing, can be accessed through the `flight_sim` user. Information to SSH can be seen below.
 
-SSH: ssh flight_sim@raspi-5-orcheslayter
-PASSWORD: slayterHIL5
+**SSH**: ssh flight_sim@raspi-5-orcheslayter
+**PASSWORD**: slayterHIL5
 
 ## Technical Documentation
 
