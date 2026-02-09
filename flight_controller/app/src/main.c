@@ -21,8 +21,6 @@
 
 
 K_THREAD_STACK_DEFINE(state_machine_stack, STACK_SIZE);
-K_THREAD_STACK_DEFINE(uart_consumer_stack, UART_CONSUMER_STACK);
-static struct k_thread uart_consumer_thread_data;
 static struct k_thread state_machine_thread_data;
 
 K_THREAD_STACK_DEFINE(imu_consumer_stack, IMU_STACK_SIZE);
@@ -32,6 +30,8 @@ K_MSGQ_DEFINE(imu_msgq, sizeof(struct imu_data), MAX_IMU_MSGQ_LEN, alignof(int))
 K_SEM_DEFINE(imu_sem, IMU_SEM_INIT_COUNT, IMU_SEM_MAX_COUNT);
 K_THREAD_DEFINE(imu_thread, IMU_STACK_SIZE, imu_read_thread, NULL, NULL, NULL, IMU_THREAD_PRIORITY, 0, 0);
 
+K_THREAD_STACK_DEFINE(uart_consumer_stack, UART_CONSUMER_STACK);
+static struct k_thread uart_consumer_thread_data;
 K_MSGQ_DEFINE(uart_rx_msgq, sizeof(struct uart_msg), 16, alignof(struct uart_msg));
 
 // Demo app for the IMU Consumer 
@@ -51,15 +51,14 @@ static void imu_consumer(void *arg1, void *arg2, void *arg3) {
         
     }
 }
-//im changing to uart0 to use my computer 
 static void uart_consumer(void *arg1,  void *arg2, void *arg3) {
-    struct uart_msg msg;
-
+    struct uart_msg out;
+    printk("User Control thread started\n");
     while(1)
     {
-        if(k_msgq_get(&uart_rx_msgq, &msg, K_FOREVER) == 0 )
+        if(k_msgq_get(&uart_rx_msgq, &out, K_FOREVER) == 0)
         {
-            char c = msg.data[0];
+            char c = out.data[0];
                 switch (c) {
                 case 'L':
                     printk("UART: LEFT\n");
@@ -80,22 +79,14 @@ static void uart_consumer(void *arg1,  void *arg2, void *arg3) {
     }
 }
 
-
-// int rc1 = k_msgq_put(&uart_rx_msgq, &myMessage, K_NO_WAIT);
-        // if (rc1 == 0)
-        // {
-
-        // }
 int main(void)
 {
 
     const struct device *const uart = DEVICE_DT_GET(DT_NODELABEL(uart1));
-    if (!device_is_ready(uart))
-    {
-        printk("uart1 not ready\n");
-        return -1;
-    }
-    printk("hahahahahaha\n");
+
+    printk("User Command Module ready: %s\n", device_is_ready(uart) ? "YES" : "NO");
+
+
     uart_irq_callback_user_data_set(uart, uart_callback,&uart_rx_msgq); //idk what to put for user_data | check if null is okay
     uart_irq_rx_enable(uart);
     
