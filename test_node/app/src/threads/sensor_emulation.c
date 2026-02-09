@@ -1,6 +1,10 @@
 #include "threads/sensor_emulation.h"
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
+#include <zephyr/drivers/i2c.h>
+
+static const struct device *bus = DEVICE_DT_GET(DT_NODELABEL(i2c1));
+static char last_byte;
 
 // register logging module
 LOG_MODULE_REGISTER(sensor_thread, LOG_LEVEL_INF);
