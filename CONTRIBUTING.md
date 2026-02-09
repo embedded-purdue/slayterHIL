@@ -38,44 +38,18 @@ Murtaza R. Haque
 
 ### Active members
 
-Murtaza R. Haque
-
-Frank Lee Schlehofer
-
-Sebastian Ting
-
-Ramazan Kaan Cetin
-
-Benjamin Lobos Lertpunyaroj
-
-Maanav Jugal Shah
-
-Gautam Aravindan
+Murtaza R. Haque, Frank Lee Schlehofer, Sebastian Ting, Ramazan Kaan Cetin, Benjamin Lobos Lertpunyaroj, Maanav Jugal Shah, Gautam Aravindan
 
 ### All members
 
-Murtaza R. Haque
-
-Frank Lee Schlehofer
-
-Sebastian Ting
-
-Ramazan Kaan Cetin
-
-Benjamin Lobos Lertpunyaroj
-
-Maanav Jugal Shah
-
-Gautam Aravindan
-
-Matt Stein
+Murtaza R. Haque, Frank Lee Schlehofer, Sebastian Ting, Ramazan Kaan Cetin, Benjamin Lobos Lertpunyaroj, Maanav Jugal Shah, Gautam Aravindan, Matt Stein
 
 Flight Sim will never forget Alex Aylward 🐐
 
 
 ## SSH Connection for RPI
 
-Last Updated: February 8, 2026.
+*Last Updated: February 8, 2026.*
 
 Connections to RPI are handled through Tailscale. It is a mesh VPN that makes it seem like all devices connected are in the same private network, allowing anybody to ssh into the remote device. Appropriate downloads are found through the website links.
 
@@ -99,8 +73,8 @@ Additionally, consider writing in Markdown format to allow for later compatibili
 
 ### Connection from Test Automation
 
-Authors: Benjamin Lobos Lertpunyaroj & Frankie Schlehofer.
-Last Updated: February 8, 2026.
+*Authors: Benjamin Lobos Lertpunyaroj & Frankie Schlehofer.*
+*Last Updated: February 8, 2026.*
 
 Testing is received from the Test Automation team through a JSON file specified at a directory of their choosing. More up-to-date information regarding the formatting of the data sent can be seen in their internal design documentation.
 
@@ -110,8 +84,8 @@ The library used to parse JSON in C++ is `nlohmann/json`, which works through th
 
 ### General CMake file
 
-Authors: Benjamin Lobos Lertpunyaroj & Frankie Schlehofer.
-Last Updated: February 8, 2026.
+*Authors: Benjamin Lobos Lertpunyaroj & Frankie Schlehofer.*
+*Last Updated: February 8, 2026.*
 
 This CMake configuration requires `nlohmann_json` and links it through the imported target `nlohmann_json::nlohmann_json`.
 
