@@ -83,17 +83,9 @@ Flight Sim will never forget Alex Aylward 🐐
 
 Connections to RPI are handled through Tailscale. It is a mesh VPN that makes it seem like all devices connected are in the same private network, allowing anybody to ssh into the remote device. Appropriate downloads are found through the website links.
 
-To add your device to the Tailscale network, you can use the SlayterHil Google account and password that are seen below to sign in inside the Tailscale website.
+To add your device to the Tailscale network, you can use the SlayterHil Google account and password that are seen inside of the Flight Sim Documentation file (found in the organizations Google Drive) to sign in inside the Tailscale website.
 
-**EMAIL:** slayterhil2026@gmail.com
-
-**PASSWORD:** closedloopotw!
-
-The RPI, which is named `raspi-5-orcheslayter` at the time of writing, can be accessed through the `flight_sim` user. Information to SSH can be seen below.
-
-**SSH**: ssh flight_sim@raspi-5-orcheslayter
-
-**PASSWORD**: slayterHIL5
+The RPI, which is named `raspi-5-orcheslayter` at the time of writing, can be accessed through the `flight_sim` user. Information to SSH can be seen inside of the tailscale account or the Flight Sim Documentation file.
 
 ## Technical Documentation
 
@@ -151,7 +143,7 @@ _Note: If you are on a Windows PC, use WSL2 (look up install instructions, ubunt
 
     - Windows + WSL2: [usbipd-win](https://learn.microsoft.com/en-us/windows/wsl/connect-usb) - This is used to expose the USB ports to WSL2 so that flashing works properly
 
-    - [Protobuf compiler](https://protobuf.dev/installation/) 
+    - [Protobuf compiler](https://protobuf.dev/installation/)
         - If using WSL/Ubuntu: `sudo apt install -y protobuf-compiler`
         - If using mac: `brew install protobuf`
 
@@ -164,7 +156,7 @@ _Note: If you are on a Windows PC, use WSL2 (look up install instructions, ubunt
 3. Create and activate a Python virtual environment:
     ```bash
     python -m venv .venv
-    
+
     source .venv/bin/activate     # Linux/macOS
     .venv\Scripts\activate.bat    # PC, Command Prompt
     .venv\Scripts\Activate.ps1    # PC, Powershell
@@ -188,7 +180,7 @@ _Note: If you are on a Windows PC, use WSL2 (look up install instructions, ubunt
         ```bash
         cd zephyr
         ```
-    2.  Perform installation 
+    2.  Perform installation
         ```bash
         west sdk install
         ```
@@ -198,7 +190,7 @@ _Note: If you are on a Windows PC, use WSL2 (look up install instructions, ubunt
         ```bash
         cd ..
         ```
-    2.  Build the sim to verify it works 
+    2.  Build the sim to verify it works
         ```bash
         just run-sim
         ```
@@ -206,7 +198,7 @@ _Note: If you are on a Windows PC, use WSL2 (look up install instructions, ubunt
 8. Test flash
     1. navigate to `slayterHIL/test_node/zephyr`
     3. (FOR WSL USERS; SKIP IF NOT) plug in board and use usbipd to connect it
-       
+
        0. as a shortcut, try using `just attach-wsl-usb-port`. This should work as long as your laptop is directly plugged into the UART port on the esp32. **NOTE**: you will still need to add yourself to either the `dialout` or `uucp` user group, as explained below
        1. on Powershell (run with admin), run `usbipd list` and find the busid for the MCU
 
@@ -223,7 +215,7 @@ _Note: If you are on a Windows PC, use WSL2 (look up install instructions, ubunt
           ```
        2. run `usbipd bind --busid [busid]` for the example above, [busid] is `1-2`. If it works, there should be no output
        3. run `usbipd attach --wsl --busid [busid]`. This will attach the port to WSL.
-      
+
           *example output:*
           ```bash
           usbipd: info: Using WSL distribution 'archlinux' to attach; the device will be available in all WSL 2 distributions.
@@ -238,7 +230,7 @@ _Note: If you are on a Windows PC, use WSL2 (look up install instructions, ubunt
        1. ```bash
           ls /dev/ | grep tty
           ```
-       2. You should see a list of connected devices. We are looking for something similar to either of the following: 
+       2. You should see a list of connected devices. We are looking for something similar to either of the following:
           ```bash
           tty.usbserial-210
           tty.usbmodem2101
@@ -282,11 +274,11 @@ _Note: If you are on a Windows PC, use WSL2 (look up install instructions, ubunt
     8. The example should now be successfully flashed. In order to check, run `esptool --port /dev/[ttyUSB0] chip-id`. *Note: esptool is automatically installed with zephyr/west (I think). If it is not, install it with `pip`
     9. If everything works, the output should show at the very least the name of the MCU (for the ESP32-S3, it will say something like `Connected to ESP32-S3 on /dev/[ttyUSB0]` and also warn that it has no chip id. This means that the USB port is properly communicating.
     10. You can also run `read-flash` instead of `chip-id` if you want
-  
+
 9. Test Debugger
      1. Ensure you are plugged into the UART connection (the debugger)
      2. `just run-esp32`
      3. Once the board is done flashing, press the `reset` button
-     4. Your program in app/src/main.c should run and print `Hello World`. 
+     4. Your program in app/src/main.c should run and print `Hello World`.
 
 
