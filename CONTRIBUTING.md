@@ -18,6 +18,22 @@ The following is documentation related to information for every SlayterHIL subte
 
 *Last Updated: February 9, 2026*
 
+  - [Development and Branching](#development-and-branching)
+    - [Development methodology](#development-methodology)
+    - [Currently active git submodules](#currently-active-git-submodules)
+    - [Currently active branches](#currently-active-branches)
+    - [Branch backups](#branch-backups)
+  - [Team members](#team-members)
+    - [Team leader](#team-leader)
+    - [Active members](#active-members)
+    - [All members](#all-members)
+  - [SSH Connection for RPI](#ssh-connection-for-rpi)
+  - [Technical Documentation](#technical-documentation)
+    - [Contribution guidelines](#contribution-guidelines)
+    - [Connection from Test Automation](#connection-from-test-automation)
+    - [General CMake file](#general-cmake-file)
+
+
 ## Development and Branching
 
 ### Development methodology
