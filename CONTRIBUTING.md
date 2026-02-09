@@ -12,6 +12,7 @@ The following is documentation related to information for every SlayterHIL subte
   - [SSH Connection for RPI](#ssh-connection-for-rpi)
   - [Technical Documentation](#technical-documentation)
 - [Test Node](#test-node)
+  - [Test node setup](#test-node-setup)
 
 ---
 
@@ -130,6 +131,7 @@ The following executables are defined: `json_test` (from `utils/json_utils.cpp`)
 
 Linking: `json_test` links to `nlohmann_json::nlohmann_json`; `${PROJECT_NAME}` links to `proto_lib`, `Eigen3::Eigen`, and `nlohmann_json::nlohmann_json`; `UDPServer` and `UDPClient` each link to `proto_lib` and `nlohmann_json::nlohmann_json`.
 
+---
 
 # Test Node
 
