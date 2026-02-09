@@ -1,6 +1,5 @@
 # Copyright (c) 2021 Nordic Semiconductor ASA
 # SPDX-License-Identifier: Apache-2.0
+#
 
-if SENSOR
-rsource "example_sensor/Kconfig"
-endif # SENSOR
+add_subdirectory_ifdef(CONFIG_EXAMPLE_SENSOR example_sensor)

@@ -4,9 +4,12 @@
 SIM_BOARD        := "qemu_x86"
 
 ESP_BOARD        := "esp32s3_devkitc/esp32s3/procpu"
-ESP_PORT         := "/dev/ttyUSB0"          # adjust
+ESP_PORT         := "/dev/tty.USB0"          # adjust
+
+NUCLEO_BOARD     := "nucleo_h563zi" #? got it from zephyr/boards/st/nucleo_h563zi/nucleo_h563zi.yaml
 
 CMAKE_CACHE_ARGS := "-- -DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
+SAMPLE_DIR := "sample_apps"
 
 # set shell := ["bash", "-eu", "-o", "pipefail", "-c"]
 
@@ -32,6 +35,18 @@ run-sim: build-sim
   west build -t run -d build
 
 # ------------------
+#  NUCLEO H563ZI
+# ------------------
+
+build-nucleo: _verify_workspace clean
+  west build \
+    -p always \
+    -b "{{NUCLEO_BOARD}}" \
+    -d build \
+    app \
+    {{CMAKE_CACHE_ARGS}}
+  #* NOT ADDING OVERLAY BECAUSE .DTSI FILE "zephyr/boards/st/nucleo_h563zi/nucleo_h563zi-common.dtsi" ALREADY ENABLES SPI & I2C    
+# ------------------
 #  ESP32-S3
 # ------------------
 
@@ -49,18 +64,25 @@ build-esp32-spi-example: _verify_workspace clean
     -p always \
     -b "{{ESP_BOARD}}" \
     -d build \
-    spi_example_app \
+    -s {{SAMPLE_DIR}}/spi_example_app \
     {{CMAKE_CACHE_ARGS}} \
-    -DEXTRA_DTC_OVERLAY_FILE="{{justfile_directory()}}/spi_example_app/boards/spi_esp32s3_devkitc.overlay"
+    -DEXTRA_DTC_OVERLAY_FILE="{{justfile_directory()}}/{{SAMPLE_DIR}}/spi_example_app/boards/spi_esp32s3_devkitc.overlay"
 
 build-esp32-spi-bitbang: _verify_workspace clean
   west build \
     -p always \
     -b "{{ESP_BOARD}}" \
     -d build \
-    spi_bitbang_app \
+    -s {{SAMPLE_DIR}}/spi_bitbang_app \
     {{CMAKE_CACHE_ARGS}} \
-    -DEXTRA_DTC_OVERLAY_FILE="{{justfile_directory()}}/spi_bitbang_app/boards/spi_esp32s3_devkitc.overlay"
+    -DEXTRA_DTC_OVERLAY_FILE="{{justfile_directory()}}/{{SAMPLE_DIR}}/spi_bitbang_app/boards/spi_esp32s3_devkitc.overlay"
+
+build-esp32-ipm-esp32: _verify_workspace clean
+  west build \
+    -p always \
+    -b esp32s3_devkitc/esp32s3/procpu \
+    -d build \
+    -s {{SAMPLE_DIR}}/ipm_esp32  --sysbuild
 
 flash-esp32:
   west flash --build-dir build
@@ -73,6 +95,8 @@ run-esp32: build-esp32 flash-esp32 monitor-esp32
 run-esp32-spi-example: build-esp32-spi-example flash-esp32 monitor-esp32
 
 run-esp32-spi-bitbang: build-esp32-spi-bitbang flash-esp32 monitor-esp32
+
+run-esp32-ipm-esp32: build-esp32-ipm-esp32 flash-esp32 monitor-esp32
 
 attach-wsl-usb-port:
   #!/usr/bin/env bash
