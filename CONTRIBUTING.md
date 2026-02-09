@@ -84,11 +84,13 @@ Connections to RPI are handled through Tailscale. It is a mesh VPN that makes it
 To add your device to the Tailscale network, you can use the SlayterHil Google account and password that are seen below to sign in inside the Tailscale website.
 
 **EMAIL:** slayterhil2026@gmail.com
+
 **PASSWORD:** closedloopotw!
 
 The RPI, which is named `raspi-5-orcheslayter` at the time of writing, can be accessed through the `flight_sim` user. Information to SSH can be seen below.
 
 **SSH**: ssh flight_sim@raspi-5-orcheslayter
+
 **PASSWORD**: slayterHIL5
 
 ## Technical Documentation
