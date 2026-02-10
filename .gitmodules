@@ -1,6 +1,3 @@
-[submodule "flight_controller_repo"]
-	path = flight_controller_repo
-	url = https://github.com/embedded-purdue/slayterHIL-DUT.git
 [submodule "flight_sim_repo"]
 	path = flight_sim_repo
 	url = https://github.com/embedded-purdue/slayterHIL-flight-sim.git
