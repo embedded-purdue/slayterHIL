@@ -3,7 +3,8 @@
 #include <zephyr/logging/log.h>
 #include <zephyr/drivers/i2c.h>
 
-static const struct device *bus = DEVICE_DT_GET(DT_NODELABEL(i2c1));
+static const struct device *i2c_lidar = DEVICE_DT_GET(DT_ALIAS(i2c_lidar));
+static const struct device *i2c_imu = DEVICE_DT_GET(DT_ALIAS(i2c_imu));
 static char last_byte;
 
 // register logging module
@@ -133,12 +134,12 @@ void sensor_emulation_init() {
 		.callbacks = &sample_target_callbacks,
 	};
 
-	if (i2c_target_register(bus, &lidar_cfg) < 0) {
+	if (i2c_target_register(i2c_lidar, &lidar_cfg) < 0) {
 		printk("Failed to register target\n");
         return;
 	}
 
-    if (i2c_target_register(bus, &imu_cfg) < 0) {
+    if (i2c_target_register(i2c_imu, &imu_cfg) < 0) {
 		printk("Failed to register target\n");
         return;
 	}

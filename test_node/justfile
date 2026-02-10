@@ -44,8 +44,9 @@ build-nucleo: _verify_workspace clean
     -b "{{NUCLEO_BOARD}}" \
     -d build \
     app \
-    {{CMAKE_CACHE_ARGS}}
-  #* NOT ADDING OVERLAY BECAUSE .DTSI FILE "zephyr/boards/st/nucleo_h563zi/nucleo_h563zi-common.dtsi" ALREADY ENABLES SPI & I2C    
+    {{CMAKE_CACHE_ARGS}} \
+    -DEXTRA_DTC_OVERLAY_FILE="{{justfile_directory()}}/app/boards/nucleo_h563zi.overlay"
+
 # ------------------
 #  ESP32-S3
 # ------------------
