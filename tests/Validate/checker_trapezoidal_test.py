@@ -51,7 +51,7 @@ for msg_id, orig_entry in original_by_id.items():
 
 # Results
 if not mismatches:
-    print("All values match!")
+    print("Tests passed")
 else:
     print("Mismatches found:")
     for m in mismatches:
