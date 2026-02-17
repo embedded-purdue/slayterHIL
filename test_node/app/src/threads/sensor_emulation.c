@@ -5,112 +5,158 @@
 
 static const struct device *i2c_lidar = DEVICE_DT_GET(DT_ALIAS(i2c_lidar));
 static const struct device *i2c_imu = DEVICE_DT_GET(DT_ALIAS(i2c_imu));
-static char last_byte;
 
 // register logging module
 LOG_MODULE_REGISTER(sensor_thread, LOG_LEVEL_INF);
 
 K_MSGQ_DEFINE(sensor_update_q, SENSOR_UPDATE_QUEUE_PACKET_SIZE, SENSOR_UPDATE_QUEUE_LEN, 1);
-K_MSGQ_DEFINE(sensor_bus_q, SENSOR_BUS_QUEUE_PACKET_SIZE, SENSOR_BUS_QUEUE_LEN, 1);
 
-// i2c custom target callbacks
-/*
- * @brief Callback which is called when a write request is received from the master.
- * @param config Pointer to the target configuration.
- */
-int sample_target_write_requested_cb(struct i2c_target_config *config)
+// define mutexes for sensor data
+K_MUTEX_DEFINE(imu_data_mutext);
+K_MUTEX_DEFINE(lidar_data_mutex);
+K_MUTEX_DEFINE(rc_data_mutex); // may not need later on, need to flesh out the RC command handling system
+// TODO: maybe add mutex for current imu reg
+
+// latest sensor data variables
+static imu_data_t latest_imu_data;
+static uint16_t latest_lidar_distance_cm;
+static char latest_rc_command[MAX_RC_COMMAND_SIZE]; // may not need later on, need to flesh out the RC command handling system
+
+// current register that master is reading from for IMU
+static uint8_t current_imu_read_reg = 0;
+
+// helper function to get IMU field
+static uint8_t get_imu_data_field(uint8_t reg) {
+    k_mutex_lock(&imu_data_mutext, K_FOREVER);
+
+    uint8_t field_value = 0;
+    uint8_t offset = 0;
+
+    switch(reg) {
+        // start of gyro data registers
+        case 0x14:
+        case 0x15:
+        case 0x16:
+        case 0x17:
+        case 0x18:
+        case 0x19:
+             offset = reg - 0x14;
+             field_value = *((uint8_t*)&latest_imu_data.gyro + offset);
+             break;
+        // start of quaternion registers
+        case 0x20:
+        case 0x21:
+        case 0x22:
+        case 0x23:
+        case 0x24:
+        case 0x25:
+        case 0x26:
+        case 0x27:
+        // start of linear accel data registers (convenienty right after quaternion registers)
+        case 0x28:
+        case 0x29:
+        case 0x2A:
+        case 0x2B:
+        case 0x2C:
+        case 0x2D:
+        // start of grav data registers (conveniently right after linear accel registers)
+        case 0x2E:
+        case 0x2F:
+        case 0x30:
+        case 0x31:
+        case 0x32:
+        case 0x33:
+            offset = reg - 0x20;
+            field_value = *((uint8_t*)&latest_imu_data.quaternion + offset);
+            break;
+        // start of quaternion data registers
+        default:
+            LOG_ERR("Unexpected IMU register: 0x%02x\n", reg);
+            break;
+    }
+
+    k_mutex_unlock(&imu_data_mutext);
+    return field_value;
+}
+
+/* Callback which is called when a write request is received from the master. */
+/* for our case, nothing needs to be done */
+int i2c_target_write_requested_cb(struct i2c_target_config *config)
 {
-	printk("sample target write requested\n");
 	return 0;
 }
 
-/*
- * @brief Callback which is called when a write is received from the master.
- * @param config Pointer to the target configuration.
- * @param val The byte received from the master.
- */
-int sample_target_write_received_cb(struct i2c_target_config *config, uint8_t val)
+/* Callback which is called when a write is received from the master */
+int i2c_target_write_received_cb(struct i2c_target_config *config, uint8_t val)
 {
-	printk("sample target write received: 0x%02x\n", val);
-	last_byte = val;
+    if(config->address == IMU_ADDRESS) {
+        // master is writing to IMU registers to request data, so update current_imu_read_reg
+        current_imu_read_reg = val;
+    } 
+	
+    return 0;
+}
+
+// TODO: for read_* callbacks, need to figure out clock stretching and how to keep clock stretched if mutex is being used
+/* Callback which is called when a read request is received from the master. */
+int i2c_target_read_requested_cb(struct i2c_target_config *config, uint8_t *val)
+{
+	if(config->address == IMU_ADDRESS) {
+        // master is requesting to read from IMU register, so get the appropriate field value and return it
+        *val = get_imu_data_field(current_imu_read_reg);
+    } else if (config->address == LIDAR_ADDRESS) {
+        // master is requesting to read from LIDAR register, so return latest lidar distance
+        // TODO: kaan write this part
+    }
 	return 0;
 }
 
-/*
- * @brief Callback which is called when a read request is received from the master.
- * @param config Pointer to the target configuration.
- * @param val Pointer to the byte to be sent to the master.
- */
-int sample_target_read_requested_cb(struct i2c_target_config *config, uint8_t *val)
-{
-	printk("sample target read request: 0x%02x\n", *val);
-	*val = 0x42;
-	return 0;
-}
-
-/*
- * @brief Callback which is called when a read is processed from the master.
- * @param config Pointer to the target configuration.
- * @param val Pointer to the next byte to be sent to the master.
- */
-int sample_target_read_processed_cb(struct i2c_target_config *config, uint8_t *val)
+/* Callback which is called when a read is processed from the master. */
+int i2c_target_read_processed_cb(struct i2c_target_config *config, uint8_t *val)
 {
 	printk("sample target read processed: 0x%02x\n", *val);
 	*val = 0x43;
 	return 0;
 }
 
-/*
- * @brief Callback which is called when the master sends a stop condition.
- * @param config Pointer to the target configuration.
- */
-int sample_target_stop_cb(struct i2c_target_config *config)
+/* Callback which is called when the master sends a stop condition. */
+int i2c_target_stop_cb(struct i2c_target_config *config)
 {
 	printk("sample target stop callback\n");
 	return 0;
 }
 
 static struct i2c_target_callbacks sample_target_callbacks = {
-	.write_requested = sample_target_write_requested_cb,
-	.write_received = sample_target_write_received_cb,
-	.read_requested = sample_target_read_requested_cb,
-	.read_processed = sample_target_read_processed_cb,
-	.stop = sample_target_stop_cb,
+	.write_requested = i2c_target_write_requested_cb,
+	.write_received = i2c_target_write_received_cb,
+	.read_requested = i2c_target_read_requested_cb,
+	.read_processed = i2c_target_read_processed_cb,
+	.stop = i2c_target_stop_cb,
 };
 
 static void sensor_emulation_thread(void *, void *, void *) {
-    struct k_poll_event events[2];
+    struct k_poll_event scheduler_event;
 
-    k_poll_event_init(&events[0], K_POLL_TYPE_MSGQ_DATA_AVAILABLE, K_POLL_MODE_NOTIFY_ONLY, &sensor_update_q);
-    k_poll_event_init(&events[1], K_POLL_TYPE_MSGQ_DATA_AVAILABLE, K_POLL_MODE_NOTIFY_ONLY, &sensor_bus_q);
+    k_poll_event_init(&scheduler_event, K_POLL_TYPE_MSGQ_DATA_AVAILABLE, K_POLL_MODE_NOTIFY_ONLY, &sensor_update_q);
 
-    SensorUpdatePacket update_packet;
-    SensorBusPacket bus_packet;
+    device_update_packet_t update_packet;
 
     while (1) {
         // dummy printing for sanity
         LOG_INF("Sensor hello world\n");
 
-        // Get data from sensor_update_q or sensor_bus_q
-        k_poll(events, 2, K_FOREVER);
+        // Get data from sensor_update_q
+        k_poll(&scheduler_event, 1, K_FOREVER);
         
         // Received sensor update
-        if (events[0].state == K_POLL_TYPE_MSGQ_DATA_AVAILABLE) {
+        if (scheduler_event.state == K_POLL_TYPE_MSGQ_DATA_AVAILABLE) {
             k_msgq_get(&sensor_update_q, &update_packet, K_FOREVER);
 
             // Update sensor data
 
-            events[0].state = K_POLL_STATE_NOT_READY;
+            scheduler_event.state = K_POLL_STATE_NOT_READY;
         }
 
-        // Received bus data
-        if (events[1].state == K_POLL_TYPE_MSGQ_DATA_AVAILABLE) {
-            k_msgq_get(&sensor_bus_q, &bus_packet, K_FOREVER);
-
-            // Respond to bus message
-
-            events[1].state = K_POLL_STATE_NOT_READY;
-        }
     }
 }
 
@@ -125,12 +171,12 @@ void sensor_emulation_init() {
     // Any initialization
 
     struct i2c_target_config lidar_cfg = {
-		.address = 0x62,
+		.address = LIDAR_ADDRESS,
 		.callbacks = &sample_target_callbacks,
 	};
 
     struct i2c_target_config imu_cfg = {
-		.address = 0x29,
+		.address = IMU_ADDRESS,
 		.callbacks = &sample_target_callbacks,
 	};
 
