@@ -147,6 +147,10 @@ _Note: If you are on a Windows PC, use WSL2 (look up install instructions, ubunt
         - If using WSL/Ubuntu: `sudo apt install -y protobuf-compiler`
         - If using mac: `brew install protobuf`
 
+    - [STM32CubeProg](https://www.st.com/en/development-tools/stm32cubeprog.html) for flashing to STM board
+        - If using WSL, it may be difficult to get working. I would write the instructions I used to get it to work here, but I use arch linux which I'm sure the rest of the team is not using so I won't bother, but if you need any WSL help you can talk to me (Evin)
+
+
 2. Clone this repository:
     ```bash
     git clone git@github.com:embedded-purdue/slayterHIL.git
