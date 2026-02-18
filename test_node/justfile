@@ -5,6 +5,7 @@ SIM_BOARD        := "qemu_x86"
 
 ESP_BOARD        := "esp32s3_devkitc/esp32s3/procpu"
 ESP_PORT         := "/dev/tty.USB0"          # adjust
+STM_PORT         := "/dev/ttyACM0"          # adjust based on your config
 
 NUCLEO_BOARD     := "nucleo_h563zi" #? got it from zephyr/boards/st/nucleo_h563zi/nucleo_h563zi.yaml
 
@@ -47,6 +48,15 @@ build-nucleo: _verify_workspace clean
     {{CMAKE_CACHE_ARGS}} \
     -DEXTRA_DTC_OVERLAY_FILE="{{justfile_directory()}}/app/boards/nucleo_h563zi.overlay"
 
+build-nucleo-i2c-sample-target: _verify_workspace clean
+  west build \
+    -p always \
+    -b "{{NUCLEO_BOARD}}" \
+    -d build \
+    {{SAMPLE_DIR}}/i2c_example_app/custom_target \
+    {{CMAKE_CACHE_ARGS}} \
+    -DEXTRA_DTC_OVERLAY_FILE="{{justfile_directory()}}/{{SAMPLE_DIR}}/i2c_example_app/custom_target/boards/nucleo_h563zi.overlay"
+
 # ------------------
 #  ESP32-S3
 # ------------------
@@ -87,6 +97,9 @@ build-esp32-ipm-esp32: _verify_workspace clean
 
 flash-esp32:
   west flash --build-dir build
+
+monitor-stm32:
+  python -m serial.tools.miniterm "{{STM_PORT}}" 115200
 
 monitor-esp32:
   python -m serial.tools.miniterm "{{ESP_PORT}}" 115200
