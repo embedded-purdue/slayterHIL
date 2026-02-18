@@ -163,23 +163,22 @@ static void sensor_emulation_thread(void *, void *, void *) {
 K_THREAD_STACK_DEFINE(sensor_emulation_stack, SENSOR_EMULATION_STACK_SIZE);
 struct k_thread sensor_emulation_data;
 
+struct i2c_target_config lidar_cfg = {
+    .address = LIDAR_ADDRESS,
+    .callbacks = &sample_target_callbacks,
+};
+
+struct i2c_target_config imu_cfg = {
+    .address = IMU_ADDRESS,
+    .callbacks = &sample_target_callbacks,
+};
+
 // Initialize and start thread
 void sensor_emulation_init() {
     // dummy printing for sanity
     LOG_INF("Sensor init\n");
 
     // Any initialization
-
-    struct i2c_target_config lidar_cfg = {
-		.address = LIDAR_ADDRESS,
-		.callbacks = &sample_target_callbacks,
-	};
-
-    struct i2c_target_config imu_cfg = {
-		.address = IMU_ADDRESS,
-		.callbacks = &sample_target_callbacks,
-	};
-
 	if (i2c_target_register(i2c_lidar, &lidar_cfg) < 0) {
 		printk("Failed to register target\n");
         return;
