@@ -1,0 +1,129 @@
+Metadata-Version: 2.4
+Name: spsdk
+Version: 3.7.0
+Summary: Open Source Secure Provisioning SDK for NXP MCU/MPU
+Author-email: NXP <spsdk@nxp.com>
+License-Expression: BSD-3-Clause
+Project-URL: Code, https://github.com/NXPmicro/spsdk
+Project-URL: Issue tracker, https://github.com/NXPmicro/spsdk/issues
+Project-URL: Documentation, https://spsdk.readthedocs.io
+Classifier: Development Status :: 3 - Alpha
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Operating System :: MacOS :: MacOS X
+Classifier: Topic :: Scientific/Engineering
+Classifier: Topic :: Software Development :: Embedded Systems
+Classifier: Topic :: System :: Hardware
+Classifier: Topic :: Utilities
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: asn1crypto<2,>=1.2
+Requires-Dist: bincopy<21,>=17.14.5
+Requires-Dist: bitstring<5,>=3.1
+Requires-Dist: click-command-tree<2
+Requires-Dist: click-option-group<1,>=0.3.0
+Requires-Dist: click!=8.1.4,!=8.3,<9,>=7.1
+Requires-Dist: click<8.3; python_version == "3.10"
+Requires-Dist: colorama<1,>=0.4.6
+Requires-Dist: crcmod<2
+Requires-Dist: cryptography<47,>=43.0.0
+Requires-Dist: deepmerge<3
+Requires-Dist: fastjsonschema<3,>=2.15.1
+Requires-Dist: filelock<4,>=3
+Requires-Dist: hexdump<4
+Requires-Dist: importlib-metadata<9
+Requires-Dist: libusbsio<3,>=2.2.0
+Requires-Dist: libuuu<2,>=1.5.239
+Requires-Dist: oscrypto<2
+Requires-Dist: packaging<27,>=23.2
+Requires-Dist: platformdirs<5,>=3.9.1
+Requires-Dist: prettytable<4,>=3.12
+Requires-Dist: pyasn1<1,>=0.6
+Requires-Dist: pyserial<4,>=3.1
+Requires-Dist: requests<3,>=2.32.3
+Requires-Dist: ruamel.yaml<1,>=0.17
+Requires-Dist: ruamel.yaml.clib!=0.2.13,!=0.2.15,<1
+Requires-Dist: setuptools_scm<10
+Requires-Dist: setuptools<81,>75
+Requires-Dist: sly<1
+Requires-Dist: spsdk-mcu-link<1,>=0.3.2
+Requires-Dist: spsdk-pyocd<1,>=0.2.0
+Requires-Dist: typing-extensions<5
+Requires-Dist: x690<2,>=1.0
+Provides-Extra: examples
+Requires-Dist: flask; extra == "examples"
+Requires-Dist: requests; extra == "examples"
+Requires-Dist: ipython; extra == "examples"
+Requires-Dist: notebook; extra == "examples"
+Requires-Dist: ipywidgets; extra == "examples"
+Provides-Extra: dk6
+Requires-Dist: pyftdi; extra == "dk6"
+Requires-Dist: pylibftdi; extra == "dk6"
+Requires-Dist: ftd2xx; extra == "dk6"
+Provides-Extra: oscca
+Requires-Dist: gmssl<4,>=3.2; extra == "oscca"
+Provides-Extra: can
+Requires-Dist: python-can<5,>=4.5; extra == "can"
+Provides-Extra: jlink
+Requires-Dist: spsdk-jlink<1,>=0.3.1; extra == "jlink"
+Provides-Extra: lauterbach
+Requires-Dist: spsdk-lauterbach<1,>=0.4.0; extra == "lauterbach"
+Provides-Extra: pemicro
+Requires-Dist: spsdk-pemicro<1,>=0.3.1; extra == "pemicro"
+Provides-Extra: pkcs11
+Requires-Dist: spsdk-pkcs11<1,>=0.3.1; extra == "pkcs11"
+Provides-Extra: pqc
+Requires-Dist: spsdk-pqc<1,>=0.6.1; extra == "pqc"
+Provides-Extra: rblhost
+Requires-Dist: pymboot-rs<1; extra == "rblhost"
+Provides-Extra: all
+Requires-Dist: spsdk[examples]; extra == "all"
+Requires-Dist: spsdk[dk6]; extra == "all"
+Requires-Dist: spsdk[oscca]; extra == "all"
+Requires-Dist: spsdk[can]; extra == "all"
+Requires-Dist: spsdk[jlink]; extra == "all"
+Requires-Dist: spsdk[lauterbach]; extra == "all"
+Requires-Dist: spsdk[pemicro]; extra == "all"
+Requires-Dist: spsdk[pkcs11]; extra == "all"
+Requires-Dist: spsdk[pqc]; extra == "all"
+Requires-Dist: spsdk[rblhost]; extra == "all"
+Dynamic: license-file
+
+# NXP Secure Provisioning SDK
+
+**Secure Provisioning SDK (SPSDK)** enables connection and communication with target devices for purposes of secure provisioning and programming. Delivered as python library with command-line applications for direct utilization.
+
+![](https://github.com/NXPmicro/spsdk/raw/master/docs/_static/images/spsdk-architecture.png)
+
+## Links
+
+* [GitHub](https://github.com/NXPmicro/spsdk)
+* [PyPi](https://pypi.org/project/spsdk/)
+* [Documentation](https://spsdk.readthedocs.io)
+* [Project page](https://www.nxp.com/design/design-center/software/development-software/secure-provisioning-sdk-spsdk:SPSDK)
+
+## Supported environments
+
+Windows 10 and 11, 64bit
+Ubuntu 22.04.1 LTS
+Mac OS Sonoma 14
+
+## Usage
+
+- See [installation](https://spsdk.readthedocs.io/en/latest/examples/_knowledge_base/installation_guide.html) guide
+- See [examples](https://github.com/nxp-mcuxpresso/spsdk/tree/master/examples) directory
+- See [application](https://github.com/nxp-mcuxpresso/spsdk/tree/master/spsdk/apps) directory
+
+---
+
+## Dependencies
+
+The core dependencies are included in [requirements.txt](https://github.com/nxp-mcuxpresso/spsdk/blob/master/requirements.txt).
+
+The dependencies for the development and testing are included in [requirements-develop.txt](https://github.com/nxp-mcuxpresso/spsdk/blob/master/requirements-develop.txt).

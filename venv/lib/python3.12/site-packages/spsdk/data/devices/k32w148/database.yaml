@@ -1,0 +1,28 @@
+# Copyright 2023-2025 NXP
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
+alias: kw45b41z8
+
+revisions:
+  a0:
+    features:
+      pfr:
+        romcfg:
+          reg_spec: ifr_romcfg_a0.json
+  a1: 
+    features:
+      pfr:
+        romcfg:
+          reg_spec: ifr_romcfg_a1.json
+latest: a1
+
+# General MCU information
+info:
+  spsdk_predecessor_name: k32w1xx
+  # Web page of MCU representative
+  web: https://www.nxp.com/products/wireless/multiprotocol-mcus/tri-core-secure-and-ultra-low-power-mcu-for-matter-over-thread-and-bluetooth-le-5-3:K32W148
+
+  isp:
+    rom:
+      interfaces: ["uart", "spi", "i2c"]

@@ -27,8 +27,7 @@
 
 };
 
-/* I2C controller and LIDAR device */
-/* I2C controller and LIDAR device */
+/* I2C controller, LIDAR device, and UART User Control */
 
 &pinctrl {
     i2c0_default: i2c0_default {
@@ -45,6 +44,12 @@
             pinmux = <I2C1_SDA_GPIO4>, <I2C1_SCL_GPIO5>;
             bias-pull-up;
             drive-open-drain;
+            output-high;
+        };
+    };
+    uart1_pins: uart1_pins {
+        group1 {
+            pinmux = <UART1_TX_GPIO4>, <UART1_RX_GPIO5>; 
             output-high;
         };
     };
@@ -84,4 +89,11 @@
 
 &gpio0 {
     status = "okay";
+};
+
+&uart1 {
+    status = "okay";
+    pinctrl-0 = <&uart1_pins>;
+    pinctrl-names = "default";
+    current-speed = <115200>;
 };

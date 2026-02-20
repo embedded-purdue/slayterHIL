@@ -1,0 +1,3 @@
+[console_scripts]
+reuse=reuse.cli.main:main
+

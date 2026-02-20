@@ -1,0 +1,11 @@
+# Copyright 2023-2025 NXP
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
+sr_registers:
+  type: object
+  required: [registers]
+  properties:
+    registers:
+      type: object
+      title: Shadow registers Settings

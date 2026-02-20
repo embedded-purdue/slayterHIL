@@ -1,0 +1,584 @@
+# Copyright 2021-2026 NXP
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
+app:
+  type: object
+  title: Basic Settings
+  properties:
+    inputImageFile:
+      type: string
+      title: Plain application image
+      description: The input application image to by modified to Master Boot Image.
+      format: file
+      template_value: my_application.bin
+  required: [inputImageFile]
+
+output_file:
+  type: object
+  title: Basic Settings
+  properties:
+    masterBootOutputFile:
+      type: string
+      title: Output Image name
+      description: The path for result binary file.
+      format: file_name
+      template_value: my_mbi.bin
+  required: [masterBootOutputFile]
+
+trust_zone:
+  type: object
+  title: Trust Zone Settings
+  properties:
+    enableTrustZone:
+      type: boolean
+      title: TrustZone enable option
+      description: If not specified, the Trust zone is disabled.
+      template_value: false
+    trustZonePresetFile:
+      type: string
+      title: TrustZone Customization file
+      description: If not specified, but TrustZone is enabled(enableTrustZone) the default values are used.
+      template_value: my_tz_custom.yaml
+      format: optional_file
+
+trust_zone_mandatory:
+  type: object
+  title: Trust Zone Settings
+  properties:
+    trustZonePresetFile:
+      type: string
+      title: TrustZone Customization file
+      description: If not specified the default values are used.
+      template_value: my_tz_custom.yaml
+      format: optional_file
+
+trust_zone_2:
+  type: object
+  title: Trust Zone Settings
+  properties:
+    trustZonePresetFile:
+      type: string
+      title: TrustZone Customization file in version 2
+      description: Specification of Trust Zone configuration file for advanced settings. It could be as YAML TrustZone configuration file as pre-prepared binary TrustZone configuration.
+      template_value: my_tz_custom.yaml
+      format: optional_file
+
+load_addr:
+  type: object
+  title: Basic Settings
+  properties:
+    outputImageExecutionAddress:
+      type: [number, string]
+      title: Loading address of application
+      description: Application loading address in RAM if not XiP, otherwise address of load in XiP.
+      template_value: 0
+
+firmware_version:
+  type: object
+  title: Basic Settings
+  properties:
+    firmwareVersion:
+      type: [number, string]
+      title: Firmware version.
+      description: Value compared with Secure_FW_Version monotonic counter value stored in protected memory (MCU specific). If value is lower than value in protected memory, then is image rejected (rollback protection).
+      format: number
+      template_value: 0
+
+firmware_version_vx:
+  type: object
+  title: Basic Settings
+  properties:
+    firmwareVersion:
+      type: [number, string]
+      title: Firmware version.
+      description: Used for anti-rollback protection. New firmware must have the same or higher FW version. This value is the minimum firmware version will be stored in BCA and the firmware version specified in SBX file is then compared with this value.
+      format: number
+      template_value: 0
+
+image_version:
+  type: object
+  title: Basic Settings
+  properties:
+    imageVersion:
+      type: [number, string]
+      title: Image version.
+      description: Image version is used for dual boot. The boot ROM decides which image to boot first based on the image version. It boots the one with the newer image version first, and in case of a failure, it boots the older one.
+      format: number
+      template_value: 0
+
+image_subtype:
+  type: object
+  title: Basic Settings
+  properties:
+    outputImageSubtype:
+      type: string
+      title: Image SubType
+      description: Image subtype determine the image use in MCU. "main" for main application, "nbu" for Narrow Band Unit image and "recovery" for recovery image type
+      enum: [main, nbu, recovery]
+      template_value: main
+
+cert_block_v1:
+  type: object
+  title: Certificate Block V1
+  properties:
+    certBlock:
+      type: string
+      title: Certificate Block binary/config file
+      description: Path to certificate block binary or config file.
+      template_value: cert_block.yaml
+      format: file
+  required: [certBlock]
+
+cert_block_v21:
+  type: object
+  title: Certificate Block V2.1
+  properties:
+    certBlock:
+      type: string
+      title: Certificate Block binary/config file
+      description: Path to certificate block binary or config file.
+      template_value: cert_block.yaml
+      format: file
+  required: [certBlock]
+
+
+ahab_sign_support:
+  type: object
+  title: AHAB Container format to add to ECC + PQC sign.
+  required: [srk_set, srk_table, used_srk_id]
+  properties:
+    srk_set:
+      type: string
+      title: Super Root Key (SRK) set
+      description: Defines which set is used to authenticate the container.
+      enum: [oem, nxp]
+      template_value: oem
+    used_srk_id:
+      type: [number, string]
+      title: Used SRK
+      description: Which key from SRK set is being used.
+      format: number
+      template_value: 0
+    signer:
+      type: string
+      title: AHAB container signer
+      description:
+        Signature provider configuration in format 'type=<identifier>;<key1>=<value1>;<key2>=<value2>' or a
+        private key used for sign the container header. Header can be signed by SRK.
+        The referenced SRK must not have been revoked.
+      template_value: type=file;file_path=my_prv_key.pem
+    signer_#2:
+      type: string
+      title: AHAB container signer for second signature (PQC only)
+      description:
+        Signature provider configuration in format 'type=<identifier>;<key1>=<value1>;<key2>=<value2>' or a
+        private key used for second sign (PQC only) of the container header. Header can be signed by SRK.
+        The referenced SRK must not have been revoked.
+      template_value: type=file;file_path=my_prv_key.pem
+    srk_table:
+      type: object
+      title: SRK Table
+      template_title: Configuration of AHAB SRK table
+      description: "SRK (Super Root key) table definition."
+      required: [srk_array]
+      properties:
+        flag_ca:
+          type: boolean
+          title: CA Flag
+          description: CA Flag is used by HAB to indicate if the SRK is allowed to sign other keys
+          template_value: false
+        srk_array:
+          type: array
+          title: Super Root Key (SRK) table
+          description:
+            "Table containing the used SRK records. All SRKs must be of the same
+            type. Supported signing algorithms are: RSA-PSS, ECDSA, Dilithium or SM2. Supported hash algorithms:
+            sha256, sha384, sha512, sha3_256, sha3_384, sha3_512, sm3. Supported key sizes/curves: prime256v1, sec384r1, sec512r1,
+            rsa2048, rsa4096, dilithium3, sm2. Certificate may be of Certificate Authority. Dilithium algorithms are supported just
+            in new type of AHAB container"
+          minItems: 4
+          maxItems: 4
+          items:
+            type: string
+            title: SRK key
+            description: Path to SRK Key file.
+            format: file
+            template_value:
+              - my_srk_public_key0.pub
+              - my_srk_public_key1.pub
+              - my_srk_public_key2.pub
+              - my_srk_public_key3.pub
+        srk_table_#2:
+          type: object
+          title: Second SRK Table
+          template_title: Configuration of AHAB SRK table in case that the double signing (ECC + PQC)
+          required: [srk_array]
+          properties:
+            flag_ca:
+              type: boolean
+              title: CA Flag
+              description: CA Flag is used by HAB to indicate if the SRK is allowed to sign other keys
+              template_value: false
+            srk_array:
+              type: array
+              title: Super Root Key (SRK) table
+              description:
+                "Table containing the used SRK Dilithium records. All SRKs must be of the same
+                type. Supported signing algorithms are: Dilithium level 3. Supported hash algorithms:
+                sha3_256, sha3_384, sha3_512. Certificate may be of Certificate Authority."
+              minItems: 4
+              maxItems: 4
+              items:
+                type: string
+                title: SRK key
+                description: Path to SRK Key file.
+                format: file
+                template_value:
+                  - my_srk_public_key0.pub
+                  - my_srk_public_key1.pub
+                  - my_srk_public_key2.pub
+                  - my_srk_public_key3.pub
+    certificate:
+      type: string
+      title: The AHAB certificate
+      template_title: Optional configuration of AHAB Container Certificate (if not used, erase the section)
+      description:
+        The file that contains AHAB certificate. It could be used already prepared binary form signed by SRK, or it is possible to
+        use configuration YAML file of certificate and the AHAB export process it will export it itself.
+      format: file
+      template_value: my_ahab_certificate.bin
+
+ahab_sign_support_add_image_hash_type:
+  type: object
+  title: AHAB Container format to add to ECC + PQC sign.
+  properties:
+    image_hash_type:
+      type: string
+      title: Images HASH type
+      description: HASH type of image.
+      enum: [sha256, sha384, sha512]
+      template_value: sha512
+
+ahab_sign_support_add_core_id:
+  type: object
+  title: AHAB Container format to add to ECC + PQC sign.
+  properties:
+    core_id:
+      type: string
+      title: Target Core ID
+      description: Target core id to select kind of image.
+      enum: [cortex-m33, nbu]
+      template_value: cortex-m33
+
+ahab_sign_support_add_crc:
+  type: object
+  title: Additional Checks.
+  properties:
+    add_crc_check:
+      type: boolean
+      title: The additional CRC images check
+      description:
+        If true, add additional CRC image that is computed from all data execution mage and optionally TrustZone.
+      template_value: false
+
+cert_block_vX:
+  type: object
+  title: Certificate Block vX
+  properties:
+    certBlock:
+      type: string
+      title: Certificate Block binary file
+      description: Path to certificate block.
+      template_value: cert_block.bin
+      format: file
+    addCertHash:
+      type: boolean
+      title: True to append SHA256 hash [0:127] at the end of certificate block
+      description: Not mandatory if the hash is written in OTP
+      template_value: true
+
+  required: [certBlock]
+
+signer:
+  type: object
+  title: Image Signing Settings
+  properties:
+    signer:
+      type: string
+      title: Signer configuration
+      description: Signature provider configuration in format 'type=<sp_type>;<key1>=<value1>;<key2>=<value2>' or path to a private key.
+      template_value: type=file;file_path=root_prv_key.pem
+  required: [signer]
+
+hw_key:
+  type: object
+  title: Basic Settings
+  properties:
+    enableHwUserModeKeys:
+      type: [boolean, string]
+      title: Enable User HW key sharing
+      description: Controlling secure hardware key bus. If enabled(1), then it is possible to access keys on hardware secure bus from non-secure application, else non-secure application will read zeros.
+      template_value: false
+  required: [enableHwUserModeKeys]
+
+key_store:
+  type: object
+  title: Encryption Settings
+  properties:
+    keyStoreFile:
+      type: string
+      title: The Key store data file
+      description: Optional KeyStore data file for included keystore in LoadToRam images. If defined the KeyStore is added into MBI.
+      format: optional_file
+      template_value: my_key_store_data.bin
+
+hmac:
+  type: object
+  title: Encryption Settings
+  properties:
+    outputImageEncryptionKeyFile:
+      type: string
+      title: OTP Master key (HMAC Key)
+      description:
+        The OTP Master key that is used to compute HMAC encryption key.
+        Could be defined as hex number and also as hex/binary file.\n
+        Used algorithm by tool the get HMAC Key; AES_ENCRYPT (OTP_MASTER_KEK, 0x00000000000000000000000000000000)
+      template_value: otp_master_key.bin
+      format: file-or-hex-value
+
+hmac_mandatory:
+  type: object
+  title: Encryption Settings
+  properties:
+    outputImageEncryptionKeyFile:
+      type: string
+      title: OTP Master key (HMAC Key)
+      description:
+        The OTP Master key that is used to compute HMAC encryption key.
+        Could be defined as hex number and also as hex/binary file.\n
+        Used algorithm by tool the get HMAC Key; AES_ENCRYPT (OTP_MASTER_KEK, 0x00000000000000000000000000000000)
+      template_value: otp_master_key.bin
+      format: file-or-hex-value
+  required: [outputImageEncryptionKeyFile]
+
+ctr_init_vector:
+  type: object
+  title: Encryption Settings
+  properties:
+    CtrInitVector:
+      type: string
+      title: The output image encryption initial vector for encryption counter
+      description: The initial vector for encryption counter. Could be defined as hex number and also as hex/binary file
+      template_value: "0xc3df2316fd40b15586cb5ae49483aee2"
+      format: file-or-hex-value
+
+app_table:
+  type: object
+  title: Basic Settings
+  properties:
+    applicationTable:
+      type: array
+      title: The list of additional binaries
+      description: This is software feature of RTxxx family that NXP SDK startup code (not ROM) could load additional images.
+      items:
+        type: object
+        required: [binary, destAddress, load]
+        properties:
+          binary:
+            type: string
+            title: Binary file
+            description: The binary file to be added to final application.
+            format: file
+            template_value: my_additional_binary.bin
+          destAddress:
+            type: [string, number]
+            title: Destination address
+            description: Destination address in RAM of additional binary.
+            format: number
+            template_value: 0x20000000
+          load:
+            type: boolean
+            title: Enable load
+            description: Enabler to load/use the image.
+            template_value: true
+
+image_type:
+  type: object
+  title: Basic Settings
+  properties:
+    outputImageExecutionTarget:
+      type: string
+      title: Application target
+      description: Definition if application is Execute in Place(XiP) or loaded to RAM during reset sequence.
+      enum:
+        [
+          "xip",
+          "load-to-ram",
+          "Internal flash (XIP)",
+          "External flash (XIP)",
+          "Internal Flash (XIP)",
+          "External Flash (XIP)",
+          "RAM",
+          "ram",
+        ]
+      enum_template: ["xip", "load-to-ram"]
+      template_value: xip
+
+    outputImageAuthenticationType:
+      type: string
+      title: Type of boot image authentication
+      description: Specification of final master boot image authentication.
+      enum:
+        [
+          plain,
+          crc,
+          signed,
+          signed-encrypted,
+          signed-nxp,
+          nxp_signed,
+          nbu-signed,
+          Plain,
+          CRC,
+          Signed,
+          Encrypted + Signed,
+          NXP Signed,
+          NXP signed,
+          NBU Signed,
+          encrypted,
+        ]
+      enum_template:
+        ["plain", "crc", "signed", "signed-encrypted", "signed-nxp","nbu-signed"]
+      template_value: plain
+
+  required: [outputImageExecutionTarget, outputImageAuthenticationType]
+
+lifecycle:
+  type: object
+  title: Basic Settings
+  properties:
+    lifeCycle:
+      type: string
+      title: Life cycle state
+      description:
+        life cycle state model to protect code from reading from the device internal flash, which is called code
+        read protection feature. There are different levels of protections in the system, so that access to the on-chip flash and use of ISP
+        can be restricted. Four levels of Read Out Protection (ROP) are supported. This read out protection is a mechanism that allows user to enable
+        different levels of protection in the system. It is a 8-bit field FTFA_FSEC associated with flash security byte (0x40c byte address).
+        It can be programmed by customer. Check the SRM for more information. If not provided, value in application will be used.
+      enum:
+        [
+          "NOT_SET",
+          "OEM_OPEN",
+          "OEM_CLOSED_ROP1",
+          "OEM_CLOSED_ROP2",
+          "OEM_CLOSED_ROP3",
+          "OEM_CLOSED_NO_RETURN",
+        ]
+      template_value: NOT_SET
+
+just_header:
+  type: object
+  title: Basic Settings
+  properties:
+    justHeader:
+      type: boolean
+      title: Generate only header
+      description:
+        Build only the boot headers (Vector table, BCA, FCB) 0x0..0x800 binary without the application.
+        This is needed for device HSM provisioning file in case the user set ROP2, ROP3.
+      template_value: false
+
+bca:
+  type: object
+  title: Bootloader Configuration Area (BCA)
+  properties:
+    bca:
+      type: string
+      title: BCA binary/config file
+      description: Path to bca binary or config file.
+      template_value: bca.yaml
+      format: file
+
+fcf:
+  type: object
+  title: Flash Configuration Fields
+  properties:
+    fcf:
+      type: string
+      title: FCF binary/config file
+      description: Path to FCF binary or config file.
+      template_value: fcf.yaml
+      format: file
+
+hse_ivt:
+  type: object
+  title: HSE IVT Settings
+  description: "HSE Interrupt Vector Table configuration settings"
+  properties:
+    appSwtInit:
+      type: boolean
+      title: APP SWT Init
+      description: "Application Software Tamper initialization"
+      template_value: false
+    appStartAddress:
+      type: [number, string]
+      title: Application Start Address
+      description: "Start address for CM7_0 core application"
+      format: number
+      template_value: "0x00400200"
+    lcConfigAddr:
+      type: [number, string]
+      title: Lifecycle Configuration Address
+      description: "Address of lifecycle configuration data. If not set, the LC configuration will be placed after application."
+      format: number
+      template_value: "0x0"
+    hseFwAddr:
+      type: [number, string]
+      title: HSE Firmware Address
+      description: "Address of HSE firmware"
+      format: number
+      template_value: "0x0"
+
+hse_app_boot_header:
+  type: object
+  title: Application Boot Header Settings
+  description: "Configuration for the Application Boot"
+  properties:
+    appStartAddress:
+      type: [number, string]
+      title: Start Address
+      description: "Start address of the application"
+      format: number
+      template_value: "0x00400200"
+
+hse_signature:
+  type: object
+  title: HSE Signature settings
+  description: "Configuration of HSE signature"
+  properties:
+    initialVector:
+      type: string
+      title: Initial Vector
+      description: "Initial vector for encryption (12 bytes hexadecimal). If not specified, random value will be generated."
+      format: file-or-hex-value
+      template_value: "000102030405060708090A0B"
+    adkp:
+      type: string
+      title: Application Debug/Key Password
+      description: "Key used for encryption (16 bytes hexadecimal)"
+      format: file-or-hex-value
+      template_value: "000102030405060708090A0B0C0D0E0F"
+  required: [adkp]
+
+hse_lifecycle:
+  type: object
+  title: Lifecycle Configuration
+  description: "Configuration for HSE lifecycle state. The lifecycle state determines the security level and available features of the device. Each state has specific implications for device functionality and security."
+  properties:
+    lifecycle:
+      type: string
+      title: Lifecycle State
+      description: "Defines the lifecycle state of the device: 'none' - default state with no lifecycle change, 'oem_prod' - OEM production state with increased security, 'in_field' - deployed state with highest security level and restricted debug access."
+      enum: ["none", "oem_prod", "in_field"]
+      template_value: "none"

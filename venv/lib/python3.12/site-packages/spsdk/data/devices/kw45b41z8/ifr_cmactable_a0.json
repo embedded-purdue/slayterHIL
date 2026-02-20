@@ -1,0 +1,188 @@
+{
+    "cpu": "KW45B41Z8",
+    "groups": [
+        {
+            "group": {
+                "name": "Block 00000-0000F",
+                "description": "Block 00000-0000F"
+            },
+            "registers": [
+                {
+                    "id": "field000",
+                    "name": "Hash update needed",
+                    "description": "Hash update needed",
+                    "offset_int": "0",
+                    "default_value_int": "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
+                    "individual_write_lock": "implicit_16bytes",
+                    "reg_width": 128,
+                    "bitfields": [
+                        {
+                            "width": 32,
+                            "id": "field000-bits-0-31",
+                            "name": "Hash update needed",
+                            "description": "Hash update needed",
+                            "values": [
+                                {
+                                    "name": "NO HASH UPDATE NEEDED",
+                                    "value": 0,
+                                    "description": "No hash update needed"
+                                },
+                                {
+                                    "name": "HASH UPDATE NEEDED",
+                                    "value": 4294967295,
+                                    "description": "Hash update needed"
+                                }
+                            ]
+                        },
+                        {
+                            "width": 32
+                        },
+                        {
+                            "width": 32
+                        },
+                        {
+                            "width": 32
+                        }
+                    ]
+                },
+                {
+                    "id": "field016",
+                    "name": "CMAC_APP",
+                    "description": "16 byte CMAC for application image. Hash of main flash primary boot image data at 0x0 OR Hash of Image data at ABASE (if FLW is enabled)",
+                    "offset_int": "0x10",
+                    "default_value_int": "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
+                    "individual_write_lock": "implicit_16bytes",
+                    "reg_width": 128
+                },
+                {
+                    "id": "field032",
+                    "name": "Hash update needed 1",
+                    "description": "Hash update needed 1",
+                    "offset_int": "0x20",
+                    "default_value_int": "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
+                    "individual_write_lock": "implicit_16bytes",
+                    "reg_width": 128,
+                    "bitfields": [
+                        {
+                            "width": 32,
+                            "id": "field032-bits-0-31",
+                            "name": "Hash update needed 1",
+                            "description": "Hash update needed 1",
+                            "values": [
+                                {
+                                    "name": "NO HASH UPDATE NEEDED",
+                                    "value": 0,
+                                    "description": "No hash update needed"
+                                },
+                                {
+                                    "name": "HASH UPDATE NEEDED",
+                                    "value": 4294967295,
+                                    "description": "Hash update needed"
+                                }
+                            ]
+                        },
+                        {
+                            "width": 32
+                        },
+                        {
+                            "width": 32
+                        },
+                        {
+                            "width": 32
+                        }
+                    ]
+                },
+                {
+                    "id": "field048",
+                    "name": "CMAC_FALLBACK",
+                    "description": "16 byte CMAC for fallback image. Hash of fallback image data (if “Image 1 Base Address” field in IFR0 page0 is not 0xFFFFFFFF)",
+                    "offset_int": "0x30",
+                    "default_value_int": "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
+                    "individual_write_lock": "implicit_16bytes",
+                    "reg_width": 128
+                },
+                {
+                    "id": "field064",
+                    "name": "Hash update needed 2",
+                    "description": "Hash update needed",
+                    "offset_int": "0x40",
+                    "default_value_int": "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
+                    "individual_write_lock": "implicit_16bytes",
+                    "reg_width": 128,
+                    "bitfields": [
+                        {
+                            "width": 32,
+                            "id": "field064-bits-0-31",
+                            "name": "Hash update needed",
+                            "description": "Hash update needed",
+                            "values": [
+                                {
+                                    "name": "NO HASH UPDATE NEEDED",
+                                    "value": 0,
+                                    "description": "No hash update needed"
+                                },
+                                {
+                                    "name": "HASH UPDATE NEEDED",
+                                    "value": 4294967295,
+                                    "description": "Hash update needed"
+                                }
+                            ]
+                        },
+                        {
+                            "width": 32
+                        },
+                        {
+                            "width": 32
+                        },
+                        {
+                            "width": 32
+                        }
+                    ]
+                },
+                {
+                    "id": "field0080",
+                    "name": "CMAC_NBU",
+                    "description": "Hash of radio (NBU) flash image data",
+                    "offset_int": "0x50",
+                    "default_value_int": "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
+                    "individual_write_lock": "implicit_16bytes",
+                    "reg_width": 128
+                },
+                {
+                    "id": "Reserved0096",
+                    "name": "Reserved0096",
+                    "description": "This field is reserved for internal use",
+                    "offset_int": "0x60",
+                    "default_value_int": "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
+                    "individual_write_lock": "none",
+                    "is_reserved": true,
+                    "reg_width": 128,
+                    "bitfields": [
+                        {
+                            "width": 32
+                        },
+                        {
+                            "width": 32
+                        },
+                        {
+                            "width": 32
+                        },
+                        {
+                            "width": 32
+                        }
+                    ]
+                },
+                {
+                    "id": "Reserved00112",
+                    "name": "Reserved00112",
+                    "description": "This field is reserved for internal use",
+                    "offset_int": "0x70",
+                    "default_value_int": "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
+                    "individual_write_lock": "none",
+                    "is_reserved": true,
+                    "reg_width": 128
+                }
+            ]
+        }
+    ]
+}

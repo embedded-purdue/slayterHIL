@@ -1,0 +1,2 @@
+The libusbsio Python package and related binaries is released under BSD-3-Clause License.
+See the 'license' folder for related license files and SBOM-libusbsio.spdx.json.

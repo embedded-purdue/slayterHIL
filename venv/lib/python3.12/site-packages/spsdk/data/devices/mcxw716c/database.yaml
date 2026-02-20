@@ -1,0 +1,11 @@
+# Copyright 2024-2025 NXP
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
+alias: kw45b41z8
+
+# General MCU information
+info:
+  # Web page of MCU representative
+  spsdk_predecessor_name: mcxw71xx
+  web: https://www.nxp.com/products/MCX-W71
