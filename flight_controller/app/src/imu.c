@@ -86,7 +86,7 @@ void imu_read_thread(void *arg1, void *arg2, void *args3) {
 		if(rc == 0) { 
 			int put_rc = k_msgq_put(&imu_msgq, &data, K_NO_WAIT); 
 			if(put_rc != 0) { 
-				printk("IMU msgq full, dropping data\n"); 
+				// printk("IMU msgq full, dropping data\n"); 
 			}
 		} else { 
 			printk("Failed to read IMU data: %d\n", rc); 
