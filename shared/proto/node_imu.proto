@@ -1,21 +1,18 @@
 syntax = "proto3";
 
-// Represents one signed 16-bit IMU register value split into two bytes.
-// Matches i2c_imu_data_16_t { int8_t lsb; int8_t msb; }
-
 // Matches i2c_imu_triplet_t (x,y,z), each axis is LSB/MSB bytes.
 message ImuTriplet {
-  uint32 x = 1;
-  uint32 y = 2;
-  uint32 z = 3;
+  ImuData16 x = 1;
+  ImuData16 y = 2;
+  ImuData16 z = 3;
 }
 
 // Matches i2c_imu_quaternion_t (w,x,y,z), each component is LSB/MSB bytes.
 message ImuQuaternion {
-  uint32 w = 1;
-  uint32 x = 2;
-  uint32 y = 3;
-  uint32 z = 4;
+  ImuData16 w = 1;
+  ImuData16 x = 2;
+  ImuData16 y = 3;
+  ImuData16 z = 4;
 }
 
 // Matches imu_data_t layout: quaternion + linear_acceleration + gyro
