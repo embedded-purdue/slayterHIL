@@ -1,8 +1,0 @@
-# Copyright 2024-2025 NXP
-#
-# SPDX-License-Identifier: BSD-3-Clause
-
-alias: mcxn947
-
-info:
-  spsdk_predecessor_name: mcxn54x
