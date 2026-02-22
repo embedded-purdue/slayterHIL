@@ -15,7 +15,7 @@
 
 /*
     i2c_imu_data_16_t represents each individual data value in the IMU. they are signed 16 bit values with consecutive registers representing LSB/MSB
-    example: QUA_DATA_Y_LSB is at 0x24 and QUA_DATA_Y_MSB is at 0x25. 
+    example: QUA_DATA_Y_LSB is at 0x24 and QUA_DATA_Y_MSB is at 0x25.
 */
 typedef struct {
     int8_t lsb;
@@ -54,7 +54,7 @@ typedef struct {
     union {
         imu_data_t imu_data;
         uint16_t lidar_distance_cm;
-        char rc_command[MAX_RC_COMMAND_SIZE];     
+        char rc_command[MAX_RC_COMMAND_SIZE];
     };
 } device_update_packet_t;
 
