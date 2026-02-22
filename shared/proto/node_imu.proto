@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+// Represents one signed 16-bit IMU register value split into two bytes.
+// Matches i2c_imu_data_16_t { int8_t lsb; int8_t msb; }
+message ImuData16 {
+  int32 lsb = 1; // store -128..127 safely; int8 not supported in proto3
+  int32 msb = 2; // store -128..127 safely; int8 not supported in proto3
+}
+
+// Matches i2c_imu_triplet_t (x,y,z), each axis is LSB/MSB bytes.
+message ImuTriplet {
+  ImuData16 x = 1;
+  ImuData16 y = 2;
+  ImuData16 z = 3;
+}
+
+// Matches i2c_imu_quaternion_t (w,x,y,z), each component is LSB/MSB bytes.
+message ImuQuaternion {
+  ImuData16 w = 1;
+  ImuData16 x = 2;
+  ImuData16 y = 3;
+  ImuData16 z = 4;
+}
+
+// Matches imu_data_t layout: quaternion + linear_acceleration + gyro
+message ImuPayload {
+  ImuQuaternion quaternion = 1;
+  ImuTriplet linear_acceleration = 2;
+  ImuTriplet gyro = 3;
+}
+
+// Matches the union member: uint16_t lidar_distance_cm;
+message LidarPayload {
+  uint32 distance_cm = 1; // 0..65535 (uint16 in C)
+}
+
+// Matches the union member: char rc_command[MAX_RC_COMMAND_SIZE];
+message RcCommandPayload {
+  string command = 1; // sender should keep <= 20 chars to match MAX_RC_COMMAND_SIZE
+}
+
+// Matches device_update_packet_t:
+// uint8_t sensor_id;
+// union { imu_data_t imu_data; uint16_t lidar_distance_cm; char rc_command[20]; }
+message DeviceUpdatePacket {
+  uint32 timestamp = 1; // same intent as your previous SensorPacket timestamp
+  uint32 sensor_id  = 2; // 0..255 (uint8 in C)
+
+  oneof payload {
+    ImuPayload imu = 3;
+    LidarPayload lidar = 4;
+    RcCommandPayload rc_command = 5;
+  }
+}
