@@ -41,9 +41,9 @@ typedef struct {
 /* NOTE: the order of fields in this struct is VERY IMPORTANT */
 typedef struct {
     i2c_imu_quaternion_t quaternion;
-    i2c_imu_triplet_t linear_acceleration;
-    i2c_imu_triplet_t gravity;
-    i2c_imu_triplet_t gyro;
+    i2c_imu_triplet_t linear_acceleration; //one of the axises include gravity
+    //i2c_imu_triplet_t gravity;
+    i2c_imu_triplet_t gyro; //angular phi
 } imu_data_t;
 
 // assert size matches expected size of 26 bytes
@@ -53,7 +53,7 @@ typedef struct {
     uint8_t sensor_id;
     union {
         imu_data_t imu_data;
-        uint16_t lidar_distance_cm;
+        uint16_t lidar_distance_mm;
         char rc_command[MAX_RC_COMMAND_SIZE];     
     };
 } device_update_packet_t;
