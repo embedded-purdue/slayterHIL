@@ -34,7 +34,10 @@ manifest:
         # By using name-allowlist we can clone only the modules that are
         # strictly needed by the application.
         name-allowlist:
+          - cmsis
+          - cmsis_6       # CMSIS headers for Cortex-M (STM32)
           - hal_espressif # required for ESP32-based boards
+          - hal_stm32     # required for STM32-based boards
           - nanopb # protobuf
 
   self:

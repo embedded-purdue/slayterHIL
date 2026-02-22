@@ -3,8 +3,12 @@
 # ------------------
 SIM_BOARD        := "qemu_x86"
 
-ESP_BOARD        := "esp32s3_devkitc/esp32s3/procpu"
-ESP_PORT         := "/dev/ttyUSB0"          # adjust
+STM32_BOARD      := "nucleo_h563zi"
+STM32_PORT       := "/dev/ttyACM0" #ST-LINK virtual COM port; adjust if needed
+
+#ESP32 (keeping for reference)
+ESP_BOARD      := "esp32s3_devkitc/esp32s3/procpu"
+ESP_PORT       := "/dev/ttyUSB0"
 
 CMAKE_CACHE_ARGS := "-- -DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
 
@@ -32,57 +36,54 @@ run-sim: build-sim
   west build -t run -d build
 
 # ------------------
-#  ESP32-S3
+#  STM32 Nucleo
 # ------------------
 
-build-esp32: _verify_workspace clean
+build-stm32: _verify_workspace clean
   west build \
     -p always \
-    -b "{{ESP_BOARD}}" \
+    -b {{STM32_BOARD}} \
     -d build \
     app \
-    {{CMAKE_CACHE_ARGS}} \
-    -DEXTRA_DTC_OVERLAY_FILE="{{justfile_directory()}}/app/boards/esp32s3_devkitc.overlay"
+    {{CMAKE_CACHE_ARGS}}
 
-build-esp32-spi-example: _verify_workspace clean
+build-stm32-spi-example: _verify_workspace clean
   west build \
     -p always \
-    -b "{{ESP_BOARD}}" \
+    -b {{STM32_BOARD}} \
     -d build \
     spi_example_app \
-    {{CMAKE_CACHE_ARGS}} \
-    -DEXTRA_DTC_OVERLAY_FILE="{{justfile_directory()}}/spi_example_app/boards/spi_esp32s3_devkitc.overlay"
+    {{CMAKE_CACHE_ARGS}}
 
-build-esp32-spi-bitbang: _verify_workspace clean
+build-stm32-spi-bitbang: _verify_workspace clean
   west build \
     -p always \
-    -b "{{ESP_BOARD}}" \
+    -b {{STM32_BOARD}} \
     -d build \
     spi_bitbang_app \
-    {{CMAKE_CACHE_ARGS}} \
-    -DEXTRA_DTC_OVERLAY_FILE="{{justfile_directory()}}/spi_bitbang_app/boards/spi_esp32s3_devkitc.overlay"
+    {{CMAKE_CACHE_ARGS}}
 
-flash-esp32:
+flash-stm32:
   west flash --build-dir build
 
-monitor-esp32:
-  python -m serial.tools.miniterm "{{ESP_PORT}}" 115200
+monitor-stm32:
+  python -m serial.tools.miniterm "{{STM32_PORT}}" 115200
 
-run-esp32: build-esp32 flash-esp32 monitor-esp32
+run-stm32: build-stm32 flash-stm32 monitor-stm32
 
-run-esp32-spi-example: build-esp32-spi-example flash-esp32 monitor-esp32
+run-stm32-spi-example: build-stm32-spi-example flash-stm32 monitor-stm32
 
-run-esp32-spi-bitbang: build-esp32-spi-bitbang flash-esp32 monitor-esp32
+run-stm32-spi-bitbang: build-stm32-spi-bitbang flash-stm32 monitor-stm32
 
 attach-wsl-usb-port:
   #!/usr/bin/env bash
   set -euo pipefail
 
-  BUSID=$(usbipd.exe list | grep "CP2102N USB to UART Bridge Controller" | awk 'NR==1 {print $1}')
+  BUSID=$(usbipd.exe list | grep "ST-Link" | awk 'NR==1 {print $1}')
 
   if [ -z "$BUSID" ]; then
-    echo "Device not found: CP2102N USB to UART Bridge Controller"
-    echo "This error may be because you are using a USB adapter."
+    echo "Device not found: ST-Link"
+    echo "Make sure the Nucleo board is plugged in via USB."
     exit 1
   fi
 
@@ -92,6 +93,47 @@ attach-wsl-usb-port:
   usbipd.exe attach --wsl --busid "$BUSID"
 
   echo "Device attached to WSL."
+
+# ------------------
+#  ESP32-S3 (kept for reference)
+# ------------------
+
+# build-esp32: _verify_workspace clean
+#   west build \
+#     -p always \
+#     -b "esp32s3_devkitc/esp32s3/procpu" \
+#     -d build \
+#     app \
+#     {{CMAKE_CACHE_ARGS}} \
+#     -DEXTRA_DTC_OVERLAY_FILE="{{justfile_directory()}}/app/boards/esp32s3_devkitc.overlay"
+#
+# build-esp32-spi-example: _verify_workspace clean
+#   west build \
+#     -p always \
+#     -b "esp32s3_devkitc/esp32s3/procpu" \
+#     -d build \
+#     spi_example_app \
+#     {{CMAKE_CACHE_ARGS}} \
+#     -DEXTRA_DTC_OVERLAY_FILE="{{justfile_directory()}}/spi_example_app/boards/spi_esp32s3_devkitc.overlay"
+#
+# build-esp32-spi-bitbang: _verify_workspace clean
+#   west build \
+#     -p always \
+#     -b "esp32s3_devkitc/esp32s3/procpu" \
+#     -d build \
+#     spi_bitbang_app \
+#     {{CMAKE_CACHE_ARGS}} \
+#     -DEXTRA_DTC_OVERLAY_FILE="{{justfile_directory()}}/spi_bitbang_app/boards/spi_esp32s3_devkitc.overlay"
+#
+# flash-esp32:
+#   west flash --build-dir build
+#
+# monitor-esp32:
+#   python -m serial.tools.miniterm "/dev/ttyUSB0" 115200
+#
+# run-esp32: build-esp32 flash-esp32 monitor-esp32
+# run-esp32-spi-example: build-esp32-spi-example flash-esp32 monitor-esp32
+# run-esp32-spi-bitbang: build-esp32-spi-bitbang flash-esp32 monitor-esp32
 
 
 # ------------------

@@ -4,7 +4,7 @@
 // our own specifiers
 #define LEN_TRANSCEIVE 4
 #define DELAY 0
-#define SPI_DEVICE_NAME esp32
+#define SPI_DEVICE_NAME spi_dev
 
 // operation flags we want
 static const spi_operation_t operation_flags = (

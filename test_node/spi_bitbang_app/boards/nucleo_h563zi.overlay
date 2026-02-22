@@ -1,0 +1,23 @@
+/* SPI bitbang on Nucleo H563ZI using free GPIO pins.
+ * Avoid pins used by SPI1 (PA5, PG9, PB5, PD14), USART (PD8-9, PB6-7),
+ * I2C1 (PB8-9), Ethernet, LEDs (PB0, PF4, PG4), etc.
+ *
+ * Selected pins on GPIOE (accessible on ST Morpho connector):
+ *   CS   = PE2
+ *   MOSI = PE3
+ *   CLK  = PE4
+ *   MISO = PE5
+ */
+
+/ {
+	spibb0: spibb0 {
+		compatible = "zephyr,spi-bitbang";
+		status = "okay";
+		#address-cells = <1>;
+		#size-cells = <0>;
+		cs-gpios   = <&gpioe 2 (GPIO_ACTIVE_LOW | GPIO_PULL_DOWN)>;
+		mosi-gpios = <&gpioe 3 GPIO_ACTIVE_HIGH>;
+		clk-gpios  = <&gpioe 4 GPIO_ACTIVE_HIGH>;
+		miso-gpios = <&gpioe 5 0>;
+	};
+};

@@ -1,0 +1,15 @@
+// SPI device on the Nucleo H563ZI's SPI1 controller.
+// SPI1 is already enabled with pinctrl in the board DTS:
+//   SCK  = PA5
+//   MISO = PG9
+//   MOSI = PB5
+//   CS   = PD14
+
+&spi1 {
+    spi_dev: spi_dev@0 {
+        compatible = "vnd,spi-device";
+        reg = <0>;
+        spi-max-frequency = <1000000>;
+        label = "spi_dev";
+    };
+};
