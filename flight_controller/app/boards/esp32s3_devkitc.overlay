@@ -49,7 +49,7 @@
     };
     uart1_pins: uart1_pins {
         group1 {
-            pinmux = <UART1_TX_GPIO4>, <UART1_RX_GPIO5>; 
+            pinmux = <UART1_TX_GPIO45>, <UART1_RX_GPIO48>; 
             output-high;
         };
     };

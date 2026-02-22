@@ -8,11 +8,12 @@
   {
     uint8_t rx_buf[8];  
     uart_irq_update(dev);
+    
     if(!uart_irq_rx_ready(dev))
     {
-      printk("UART is not ready\n");
       return;
-    } 
+    }
+
     while(uart_irq_rx_ready(dev))
     {
       int bytes_read = uart_fifo_read(dev, rx_buf, sizeof(rx_buf)); 

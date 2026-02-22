@@ -134,7 +134,7 @@ int main(void)
     
     printk("Starting LiDAR-Lite V4 and IMU test app...\n");
 
-    // Initialize IMU 
+    //Initialize IMU 
     const struct device *const mpu6050 = DEVICE_DT_GET(DT_NODELABEL(mpu6050));
     int rc = imu_init(mpu6050);
     if (rc != 0) {
@@ -142,7 +142,7 @@ int main(void)
         return rc;
     }
 
-    // Initialize LiDAR
+    // // Initialize LiDAR
     const struct device *const lidar_device = DEVICE_DT_GET(DT_NODELABEL(lidar));
     rc = lidar_init(lidar_device); 
     if(rc != 0) { 
@@ -180,7 +180,7 @@ int main(void)
                     LIDAR_PRIORITY, 0, K_NO_WAIT);
 
     // Start UART consumer thread (the one that prints data)
-    k_thread_create(&uart_consumer_thread_data, uart_consumer_stack, UART_CONSUMER_STACK, uart_consumer, NULL, NULL, NULL, UART_CONSUMER_PRIORITY, 0, K_NO_WAIT);
+    k_thread_create(&uart_consumer_thread_data, uart_consumer_stack, UART_CONSUMER_STACK, uart_consumer, NULL, NULL, NULL,UART_CONSUMER_PRIORITY, 0, K_NO_WAIT);
 
     printk("All threads started\n");
 
