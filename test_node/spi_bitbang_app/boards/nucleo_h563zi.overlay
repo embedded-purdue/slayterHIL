@@ -1,4 +1,4 @@
-/* SPI bitbang on Nucleo H563ZI using free GPIO pins.
+/* 
  * Avoid pins used by SPI1 (PA5, PG9, PB5, PD14), USART (PD8-9, PB6-7),
  * I2C1 (PB8-9), Ethernet, LEDs (PB0, PF4, PG4), etc.
  *
@@ -11,7 +11,7 @@
 
 / {
 	spibb0: spibb0 {
-		compatible = "zephyr,spi-bitbang";
+		compatible = "zephyr,spis-bitbang";
 		status = "okay";
 		#address-cells = <1>;
 		#size-cells = <0>;
