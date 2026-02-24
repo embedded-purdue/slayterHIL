@@ -1,4 +1,5 @@
 #include "threads/sensor_emulation.h"
+#include "threads/rc.h"
 #include "threads/imu_emulator.h"
 #include "threads/lidar_emulator.h"
 #include <zephyr/kernel.h>
@@ -7,6 +8,7 @@
 
 static const struct device *i2c_lidar = DEVICE_DT_GET(DT_ALIAS(i2c_lidar));
 static const struct device *i2c_imu = DEVICE_DT_GET(DT_ALIAS(i2c_imu));
+static const struct device *uart_rc = DEVICE_DT_GET(DT_ALIAS(uart_rc));
 
 // register logging module
 LOG_MODULE_REGISTER(sensor_thread, LOG_LEVEL_INF);
@@ -35,9 +37,8 @@ static void sensor_emulation_thread(void *, void *, void *) {
         // Received sensor update
         if (scheduler_event.state == K_POLL_TYPE_MSGQ_DATA_AVAILABLE) {
             k_msgq_get(&sensor_update_q, &update_packet, K_FOREVER);
-            
+
             // Update sensor data
-            
             scheduler_event.state = K_POLL_STATE_NOT_READY;
             switch(update_packet.sensor_id) {
                 case LIDAR_DEVICE_ID:
@@ -47,7 +48,7 @@ static void sensor_emulation_thread(void *, void *, void *) {
                     imu_emulator_update_data(update_packet.imu_data);
                     break;
                 case RC_DEVICE_ID:
-                    //TODO:
+                    rc_command_received(update_packet.rc_command);
                     break;
                 default:
                     LOG_WRN("Unknown sensor ID received: %d", update_packet.sensor_id);
@@ -65,11 +66,17 @@ struct k_thread sensor_emulation_data;
 // Initialize and start thread
 void sensor_emulation_init() {
     // dummy printing for sanity
-    LOG_INF("Sensor init\n");
+    lidar_emulator_init(i2c_lidar);
+
 
     // Any initialization
     lidar_emulation_init(i2c_lidar);
     imu_emulator_init(i2c_imu);
+
+    if(rc_init(uart_rc) < 0) {
+        LOG_ERR("Failed to initialize RC UART");
+        return;
+    }
 
     k_thread_create(&sensor_emulation_data, sensor_emulation_stack, 
         K_THREAD_STACK_SIZEOF(sensor_emulation_stack),
