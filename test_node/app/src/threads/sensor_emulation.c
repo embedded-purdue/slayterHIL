@@ -1,4 +1,5 @@
 #include "threads/sensor_emulation.h"
+#include "threads/rc.h"
 #include "threads/lidar_emulator.h"
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
@@ -6,6 +7,7 @@
 
 static const struct device *i2c_lidar = DEVICE_DT_GET(DT_ALIAS(i2c_lidar));
 static const struct device *i2c_imu = DEVICE_DT_GET(DT_ALIAS(i2c_imu));
+static const struct device *uart_rc = DEVICE_DT_GET(DT_ALIAS(uart_rc));
 
 // register logging module
 LOG_MODULE_REGISTER(sensor_thread, LOG_LEVEL_INF);
@@ -20,9 +22,6 @@ K_MUTEX_DEFINE(rc_data_mutex); // may not need later on, need to flesh out the R
 
 // latest sensor data variables
 static imu_data_t latest_imu_data;
-static uint16_t latest_lidar_distance_mm;
-static char latest_rc_command[MAX_RC_COMMAND_SIZE]; // may not need later on, need to flesh out the RC command handling system
-
 
 // current register that master is reading from for IMU
 static uint8_t current_imu_read_reg = 0;
@@ -153,25 +152,13 @@ static void sensor_emulation_thread(void *, void *, void *) {
         // Received sensor update
         if (scheduler_event.state == K_POLL_TYPE_MSGQ_DATA_AVAILABLE) {
             k_msgq_get(&sensor_update_q, &update_packet, K_FOREVER);
-            
+
             // Update sensor data
+            if(update_packet.sensor_id == RC_DEVICE_ID) {
+                rc_command_received(update_packet.rc_command);
+            }
 
             scheduler_event.state = K_POLL_STATE_NOT_READY;
-            switch(update_packet.sensor_id) {
-                case SENSOR_ID_LIDAR:
-                    lidar_emulator_update_distance(update_packet.lidar_distance_mm);
-                    break;
-                case SENSOR_ID_IMU:
-                    //TODO:
-                    break;
-                case SENSOR_ID_RC:
-                    //TODO:
-                    break;
-                default:
-                    LOG_WRN("Unknown sensor ID received: %d", update_packet.sensor_id);
-                    break;
-
-            }
         }
 
     }
@@ -180,32 +167,27 @@ static void sensor_emulation_thread(void *, void *, void *) {
 K_THREAD_STACK_DEFINE(sensor_emulation_stack, SENSOR_EMULATION_STACK_SIZE);
 struct k_thread sensor_emulation_data;
 
-/* struct i2c_target_config lidar_cfg = { */
-/*     .address = LIDAR_ADDRESS, */
-/*     .callbacks = &sample_target_callbacks, */
-/* }; */
-
-struct i2c_target_config imu_cfg = {
-    .address = IMU_ADDRESS,
-    .callbacks = &sample_target_callbacks,
-};
-
 // Initialize and start thread
 void sensor_emulation_init() {
     // dummy printing for sanity
-    LOG_INF("Sensor init\n");
+    lidar_emulator_init(i2c_lidar);
+
 
     // Any initialization
-    lidar_emulation_init(i2c_lidar);
-	/* if (i2c_target_register(i2c_lidar, &lidar_cfg) < 0) { */
-	/* 	printk("Failed to register target\n"); */
-        /* return; */
-	/* } */
+	if (i2c_target_register(i2c_lidar, &lidar_cfg) < 0) {
+		printk("Failed to register target\n");
+        return;
+	}
 
     if (i2c_target_register(i2c_imu, &imu_cfg) < 0) {
 		printk("Failed to register target\n");
         return;
 	}
+
+    if(rc_init(uart_rc) < 0) {
+        LOG_ERR("Failed to initialize RC UART");
+        return;
+    }
 
     k_thread_create(&sensor_emulation_data, sensor_emulation_stack, 
         K_THREAD_STACK_SIZEOF(sensor_emulation_stack),

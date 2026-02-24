@@ -2,6 +2,7 @@
     aliases {
         i2c-lidar = &i2c1;
         i2c-imu = &i2c2;
+        uart-rc = &uart4;
     };
 };
 
@@ -15,4 +16,10 @@
     status = "okay";
     pinctrl-0 = <&i2c2_scl_pf1 &i2c2_sda_pf0>;
     pinctrl-names = "default";
+};
+
+&uart4 {
+    status = "okay";
+    pinctrl-0 = <&uart4_tx_pa0 &uart4_rx_pd11>;
+    princtrl-names = "default";
 };
