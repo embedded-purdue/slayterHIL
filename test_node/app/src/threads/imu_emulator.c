@@ -1,6 +1,7 @@
 #include "threads/imu_emulator.h"
 #include "threads/sensor_emulation.h"
 #include <zephyr/logging/log.h>
+#define REG_DEFAULT 0
 
 // register logging module
 LOG_MODULE_REGISTER(imu_emulator, LOG_LEVEL_INF);
@@ -12,7 +13,7 @@ K_MUTEX_DEFINE(imu_data_mutext);
 static imu_data_t latest_imu_data;
 
 // current register that master is reading from for IMU
-static uint8_t current_imu_read_reg = 0;
+static uint8_t current_imu_read_reg = REG_DEFAULT;
 
 // helper function to get IMU field
 static uint8_t get_imu_data_field(uint8_t reg) {
@@ -83,8 +84,10 @@ int imu_write_received_cb(struct i2c_target_config *config, uint8_t val)
 int imu_read_cb(struct i2c_target_config *config, uint8_t *val)
 {
     // master is requesting to read from IMU register, so get the appropriate field value and return it
-    *val = get_imu_data_field(current_imu_read_reg);
-    current_imu_read_reg++;
+	if(current_imu_read_reg != REG_DEFAULT) {
+    	*val = get_imu_data_field(current_imu_read_reg);
+    	current_imu_read_reg++;
+	}
 	return 0;
 }
 
@@ -92,7 +95,7 @@ int imu_read_cb(struct i2c_target_config *config, uint8_t *val)
 int imu_stop_cb(struct i2c_target_config *config)
 {
 	printk("imu stop callback\n");
-    current_imu_read_reg = -1;
+    current_imu_read_reg = REG_DEFAULT;
 	return 0;
 }
 
