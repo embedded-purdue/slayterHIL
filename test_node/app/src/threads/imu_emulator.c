@@ -49,13 +49,6 @@ static uint8_t get_imu_data_field(uint8_t reg) {
         case 0x2B:
         case 0x2C:
         case 0x2D:
-        // start of grav data registers (conveniently right after linear accel registers)
-        case 0x2E:
-        case 0x2F:
-        case 0x30:
-        case 0x31:
-        case 0x32:
-        case 0x33:
             offset = reg - 0x28;
             field_value = *((uint8_t*)&latest_imu_data.linear_acceleration + offset);
             break;
