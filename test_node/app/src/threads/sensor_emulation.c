@@ -48,7 +48,7 @@ static void sensor_emulation_thread(void *, void *, void *) {
                     imu_emulator_update_data(update_packet.imu_data);
                     break;
                 case RC_DEVICE_ID:
-                    //TODO:
+                    rc_command_received(update_packet.rc_command);
                     break;
                 default:
                     LOG_WRN("Unknown sensor ID received: %d", update_packet.sensor_id);
