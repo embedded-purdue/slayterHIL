@@ -4,6 +4,7 @@
 #include "threads/scheduler.h"
 #include "threads/sensor_emulation.h"
 #include "threads/dut_interface.h"
+#include "threads/pwm.h"
 
 int main(void)
 {
@@ -13,6 +14,7 @@ int main(void)
     scheduler_init();
     sensor_emulation_init();
     dut_interface_init();
+    pwm_init();
 
 	return 0;
 }
