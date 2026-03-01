@@ -3,8 +3,9 @@
 #include <zephyr/device.h>
 #include <zephyr/drivers/sensor.h>
 #include <stdio.h>
+#include <errno.h>
 
-static const struct dev *lidar_dev = NULL; 
+static const struct device *lidar_dev = NULL; 
 
 void lidar_timer_handler(struct k_timer *timer_id) { 
     k_sem_give(&lidar_sem);
@@ -35,16 +36,24 @@ void lidar_read_thread(void *arg1, void *arg2, void *arg3) {
         k_sem_take(&lidar_sem, K_FOREVER); 
 
         struct lidar_data data; 
-        const struct device *dev = lidar_dev ? lidar_dev : DEVICE_DT_GET(DT_NODELABEL(lidar)); 
+    const struct device *dev = lidar_dev;
+
+    if (dev == NULL) {
+#if defined(CONFIG_SOC_SERIES_ESP32)
+        dev = DEVICE_DT_GET(DT_NODELABEL(lidar));
+#else
+        continue;
+#endif
+    }
+
         int rc = process_lidar_lite_v4(dev, &data);
         if(rc == 0) { 
             int put_rc = k_msgq_put(&lidar_msgq, &data, K_NO_WAIT);
             if (put_rc != 0) { 
                 printk("LiDAR msgq full, dropping data\n");
-            } else {
-                printk("Failed to read data\n");
             }
-            
+        } else {
+            printk("Failed to read LiDAR data: %d\n", rc);
         }
     }
 }

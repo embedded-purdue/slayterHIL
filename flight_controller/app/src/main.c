@@ -4,9 +4,50 @@
 #include "state_machine.h"
 #include "imu.h"
 #include "lidar.h"
+#include "ledCtrl.h"
 #include <stdio.h> 
+#include <stdbool.h>
 #include <stdalign.h>
-#include <stdalign.h>
+
+#define LED_COUNT 4
+#define LIDAR_BRIGHT_MM 10U  // min distance
+#define LIDAR_DIM_MM 3000U  // max distance
+#define LIDAR_DIM_INTENSITY 10
+#define LIDAR_SAMPLE_HZ 33U
+#define LIDAR_SAMPLE_PERIOD_US (1000000U / LIDAR_SAMPLE_HZ)
+
+static int intensity_from_distance_mm(uint16_t distance_mm)
+{
+    if (distance_mm <= LIDAR_BRIGHT_MM) {
+        return 100;
+    }
+
+    if (distance_mm >= LIDAR_DIM_MM) {
+        return LIDAR_DIM_INTENSITY;
+    }
+
+    uint32_t span = LIDAR_DIM_MM - LIDAR_BRIGHT_MM;
+    uint32_t remaining = LIDAR_DIM_MM - distance_mm;
+
+    return LIDAR_DIM_INTENSITY +
+           (int)((remaining * (100U - (uint32_t)LIDAR_DIM_INTENSITY)) / span);
+}
+
+static void led_startup_test(void)
+{
+    printk("Running LED startup test...\n");
+
+    for (int i = 0; i < LED_COUNT; ++i) {
+        set_led_intensity(i, 100);
+    }
+    k_msleep(600);
+
+    for (int i = 0; i < LED_COUNT; ++i) {
+        set_led_intensity(i, 0);
+    }
+
+    printk("LED startup test complete\n");
+}
 
 // define thread
 #define STACK_SIZE      2048
@@ -72,7 +113,14 @@ static void lidar_consumer(void *arg1, void *arg2, void *arg3) {
     while (1) {
         int rc = k_msgq_get(&lidar_msgq, &out, K_FOREVER);
         if (rc == 0) {
-            printk("[%s] LiDAR Distance: %u mm\n", now_str(), out.distance_mm);
+            int intensity = intensity_from_distance_mm(out.distance_mm);
+
+            for (int i = 0; i < LED_COUNT; ++i) {
+                set_led_intensity(i, intensity);
+            }
+
+            printk("[%s] LiDAR Distance: %u mm (LED intensity: %d%%)\n",
+                   now_str(), out.distance_mm, intensity);
         } else {
             printk("Failed to get LiDAR data: %d\n", rc);
         }
@@ -82,31 +130,36 @@ static void lidar_consumer(void *arg1, void *arg2, void *arg3) {
 
 int main(void)
 {
-    // printk("Checking I2C devices...\n");
-
+    bool imu_ready = false;
+#if defined(CONFIG_SOC_SERIES_ESP32S3) || defined(CONFIG_SOC_FAMILY_ESPRESSIF_ESP32)
     const struct device *i2c0_dev = DEVICE_DT_GET(DT_NODELABEL(i2c0));
     const struct device *i2c1_dev = DEVICE_DT_GET(DT_NODELABEL(i2c1));
 
     printk("I2C0 ready: %s\n", device_is_ready(i2c0_dev) ? "YES" : "NO");
     printk("I2C1 ready: %s\n", device_is_ready(i2c1_dev) ? "YES" : "NO");
-    
-    printk("Starting LiDAR-Lite V4 and IMU test app...\n");
 
-    // Initialize IMU 
+    printk("Starting LiDAR-Lite V4 test app...\n");
+
     const struct device *const mpu6050 = DEVICE_DT_GET_ONE(invensense_mpu6050);
     int rc = imu_init(mpu6050);
     if (rc != 0) {
-        printk("imu_init failed: %d\n", rc);
-        return rc;
+        printk("IMU not available, continuing without IMU (rc=%d)\n", rc);
+    } else {
+        imu_ready = true;
     }
 
-    // Initialize LiDAR
     const struct device *const lidar_device = DEVICE_DT_GET(DT_NODELABEL(lidar));
-    rc = lidar_init(lidar_device); 
-    if(rc != 0) { 
+    rc = lidar_init(lidar_device);
+    if (rc != 0) {
         printk("lidar_init failed: %d\n", rc);
         return rc;
     }
+
+    initialize_leds();
+    led_startup_test();
+#else
+    printk("Non-ESP32 build: LiDAR/PWM hardware init disabled\n");
+#endif
 
     // Start state machine thread
     k_thread_create(&state_machine_thread_data, state_machine_stack, STACK_SIZE,
@@ -114,12 +167,16 @@ int main(void)
                     COMMS_PRIORITY, 0, K_NO_WAIT);
 
     // Start IMU consumer thread (the one that prints data)
-    k_thread_create(&imu_consumer_thread_data, 
-                    imu_consumer_stack, 
-                    IMU_STACK_SIZE, 
-                    imu_consumer, 
-                    NULL, NULL, NULL, 
-                    IMU_PRIORITY, 0, K_NO_WAIT);
+    if (imu_ready) {
+        k_thread_create(&imu_consumer_thread_data,
+                        imu_consumer_stack,
+                        IMU_STACK_SIZE,
+                        imu_consumer,
+                        NULL, NULL, NULL,
+                        IMU_PRIORITY, 0, K_NO_WAIT);
+    } else {
+        printk("IMU consumer not started\n");
+    }
      // Start LiDAR consumer thread (the one that prints data)
     k_thread_create(&lidar_consumer_thread_data, 
                     lidar_consumer_stack, 
@@ -130,9 +187,10 @@ int main(void)
 
     printk("All threads started\n");
 
-    // Start LiDAR timer after everything is initialized
-    k_timer_start(&lidar_timer, K_MSEC(30), K_MSEC(30));
-    
-    printk("LiDAR timer started, monitoring data...\n");
+#if defined(CONFIG_SOC_SERIES_ESP32S3) || defined(CONFIG_SOC_FAMILY_ESPRESSIF_ESP32)
+    k_timer_start(&lidar_timer, K_USEC(LIDAR_SAMPLE_PERIOD_US), K_USEC(LIDAR_SAMPLE_PERIOD_US));
+    printk("LiDAR timer started at %u Hz, monitoring data...\n", LIDAR_SAMPLE_HZ);
+#endif
+
     return 0;
 }

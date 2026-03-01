@@ -6,15 +6,31 @@
     };
 
     aliases {
-        led0 = &myled0;
+        led0 = &pwm_led0;
+        led1 = &pwm_led1;
+        led2 = &pwm_led2;
+        led3 = &pwm_led3;
         
         button0 = &button_0;
     };
 
-    leds: leds {
-        compatible = "gpio-leds";
-        myled0: led_0 {
-            gpios = <&gpio0 17 GPIO_ACTIVE_HIGH>;
+    pwmleds {
+        compatible = "pwm-leds";
+
+        pwm_led0: pwm_led_0 {
+            pwms = <&ledc0 0 5000000 0>;
+        };
+
+        pwm_led1: pwm_led_1 {
+            pwms = <&ledc0 1 5000000 0>;
+        };
+
+        pwm_led2: pwm_led_2 {
+            pwms = <&ledc0 2 5000000 0>;
+        };
+
+        pwm_led3: pwm_led_3 {
+            pwms = <&ledc0 3 5000000 0>;
         };
     };
 
@@ -26,9 +42,6 @@
     };
 
 };
-
-/* I2C controller and LIDAR device */
-/* I2C controller and LIDAR device */
 
 &pinctrl {
     i2c0_default: i2c0_default {
@@ -47,6 +60,44 @@
             drive-open-drain;
             output-high;
         };
+    };
+
+    ledc0_app_default: ledc0_app_default {
+        group1 {
+            pinmux = <LEDC_CH0_GPIO17>,
+                     <LEDC_CH1_GPIO18>,
+                     <LEDC_CH2_GPIO19>,
+                     <LEDC_CH3_GPIO20>;
+            output-enable;
+        };
+    };
+};
+
+&ledc0 {
+    pinctrl-0 = <&ledc0_app_default>;
+    pinctrl-names = "default";
+    status = "okay";
+    #address-cells = <1>;
+    #size-cells = <0>;
+
+    channel0@0 {
+        reg = <0x0>;
+        timer = <0>;
+    };
+
+    channel1@1 {
+        reg = <0x1>;
+        timer = <1>;
+    };
+
+    channel2@2 {
+        reg = <0x2>;
+        timer = <2>;
+    };
+
+    channel3@3 {
+        reg = <0x3>;
+        timer = <3>;
     };
 };
 
