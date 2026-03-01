@@ -64,6 +64,8 @@ void state_machine_handler(system_events_t event) {
             break;
         case ASCEND:
             ascend();
+
+            //smf_run_state is used to switch to another state
             break;
         case ASCEND_DONE:
             hover();
