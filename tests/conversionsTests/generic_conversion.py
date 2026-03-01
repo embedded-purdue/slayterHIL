@@ -59,8 +59,8 @@ def convert_to_commands(data):
             xsteps = int(round(abs(dx) / CONVERSION_FACTOR))
             ysteps = int(round(abs(dy) / CONVERSION_FACTOR))
             zsteps = int(round(abs(dz) / CONVERSION_FACTOR))
-            # find the gcf of the two steps that changed
-            # then divide by gcf to see ratio
+            # find the gcd of the two steps that changed
+            # then divide by gcd to see ratio
             if dx != 0 and dz != 0:
                 factor = math.gcd(xsteps, zsteps)
                 r1 = int(xsteps / factor)
@@ -119,6 +119,39 @@ def convert_to_commands(data):
                             commands.extend(["D"])
                         total2steps = total2steps + 1
 
+        if changes == 3:
+            # find the gcd of all three of the steps
+            xsteps = int(round(abs(dx) / CONVERSION_FACTOR))
+            ysteps = int(round(abs(dy) / CONVERSION_FACTOR))
+            zsteps = int(round(abs(dz) / CONVERSION_FACTOR))
+            f1 = math.gcd(xsteps, ysteps)
+            factor = math.gcd(f1, zsteps)
+            r1 = int(xsteps / factor)
+            r2 = int(ysteps/factor)
+            r3 = int(zsteps/factor)
+            totalxsteps = 0
+            totalysteps = 0
+            totalzsteps = 0
+            while totalxsteps < xsteps or totalysteps < ysteps or totalzsteps < zsteps:
+                    for i in range(0, r1):
+                        if dz > 0:
+                            commands.extend(["R"])
+                        else:
+                            commands.extend(["L"])
+                        totalxsteps = totalxsteps + 1
+                    for i in range(0, r2):
+                        if dy > 0:
+                            commands.extend(["F"])
+                        else:
+                            commands.extend(["B"])
+                        totalysteps = totalysteps + 1
+                    for i in range(0, r3):
+                        if dz > 0:
+                            commands.extend(["U"])
+                        else:
+                            commands.extend(["D"])
+                        totalzsteps = totalzsteps + 1
+
     return commands
         
 
@@ -132,6 +165,32 @@ def main():
     print("Generated Commands:")
     print("".join(commands))
     print(f"\nTotal Commands: {len(commands)}")
+    ucount = 0
+    dcount = 0
+    fcount = 0
+    bcount = 0
+    lcount = 0
+    rcount = 0
+    for i in commands:
+        if i == "U":
+            ucount = ucount + 1
+        if i == "D":
+            dcount = dcount + 1
+        if i == "L":
+            lcount = lcount + 1
+        if i == "R":
+            rcount = rcount + 1
+        if i == "F":
+            fcount = fcount + 1
+        if i == "B":
+            bcount = bcount + 1  
+    print(f"total L: {lcount}")
+    print(f"total R: {rcount}")  
+    print(f"total U: {ucount}")  
+    print(f"total D: {dcount}")  
+    print(f"total F: {fcount}")  
+    print(f"total B: {bcount}")    
+        
 
 
 if __name__ == "__main__":
