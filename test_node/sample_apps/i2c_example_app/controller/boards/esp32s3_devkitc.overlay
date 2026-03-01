@@ -1,0 +1,25 @@
+/ {
+	example_sensor: example_sensor_0 {
+		compatible = "zephyr,example-sensor";
+		input-gpios = <&gpio0 4 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+		status = "okay";
+	};
+};
+
+&pinctrl {
+	// custom pin settings for i2c bus 0
+	i2c0_controller_pins: i2c0_controller_pins {
+		group1 {
+			pinmux = <I2C0_SDA_GPIO40>, <I2C0_SCL_GPIO39>; // SDA on GPIO40, SCL on GPIO39
+			bias-pull-up; // enable pull-up resistors for both pins
+			drive-open-drain; // required for i2c
+			output-high; // start with lines high
+		};
+	};
+};
+
+// enable i2c
+&i2c0 {
+	pinctrl-0 = <&i2c0_controller_pins>;
+	status = "okay";
+};

@@ -9,6 +9,11 @@
 # build
 /build*
 /twister-out*
+/modules*
+
+# other random stuff my git is complaining about
+/bootloader/*
+/tools/*
 
 __pycache__/
 

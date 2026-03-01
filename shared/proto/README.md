@@ -42,7 +42,7 @@ We use the [nanopb](https://jpa.kapsi.fi/nanopb/) library, which is integrated w
 
 When compiling, ensure protobuf compiler is installed and west workspace is updated (see project README):
 ```bash
-`sudo apt install -y protobuf-compiler`
+`sudo apt install -y protobuf-compiler` OR `brew install protobuf`
 `west update`
 `west packages pip --install`
 ```
@@ -63,4 +63,4 @@ Tips:
 
 # Using Protobuf with C++ (flight sim)
 1. install protobuf 
-    * `sudo apt install -y protobuf-compiler`
+    * `sudo apt install -y protobuf-compiler` OR `brew install protobuf`

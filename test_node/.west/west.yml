@@ -16,28 +16,19 @@
 
 manifest:
   defaults:
-    remote: upstream
+    remote: upstream 
 
   remotes:
     - name: upstream
       url-base: https://github.com/zephyrproject-rtos
-
-  group-filter: [-optional]
 
   projects:
     - name: zephyr
       remote: upstream
       revision: main
       path: zephyr
-      import: false
-      import:
-        # By using name-allowlist we can clone only the modules that are
-        # strictly needed by the application.
-        name-allowlist:
-          - hal_espressif # required for ESP32-based boards
+      import: true
 
   self:
     path: zephyr
 
-
-# Copyright (c) 2021 Nordic Semiconductor ASA

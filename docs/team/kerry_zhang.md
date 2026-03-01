@@ -1,0 +1,1 @@
+Hello! I'm Kerry Zhang and I'm a freshman in FYE going into EE. I am part of the Test Node subteam.
