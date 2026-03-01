@@ -1,5 +1,23 @@
 import json
 
+
+def compute_direction(x_vel, y_vel, z_vel):
+    dirs = []
+    if x_vel > 0:
+        dirs.append("R")
+    elif x_vel < 0:
+        dirs.append("L")
+    if y_vel > 0:
+        dirs.append("F")
+    elif y_vel < 0:
+        dirs.append("B")
+    if z_vel > 0:
+        dirs.append("U")
+    elif z_vel < 0:
+        dirs.append("D")
+    return "".join(dirs) if dirs else "HOVER"
+
+
 def generate_step_test():
     data = []
     message_id = 1
@@ -23,7 +41,8 @@ def generate_step_test():
             "Z_pos": round(Z_velocity * t, 2),
             "X_vel_ext": 0,
             "Y_vel_ext": 0,
-            "Z_vel_ext": Z_velocity
+            "Z_vel_ext": Z_velocity,
+            "Direction": compute_direction(0, 0, Z_velocity)
         }
         data.append(entry)
         t += dt
@@ -41,7 +60,8 @@ def generate_step_test():
             "Z_pos": 75,
             "X_vel_ext": X_velocity,
             "Y_vel_ext": 0,
-            "Z_vel_ext": 0
+            "Z_vel_ext": 0,
+            "Direction": compute_direction(X_velocity, 0, 0)
         }
         data.append(entry)
         t += dt
@@ -59,7 +79,8 @@ def generate_step_test():
             "Z_pos": round(75 - Z_velocity * t, 2),
             "X_vel_ext": 0,
             "Y_vel_ext": 0,
-            "Z_vel_ext": -Z_velocity
+            "Z_vel_ext": -Z_velocity,
+            "Direction": compute_direction(0, 0, -Z_velocity)
         }
         data.append(entry)
         t += dt

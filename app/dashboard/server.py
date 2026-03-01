@@ -17,7 +17,7 @@ class TestServer:
         self.app.router.add_static('/', path=os.path.dirname(__file__))
 
     async def serve_index(self, request):
-        with open(os.path.join(os.path.dirname(__file__), 'index.html')) as f:
+        with open(os.path.join(os.path.dirname(__file__), 'index.html'), encoding='utf-8') as f:
             return web.Response(text=f.read(), content_type='text/html')
 
     async def websocket_handler(self, request):
@@ -40,6 +40,20 @@ class TestServer:
     async def handle_message(self, ws, data):
         if data['command'] == 'runTest':
             await self.run_test(data['testId'])
+        elif data['command'] == 'rcCommands':
+            await self.handle_rc_commands(data['commands'])
+
+    async def handle_rc_commands(self, commands):
+        command_str = ''.join(commands)
+        print(f'[RC] Received {len(commands)} commands: {command_str}')
+        await self.broadcast({
+            'type': 'log',
+            'level': 'info',
+            'step': 'rc-input',
+            'message': f'RC commands queued ({len(commands)} steps): {command_str}'
+        })
+        # TODO: forward commands to the test node over SPI/serial when that
+        # interface is ready.
 
     async def run_test(self, test_id):
         # Simulate test execution

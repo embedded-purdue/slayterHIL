@@ -1,6 +1,24 @@
 import json
 import math
 
+
+def compute_direction(x_vel, y_vel, z_vel):
+    dirs = []
+    if x_vel > 0:
+        dirs.append("R")
+    elif x_vel < 0:
+        dirs.append("L")
+    if y_vel > 0:
+        dirs.append("F")
+    elif y_vel < 0:
+        dirs.append("B")
+    if z_vel > 0:
+        dirs.append("U")
+    elif z_vel < 0:
+        dirs.append("D")
+    return "".join(dirs) if dirs else "HOVER"
+
+
 def generate_circular_test():
     data = []
     message_id = 1
@@ -34,7 +52,8 @@ def generate_circular_test():
             "Z_pos": round(Z_velocity_up * t, 2),
             "X_vel_ext": 0,
             "Y_vel_ext": 0,
-            "Z_vel_ext": Z_velocity_up
+            "Z_vel_ext": Z_velocity_up,
+            "Direction": compute_direction(0, 0, Z_velocity_up)
         }
         data.append(entry)
         t += dt
@@ -47,15 +66,18 @@ def generate_circular_test():
     t = 0.0
     while t < circle_time:
         theta = omega * t
+        x_vel = round(-radius * omega * math.sin(theta), 2)
+        y_vel = round(radius * omega * math.cos(theta), 2)
         entry = {
             "Message_id": message_id,
             "Timestamp": round(timestamp, 2),
             "X_pos": round(radius * math.cos(theta), 2),
             "Y_pos": round(radius * math.sin(theta), 2),
             "Z_pos": Z_max,
-            "X_vel_ext": round(-radius * omega * math.sin(theta), 2),
-            "Y_vel_ext": round( radius * omega * math.cos(theta), 2),
-            "Z_vel_ext": 0
+            "X_vel_ext": x_vel,
+            "Y_vel_ext": y_vel,
+            "Z_vel_ext": 0,
+            "Direction": compute_direction(x_vel, y_vel, 0)
         }
         data.append(entry)
         t += dt
@@ -75,7 +97,8 @@ def generate_circular_test():
             "Z_pos": round(Z_max + Z_velocity_down * t, 2),
             "X_vel_ext": 0,
             "Y_vel_ext": 0,
-            "Z_vel_ext": Z_velocity_down
+            "Z_vel_ext": Z_velocity_down,
+            "Direction": compute_direction(0, 0, Z_velocity_down)
         }
         data.append(entry)
         t += dt
