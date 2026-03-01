@@ -2,7 +2,7 @@ import json
 import os
 import math
 
-CONVERSION_FACTOR = 0.5  # 1 command = 0.5 meters
+CONVERSION_FACTOR = 7.5  # 1 command = 0.5 seconds
 
 def load_json(path):
     with open(path, "r") as f:
@@ -28,11 +28,15 @@ def convert_to_commands(data):
         if dz != 0:
             changes = changes + 1
         
-        if changes < 2:
+        if changes == 0:
+            commands.extend("I")
+
+        if changes < 2 and changes > 0:
         
             # X direction
             if dx != 0:
-                steps = int(round(abs(dx) / CONVERSION_FACTOR))
+                print(f"distance rounded: {abs(dx)}")
+                steps = int((abs(dx) / CONVERSION_FACTOR))
                 if dx > 0:
                     commands.extend(["R"] * steps)
                 else:
@@ -40,7 +44,7 @@ def convert_to_commands(data):
 
             # Y direction
             if dy != 0:
-                steps = int(round(abs(dy) / CONVERSION_FACTOR))
+                steps = int((abs(dy) / CONVERSION_FACTOR))
                 if dy > 0:
                     commands.extend(["F"] * steps)
                 else:
@@ -48,7 +52,7 @@ def convert_to_commands(data):
 
             # Z direction
             if dz != 0:
-                steps = int(round(abs(dz) / CONVERSION_FACTOR))
+                steps = int((abs(dz) / CONVERSION_FACTOR))
                 if dz > 0:
                     commands.extend(["U"] * steps)
                 else:
@@ -157,7 +161,7 @@ def convert_to_commands(data):
 
 
 def main():
-    json_path = "step_test.json"
+    json_path = "hover_test.json"
 
     data = load_json(json_path)
     commands = convert_to_commands(data)
@@ -171,6 +175,7 @@ def main():
     bcount = 0
     lcount = 0
     rcount = 0
+    icount = 0
     for i in commands:
         if i == "U":
             ucount = ucount + 1
@@ -183,13 +188,16 @@ def main():
         if i == "F":
             fcount = fcount + 1
         if i == "B":
-            bcount = bcount + 1  
+            bcount = bcount + 1 
+        if i == "I":
+            icount = icount + 1 
     print(f"total L: {lcount}")
     print(f"total R: {rcount}")  
     print(f"total U: {ucount}")  
     print(f"total D: {dcount}")  
     print(f"total F: {fcount}")  
-    print(f"total B: {bcount}")    
+    print(f"total B: {bcount}")
+    print(f"total I: {icount}")      
         
 
 
