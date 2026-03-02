@@ -625,6 +625,86 @@ body {
     margin-bottom: 12px;
 }
 
+/* 3D Visualizer */
+.viz3d-section {
+    margin-top: 24px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.viz3d-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    background-color: var(--bg-card);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.viz3d-header h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.viz3d-legend {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.legend-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 3px;
+}
+
+.viz3d-canvas {
+    width: 100%;
+    height: 380px;
+    background-color: #0a0a0a;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.viz3d-canvas canvas {
+    display: block;
+}
+
+.viz3d-placeholder {
+    color: var(--text-muted);
+    font-size: 13px;
+    text-align: center;
+    pointer-events: none;
+}
+
+.viz3d-footer {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    padding: 8px 14px;
+    background-color: var(--bg-card);
+    border-top: 1px solid var(--border-color);
+}
+
+.axis-label {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.viz3d-hint {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar {
     width: 8px;

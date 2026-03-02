@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test Automation</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/renderers/CSS2DRenderer.js"></script>
 </head>
 <body>
     <!-- Top Navigation -->
@@ -231,6 +234,27 @@
                     <div class="rc-meta" id="rcMeta"></div>
                     <button class="run-btn" id="sendToServerBtn">Send to Test Node</button>
                 </div>
+
+                <!-- 3D Visualizer -->
+                <div class="viz3d-section">
+                    <div class="viz3d-header">
+                        <h3>3D Flight Path Visualizer</h3>
+                        <div class="viz3d-legend">
+                            <span class="legend-dot" style="background:#14b8a6"></span><span>Start</span>
+                            <span class="legend-dot" style="background:#4a7bc0"></span><span>Waypoint</span>
+                            <span class="legend-dot" style="background:#d97706"></span><span>End</span>
+                        </div>
+                    </div>
+                    <div id="viz3d" class="viz3d-canvas">
+                        <p class="viz3d-placeholder">Add waypoints to see the 3D flight path</p>
+                    </div>
+                    <div class="viz3d-footer">
+                        <span class="axis-label" style="color:#ff5555">X (R/L)</span>
+                        <span class="axis-label" style="color:#55ff55">Z (Up/Down)</span>
+                        <span class="axis-label" style="color:#5599ff">Y (F/B)</span>
+                        <span class="viz3d-hint">Drag to rotate &nbsp;·&nbsp; Scroll to zoom &nbsp;·&nbsp; Right-drag to pan</span>
+                    </div>
+                </div>
             </section>
 
             <!-- Logs Section -->
@@ -297,6 +321,6 @@
         </main>
     </div>
     
-    <script src="script.js"></script>
+    <script src="script.js?v=6"></script>
 </body>
 </html>
