@@ -5,6 +5,7 @@
 #include <pb_decode.h> // protobuf decode header
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
+#include "threads/device_id.h"
 
 // register logging module
 LOG_MODULE_REGISTER(scheduler_thread, LOG_LEVEL_INF);
@@ -38,18 +39,18 @@ static void scheduler_thread(void *, void *, void *) {
 
         //LiDAR, type = uint16_t
         //for now, let's assume LiDAR distance measurement is stored as .lidar_data_mm
-        lidarPacket.sensor_id = SENSOR_ID_LIDAR;
+        lidarPacket.sensor_id = LIDAR_DEVICE_ID;
         lidarPacket.lidar_distance_mm = sensorPack.lidar_data_mm; 
 
-        //RC, type = char[]
+        //RC, type = char
         //for now, let's assume RC command is stored as .rc_data
-        rcPacket.sensor_id = SENSOR_ID_RC;
+        rcPacket.sensor_id = RC_DEVICE_ID;
         memcpy(&rcPacket.rc_command, sensorPack.rc_data, sizeof(sensorPack.rc_data)); 
 
         //IMU, type = struct of quat + trip + trip + trip of 2*uint8_t
         //right now, the imu_data_t in sensor_emulator.h does NOT match the protobuf schema
         //so again, let's assume IMU is stored as .imu_data
-        imuPacket.sensor_id = SENSOR_ID_IMU;
+        imuPacket.sensor_id = IMU_DEVICE_ID;
         memcpy(&imuPacket.imu_data, sensorPack.imu_data, sizeof(sensorPack.imu_data));
 
         // Schedule sensor data updates (using a heap?)
