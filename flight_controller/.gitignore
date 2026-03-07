@@ -17,4 +17,4 @@ __pycache__/
 /doc/_build*
 
 zephyr/
-justfile
+.cache/

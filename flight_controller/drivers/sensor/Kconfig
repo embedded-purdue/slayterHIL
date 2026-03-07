@@ -4,4 +4,5 @@
 
 menu "Out-of-tree sensor drivers"
 rsource "lidar_lite_v4/Kconfig"
+rsource "bno055/Kconfig"
 endmenu
