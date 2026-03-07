@@ -4,7 +4,7 @@
 
 config LIDAR_LITE_V4
 	bool "Lidar Lite V4 support"
-	depends on I2c
+	depends on I2C
 	default y
 	help
 	  Driver for Lidar Lite V4 I2C Operation.

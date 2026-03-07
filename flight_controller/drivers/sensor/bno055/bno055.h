@@ -3,1964 +3,746 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#define DT_DRV_COMPAT bosch_bno055
+#ifndef ZEPHYR_DRIVERS_SENSOR_BNO055_H_
+#define ZEPHYR_DRIVERS_SENSOR_BNO055_H_
 
-#include <zephyr/drivers/sensor.h>
-#include <zephyr/drivers/i2c.h>
-#include <zephyr/drivers/gpio.h>
-#include <zephyr/logging/log.h>
+/* BNO055 Specific channels */
+enum bno055_sensor_channel {
+	BNO055_SENSOR_CHAN_EULER_Y = SENSOR_CHAN_PRIV_START + 0,
+	BNO055_SENSOR_CHAN_EULER_R = SENSOR_CHAN_PRIV_START + 1,
+	BNO055_SENSOR_CHAN_EULER_P = SENSOR_CHAN_PRIV_START + 2,
+	BNO055_SENSOR_CHAN_EULER_YRP = SENSOR_CHAN_PRIV_START + 3,
 
-#include "bno055.h"
+	BNO055_SENSOR_CHAN_QUATERNION_W = SENSOR_CHAN_PRIV_START + 4,
+	BNO055_SENSOR_CHAN_QUATERNION_X = SENSOR_CHAN_PRIV_START + 5,
+	BNO055_SENSOR_CHAN_QUATERNION_Y = SENSOR_CHAN_PRIV_START + 6,
+	BNO055_SENSOR_CHAN_QUATERNION_Z = SENSOR_CHAN_PRIV_START + 7,
+	BNO055_SENSOR_CHAN_QUATERNION_WXYZ = SENSOR_CHAN_PRIV_START + 8,
 
-LOG_MODULE_REGISTER(BNO055, CONFIG_SENSOR_LOG_LEVEL);
+	BNO055_SENSOR_CHAN_LINEAR_ACCEL_X = SENSOR_CHAN_PRIV_START + 9,
+	BNO055_SENSOR_CHAN_LINEAR_ACCEL_Y = SENSOR_CHAN_PRIV_START + 10,
+	BNO055_SENSOR_CHAN_LINEAR_ACCEL_Z = SENSOR_CHAN_PRIV_START + 11,
+	BNO055_SENSOR_CHAN_LINEAR_ACCEL_XYZ = SENSOR_CHAN_PRIV_START + 12,
 
-struct bno055_config {
-	struct i2c_dt_spec i2c_bus;
-	bool use_xtal;
-	bool deferred;
+	BNO055_SENSOR_CHAN_GRAVITY_X = SENSOR_CHAN_PRIV_START + 13,
+	BNO055_SENSOR_CHAN_GRAVITY_Y = SENSOR_CHAN_PRIV_START + 14,
+	BNO055_SENSOR_CHAN_GRAVITY_Z = SENSOR_CHAN_PRIV_START + 15,
+	BNO055_SENSOR_CHAN_GRAVITY_XYZ = SENSOR_CHAN_PRIV_START + 16,
 
-#if BNO055_USE_IRQ
-	const struct gpio_dt_spec irq_gpio;
-#endif
+	BNO055_SENSOR_CHAN_CALIBRATION_SYS = SENSOR_CHAN_PRIV_START + 17,
+	BNO055_SENSOR_CHAN_CALIBRATION_GYR = SENSOR_CHAN_PRIV_START + 18,
+	BNO055_SENSOR_CHAN_CALIBRATION_ACC = SENSOR_CHAN_PRIV_START + 19,
+	BNO055_SENSOR_CHAN_CALIBRATION_MAG = SENSOR_CHAN_PRIV_START + 20,
+	BNO055_SENSOR_CHAN_CALIBRATION_SGAM = SENSOR_CHAN_PRIV_START + 21
 };
 
-struct bno055_data {
-	uint8_t current_page;
-	enum bno055_OperatingMode mode;
-	enum bno055_PowerMode power;
-
-	struct bno055_vector3_data acc;
-	struct bno055_vector3_data mag;
-	struct bno055_vector3_data gyr;
-
-	struct bno055_vector3_data eul;
-	struct bno055_vector4_data qua;
-	struct bno055_vector3_data lia;
-	struct bno055_vector3_data grv;
-
-	struct bno055_calib_data calib;
-
-#if BNO055_USE_IRQ
-	const struct device *dev;
-	struct gpio_callback gpio_cb;
-	sensor_trigger_handler_t trigger_handler[BNO055_IRQ_SIZE];
-	const struct sensor_trigger *trigger[BNO055_IRQ_SIZE];
-	struct k_work cb_work;
-
-	struct sensor_value acc_am;
-#endif
+/* BNO055 Specific attibute */
+enum bno055_sensor_attribute {
+	BNO055_SENSOR_ATTR_POWER_MODE = SENSOR_ATTR_PRIV_START + 0,
 };
 
-static int bno055_set_page(const struct device *dev, enum bno055_PageId page)
-{
-	const struct bno055_config *config = dev->config;
-	struct bno055_data *data = dev->data;
-	uint8_t reg;
-	int err;
+/* Registers (PAGE 0) */
+#define BNO055_REGISTER_PAGE_ID 0x07
 
-	LOG_DBG("FUNC PAGE[%d]", page);
-	err = i2c_reg_read_byte_dt(&config->i2c_bus, BNO055_REGISTER_PAGE_ID, &reg);
-	if (err < 0) {
-		return err;
-	}
+/* Identification Registers */
+#define BNO055_REGISTER_CHIP_ID 0x00
+#define BNO055_REGISTER_ACC_ID  0x01
+#define BNO055_REGISTER_MAG_ID  0x02
+#define BNO055_REGISTER_GYR_ID  0x03
 
-	if (data->current_page != (reg & BNO055_PAGE_ID_MASK)) {
-		LOG_WRN("Update page index from I2C page register [%d]<-[%d]!!", data->current_page,
-			reg & BNO055_PAGE_ID_MASK);
-		data->current_page = reg & BNO055_PAGE_ID_MASK;
-	}
+/* Revision Registers */
+#define BNO055_REGISTER_SOFTWARE_REV     BNO055_REGISTER_SOFTWARE_REV_LSB // 2 Octets
+#define BNO055_REGISTER_SOFTWARE_REV_LSB 0x04
+#define BNO055_REGISTER_SOFTWARE_REV_MSB 0x05
+#define BNO055_REGISTER_BOOTLOADER_REV   0x06
 
-	if ((reg & BNO055_PAGE_ID_MASK) == page) {
-		LOG_DBG("I2C page register already good!!");
-		return 0;
-	}
+/* Accelerometer Registers */
+#define BNO055_REGISTER_ACC_DATA_X_LSB 0x08
+#define BNO055_REGISTER_ACC_DATA_X_MSB 0x09
+#define BNO055_REGISTER_ACC_DATA_Y_LSB 0x0A
+#define BNO055_REGISTER_ACC_DATA_Y_MSB 0x0B
+#define BNO055_REGISTER_ACC_DATA_Z_LSB 0x0C
+#define BNO055_REGISTER_ACC_DATA_Z_MSB 0x0D
+#define BNO055_REGISTER_ACC_DATA_X     BNO055_REGISTER_ACC_DATA_X_LSB
+#define BNO055_REGISTER_ACC_DATA_Y     BNO055_REGISTER_ACC_DATA_Y_LSB
+#define BNO055_REGISTER_ACC_DATA_Z     BNO055_REGISTER_ACC_DATA_Z_LSB
+#define BNO055_REGISTER_ACC_DATA       BNO055_REGISTER_ACC_DATA_X
 
-	/* Write PAGE */
-	err = i2c_reg_write_byte_dt(&config->i2c_bus, BNO055_REGISTER_PAGE_ID, page);
-	if (err < 0) {
-		return err;
-	}
+/* Magnetometer Registers */
+#define BNO055_REGISTER_MAG_DATA_X_LSB 0x0E
+#define BNO055_REGISTER_MAG_DATA_X_MSB 0x0F
+#define BNO055_REGISTER_MAG_DATA_Y_LSB 0x10
+#define BNO055_REGISTER_MAG_DATA_Y_MSB 0x11
+#define BNO055_REGISTER_MAG_DATA_Z_LSB 0x12
+#define BNO055_REGISTER_MAG_DATA_Z_MSB 0x13
+#define BNO055_REGISTER_MAG_DATA_X     BNO055_REGISTER_MAG_DATA_X_LSB
+#define BNO055_REGISTER_MAG_DATA_Y     BNO055_REGISTER_MAG_DATA_Y_LSB
+#define BNO055_REGISTER_MAG_DATA_Z     BNO055_REGISTER_MAG_DATA_Z_LSB
+#define BNO055_REGISTER_MAG_DATA       BNO055_REGISTER_MAG_DATA_X
 
-	/* Read PAGE */
-	err = i2c_reg_read_byte_dt(&config->i2c_bus, BNO055_REGISTER_PAGE_ID, &reg);
-	if (err < 0) {
-		return err;
-	}
+/* Gyroscope Registers */
+#define BNO055_REGISTER_GYR_DATA_X_LSB 0x14
+#define BNO055_REGISTER_GYR_DATA_X_MSB 0x15
+#define BNO055_REGISTER_GYR_DATA_Y_LSB 0x16
+#define BNO055_REGISTER_GYR_DATA_Y_MSB 0x17
+#define BNO055_REGISTER_GYR_DATA_Z_LSB 0x18
+#define BNO055_REGISTER_GYR_DATA_Z_MSB 0x19
+#define BNO055_REGISTER_GYR_DATA_X     BNO055_REGISTER_GYR_DATA_X_LSB
+#define BNO055_REGISTER_GYR_DATA_Y     BNO055_REGISTER_GYR_DATA_Y_LSB
+#define BNO055_REGISTER_GYR_DATA_Z     BNO055_REGISTER_GYR_DATA_Z_LSB
+#define BNO055_REGISTER_GYR_DATA       BNO055_REGISTER_GYR_DATA_X
 
-	if ((reg & BNO055_PAGE_ID_MASK) != page) {
-		LOG_ERR("I2C communication compromised [%d]!=[%d]!!", page,
-			reg & BNO055_PAGE_ID_MASK);
-		return -ECANCELED;
-	}
+/* Euler Registers */
+#define BNO055_REGISTER_EUL_DATA_HEADING_LSB 0x1A
+#define BNO055_REGISTER_EUL_DATA_HEADING_MSB 0x1B
+#define BNO055_REGISTER_EUL_DATA_ROLL_LSB    0x1C
+#define BNO055_REGISTER_EUL_DATA_ROLL_MSB    0x1D
+#define BNO055_REGISTER_EUL_DATA_PITCH_LSB   0x1E
+#define BNO055_REGISTER_EUL_DATA_PITCH_MSB   0x1F
+#define BNO055_REGISTER_EUL_DATA_HEADING     BNO055_REGISTER_EUL_DATA_HEADING_LSB
+#define BNO055_REGISTER_EUL_DATA_ROLL        BNO055_REGISTER_EUL_DATA_ROLL_LSB
+#define BNO055_REGISTER_EUL_DATA_PITCH       BNO055_REGISTER_EUL_DATA_PITCH_LSB
+#define BNO055_REGISTER_EUL_DATA             BNO055_REGISTER_EUL_DATA_PITCH
 
-	data->current_page = reg & BNO055_PAGE_ID_MASK;
-	LOG_DBG("FUNC PAGE[%d]", page);
-	return 0;
-}
+/* Quaternion Registers */
+#define BNO055_REGISTER_QUA_DATA_W_LSB 0x20
+#define BNO055_REGISTER_QUA_DATA_W_MSB 0x21
+#define BNO055_REGISTER_QUA_DATA_X_LSB 0x22
+#define BNO055_REGISTER_QUA_DATA_X_MSB 0x23
+#define BNO055_REGISTER_QUA_DATA_Y_LSB 0x24
+#define BNO055_REGISTER_QUA_DATA_Y_MSB 0x25
+#define BNO055_REGISTER_QUA_DATA_Z_LSB 0x26
+#define BNO055_REGISTER_QUA_DATA_Z_MSB 0x27
+#define BNO055_REGISTER_QUA_DATA_W     BNO055_REGISTER_QUA_DATA_W_LSB
+#define BNO055_REGISTER_QUA_DATA_X     BNO055_REGISTER_QUA_DATA_X_LSB
+#define BNO055_REGISTER_QUA_DATA_Y     BNO055_REGISTER_QUA_DATA_Y_LSB
+#define BNO055_REGISTER_QUA_DATA_Z     BNO055_REGISTER_QUA_DATA_Z_LSB
+#define BNO055_REGISTER_QUA_DATA       BNO055_REGISTER_QUA_DATA_W
 
-static int bno055_set_config(const struct device *dev, enum bno055_OperatingMode mode, bool fusion)
-{
-	const struct bno055_config *config = dev->config;
-	struct bno055_data *data = dev->data;
-	uint8_t reg;
-	int err;
+/* Linear Acceleration Registers */
+#define BNO055_REGISTER_LIA_DATA_X_LSB 0x28
+#define BNO055_REGISTER_LIA_DATA_X_MSB 0x29
+#define BNO055_REGISTER_LIA_DATA_Y_LSB 0x2A
+#define BNO055_REGISTER_LIA_DATA_Y_MSB 0x2B
+#define BNO055_REGISTER_LIA_DATA_Z_LSB 0x2C
+#define BNO055_REGISTER_LIA_DATA_Z_MSB 0x2D
+#define BNO055_REGISTER_LIA_DATA_X     BNO055_REGISTER_LIA_DATA_X_LSB
+#define BNO055_REGISTER_LIA_DATA_Y     BNO055_REGISTER_LIA_DATA_Y_LSB
+#define BNO055_REGISTER_LIA_DATA_Z     BNO055_REGISTER_LIA_DATA_Z_LSB
+#define BNO055_REGISTER_LIA_DATA       BNO055_REGISTER_LIA_DATA_X
 
-	LOG_DBG("FUNC MODE[%d]", mode);
+/* Gravity Vector Registers */
+#define BNO055_REGISTER_GRV_DATA_X_LSB 0x2E
+#define BNO055_REGISTER_GRV_DATA_X_MSB 0x2F
+#define BNO055_REGISTER_GRV_DATA_Y_LSB 0x30
+#define BNO055_REGISTER_GRV_DATA_Y_MSB 0x31
+#define BNO055_REGISTER_GRV_DATA_Z_LSB 0x32
+#define BNO055_REGISTER_GRV_DATA_Z_MSB 0x33
+#define BNO055_REGISTER_GRV_DATA_X     BNO055_REGISTER_GRV_DATA_X_LSB
+#define BNO055_REGISTER_GRV_DATA_Y     BNO055_REGISTER_GRV_DATA_Y_LSB
+#define BNO055_REGISTER_GRV_DATA_Z     BNO055_REGISTER_GRV_DATA_Z_LSB
+#define BNO055_REGISTER_GRV_DATA       BNO055_REGISTER_GRV_DATA_X
 
-	/* Switch to Page 0 */
-	err = bno055_set_page(dev, BNO055_PAGE_ZERO);
-	if (err < 0) {
-		return err;
-	}
+/* Others */
+#define BNO055_REGISTER_TEMP               0x34
+#define BNO055_REGISTER_CALIBRATION_STATUS 0x35 /* [SYS(2)|GYR(2)|ACC(2)|MAG(2)] */
+#define BNO055_REGISTER_SELF_TEST_RESULT   0x36
+#define BNO055_REGISTER_IRQ_STATUS         0x37
+#define BNO055_REGISTER_SYS_CLK_STATUS     0x38
+#define BNO055_REGISTER_SYS_STATUS         0x39
+#define BNO055_REGISTER_SYS_ERROR          0x3A
 
-	err = i2c_reg_read_byte_dt(&config->i2c_bus, BNO055_REGISTER_OPERATION_MODE, &reg);
-	if (err < 0) {
-		return err;
-	}
+#define BNO055_REGISTER_UNIT_SELECT    0x3B
+#define BNO055_REGISTER_OPERATION_MODE 0x3D
+#define BNO055_REGISTER_POWER_MODE     0x3E
+#define BNO055_REGISTER_SYS_TRIGGER    0x3F
+#define BNO055_REGISTER_TEMP_SOURCE    0x40
+#define BNO055_REGISTER_AXIS_MAP_CONF  0x41
+#define BNO055_REGISTER_AXIS_MAP_SIGN  0x42
 
-	if (data->mode != (reg & BNO055_OPERATION_MODE_MASK)) {
-		LOG_WRN("Update mode from I2C mode register [%d]<-[%d]!!", data->mode,
-			reg & BNO055_OPERATION_MODE_MASK);
-		data->mode = reg & BNO055_OPERATION_MODE_MASK;
-	}
+/* SIC Matrix Registers */
+#define BNO055_REGISTER_SIC_MATRIC_LSB0 0x43
+#define BNO055_REGISTER_SIC_MATRIC_MSB0 0x44
+#define BNO055_REGISTER_SIC_MATRIC_LSB1 0x45
+#define BNO055_REGISTER_SIC_MATRIC_MSB1 0x46
+#define BNO055_REGISTER_SIC_MATRIC_LSB2 0x47
+#define BNO055_REGISTER_SIC_MATRIC_MSB2 0x48
+#define BNO055_REGISTER_SIC_MATRIC_LSB3 0x49
+#define BNO055_REGISTER_SIC_MATRIC_MSB3 0x4A
+#define BNO055_REGISTER_SIC_MATRIC_LSB4 0x4B
+#define BNO055_REGISTER_SIC_MATRIC_MSB4 0x4C
+#define BNO055_REGISTER_SIC_MATRIC_LSB5 0x4D
+#define BNO055_REGISTER_SIC_MATRIC_MSB5 0x4E
+#define BNO055_REGISTER_SIC_MATRIC_LSB6 0x4F
+#define BNO055_REGISTER_SIC_MATRIC_MSB6 0x50
+#define BNO055_REGISTER_SIC_MATRIC_LSB7 0x51
+#define BNO055_REGISTER_SIC_MATRIC_MSB7 0x52
+#define BNO055_REGISTER_SIC_MATRIC_LSB8 0x53
+#define BNO055_REGISTER_SIC_MATRIC_MSB8 0x54
 
-	if ((reg & BNO055_OPERATION_MODE_MASK) != BNO055_MODE_CONFIG) {
-		err = i2c_reg_write_byte_dt(&config->i2c_bus, BNO055_REGISTER_OPERATION_MODE,
-					    BNO055_MODE_CONFIG);
-		if (err < 0) {
-			return err;
-		}
-		LOG_DBG("MODE[%d]", BNO055_MODE_CONFIG);
-		k_sleep(K_MSEC(BNO055_TIMING_SWITCH_FROM_ANY));
-	}
+/* Accelerometer Offset Registers */
+#define BNO055_REGISTER_ACC_OFFSET_X_LSB 0x55
+#define BNO055_REGISTER_ACC_OFFSET_X_MSB 0x56
+#define BNO055_REGISTER_ACC_OFFSET_Y_LSB 0x57
+#define BNO055_REGISTER_ACC_OFFSET_Y_MSB 0x58
+#define BNO055_REGISTER_ACC_OFFSET_Z_LSB 0x59
+#define BNO055_REGISTER_ACC_OFFSET_Z_MSB 0x5A
 
-	err = i2c_reg_read_byte_dt(&config->i2c_bus, BNO055_REGISTER_OPERATION_MODE, &reg);
-	if (err < 0) {
-		return err;
-	}
+/* Magnetometer Offset Registers */
+#define BNO055_REGISTER_MAG_OFFSET_X_LSB 0x5B
+#define BNO055_REGISTER_MAG_OFFSET_X_MSB 0x5C
+#define BNO055_REGISTER_MAG_OFFSET_Y_LSB 0x5D
+#define BNO055_REGISTER_MAG_OFFSET_Y_MSB 0x5E
+#define BNO055_REGISTER_MAG_OFFSET_Z_LSB 0x5F
+#define BNO055_REGISTER_MAG_OFFSET_Z_MSB 0x60
 
-	if ((reg & BNO055_OPERATION_MODE_MASK) != BNO055_MODE_CONFIG) {
-		LOG_ERR("I2C communication compromised [%d]!=[%d]!!", BNO055_MODE_CONFIG,
-			reg & BNO055_OPERATION_MODE_MASK);
-		return -ECANCELED;
-	}
-	data->mode = reg & BNO055_OPERATION_MODE_MASK;
+/* Gyroscope Offset Registers */
+#define BNO055_REGISTER_GYR_OFFSET_X_LSB 0x61
+#define BNO055_REGISTER_GYR_OFFSET_X_MSB 0x62
+#define BNO055_REGISTER_GYR_OFFSET_Y_LSB 0x63
+#define BNO055_REGISTER_GYR_OFFSET_Y_MSB 0x64
+#define BNO055_REGISTER_GYR_OFFSET_Z_LSB 0x65
+#define BNO055_REGISTER_GYR_OFFSET_Z_MSB 0x66
 
-	if (mode == BNO055_MODE_CONFIG) {
-		LOG_DBG("I2C mode register already good!!");
-		return 0;
-	}
+#define BNO055_REGISTER_ACC_RADIUS_LSB 0x67
+#define BNO055_REGISTER_ACC_RADIUS_MSB 0x68
+#define BNO055_REGISTER_MAG_RADIUS_LSB 0x69
+#define BNO055_REGISTER_MAG_RADIUS_MSB 0x6A
 
-#if defined(CONFIG_BNO055_ACC_CUSTOM_CONFIG) || defined(CONFIG_BNO055_MAG_CUSTOM_CONFIG) ||        \
-	defined(CONFIG_BNO055_GYR_CUSTOM_CONFIG)
-	if (!fusion) {
-		/* Switch to Page 1 */
-		bno055_set_page(dev, BNO055_PAGE_ONE);
+/* Registers (PAGE 1) */
+#define BNO055_REGISTER_ACC_CONFIG       0x08
+#define BNO055_REGISTER_MAG_CONFIG       0x09
+#define BNO055_REGISTER_GYR_CONFIG_0     0x0A
+#define BNO055_REGISTER_GYR_CONFIG_1     0x0B
+#define BNO055_REGISTER_ACC_SLEEP_CONFIG 0x0C
+#define BNO055_REGISTER_GYR_SLEEP_CONFIG 0x0D
 
-		uint8_t reg = 0x00;
-		reg = reg | BNO055_ACC_RANGE | BNO055_ACC_BANDWIDTH | BNO055_ACC_POWER;
-		err = i2c_reg_write_byte_dt(&config->i2c_bus, BNO055_REGISTER_ACC_CONFIG, reg);
-		if (err < 0) {
-			return err;
-		}
+#define BNO055_REGISTER_INT_MASK   0x0F
+#define BNO055_REGISTER_INT_ENABLE 0x10
 
-		reg = 0x00 | BNO055_MAG_RATE | BNO055_MAG_MODE | BNO055_MAG_POWER;
-		err = i2c_reg_write_byte_dt(&config->i2c_bus, BNO055_REGISTER_MAG_CONFIG, reg);
-		if (err < 0) {
-			return err;
-		}
+#define BNO055_REGISTER_ACC_ANY_MOTION_THRESHOLD   0x11
+#define BNO055_REGISTER_ACC_INT_SETTINGS           0x12
+#define BNO055_REGISTER_ACC_HIGH_GRAVITY_DURATION  0x13
+#define BNO055_REGISTER_ACC_HIGH_GRAVITY_THRESHOLD 0x14
+#define BNO055_REGISTER_ACC_NO_MOTION_THRESHOLD    0x15
+#define BNO055_REGISTER_ACC_NO_MOTION_SET          0x16
 
-		reg = 0x00 | BNO055_GYR_RANGE | BNO055_GYR_BANDWIDTH;
-		err = i2c_reg_write_byte_dt(&config->i2c_bus, BNO055_REGISTER_GYR_CONFIG_0, reg);
-		if (err < 0) {
-			return err;
-		}
-		reg = 0x00 | BNO055_GYR_POWER;
-		err = i2c_reg_write_byte_dt(&config->i2c_bus, BNO055_REGISTER_GYR_CONFIG_1, reg);
-		if (err < 0) {
-			return err;
-		}
+#define BNO055_REGISTER_GYR_INT_SETTINGS    0x17
+#define BNO055_REGISTER_GYR_HIGH_RATE_X_SET 0x18
+#define BNO055_REGISTER_GYR_DURATION_X      0x19
+#define BNO055_REGISTER_GYR_HIGH_RATE_Y_SET 0x1A
+#define BNO055_REGISTER_GYR_DURATION_Y      0x1B
+#define BNO055_REGISTER_GYR_HIGH_RATE_Z_SET 0x1C
+#define BNO055_REGISTER_GYR_DURATION_Z      0x1D
+#define BNO055_REGISTER_GYR_AM_THRESHOLD    0x1E
+#define BNO055_REGISTER_GYR_AM_SET          0x1F
 
-		/* Switch back to Page 0 */
-		err = bno055_set_page(dev, BNO055_PAGE_ZERO);
-		if (err < 0) {
-			return err;
-		}
-	}
+#define BNO055_CHIP_ID   0xA0
+#define BNO055_RESET_INT (0x01 << 6)
+
+/* Command Register */
+#define BNO055_COMMAND_RESET 0x20
+#define BNO055_COMMAND_XTAL  0x80
+
+/* Timings */
+#define BNO055_TIMING_STARTUP            400 // 400ms
+#define BNO055_TIMING_RESET_CONFIG       650 // 650ms
+#define BNO055_TIMING_SWITCH_FROM_CONFIG 10  // 7 ms
+#define BNO055_TIMING_SWITCH_FROM_ANY    20  // 19 ms
+
+/* Unit Selection Configuration */
+#define BNO055_ORIENTATION_WINDOWS 0x00 // clockwise pitch
+#define BNO055_TEMP_UNIT_CELSIUS   0x00 // CELSIUS
+#define BNO055_EULER_UNIT_RADIANS  0x01 // RADIANS
+#define BNO055_GYRO_UNIT_RPS       0x01 // RPS
+#define BNO055_ACCEL_UNIT_MS_2     0x00 // MS_2
+
+/* Unit Resolution */
+#define BNO055_EULER_RESOLUTION      900   // RADIANS
+#define BNO055_QUATERNION_RESOLUTION 16384 // Unitless
+#define BNO055_UTESLA_TO_GAUSS       100
+#define BNO055_UTESLA_RESOLUTION     16
+#define BNO055_GYRO_RESOLUTION       900 // RPS
+#define BNO055_ACCEL_RESOLUTION      100 // MS_2
+
+/* Accelerometer Configuration */
+#define BNO055_ACC_2G  0x00
+#define BNO055_ACC_4G  0x01
+#define BNO055_ACC_8G  0x02
+#define BNO055_ACC_16G 0x03
+
+#define BNO055_ACC_8Hz    0x00
+#define BNO055_ACC_16Hz   0x01
+#define BNO055_ACC_31Hz   0x02
+#define BNO055_ACC_62Hz   0x03
+#define BNO055_ACC_125Hz  0x04
+#define BNO055_ACC_250Hz  0x05
+#define BNO055_ACC_500Hz  0x06
+#define BNO055_ACC_1000Hz 0x07
+
+#define BNO055_ACC_NORMAL       0x00
+#define BNO055_ACC_SUSPEND      0x01
+#define BNO055_ACC_LOW_POWER_1  0x02
+#define BNO055_ACC_STANDBY      0x03
+#define BNO055_ACC_LOW_POWER_2  0x04
+#define BNO055_ACC_DEEP_SUSPEND 0x05
+
+/* Magnetometer Configuration */
+#define BNO055_MAG_2Hz  0x00
+#define BNO055_MAG_6Hz  0x01
+#define BNO055_MAG_8Hz  0x02
+#define BNO055_MAG_10Hz 0x03
+#define BNO055_MAG_15Hz 0x04
+#define BNO055_MAG_20Hz 0x05
+#define BNO055_MAG_25Hz 0x06
+#define BNO055_MAG_30Hz 0x07
+
+#define BNO055_MAG_LOW_POWER        0x00
+#define BNO055_MAG_REGULAR          0x01
+#define BNO055_MAG_ENHANCED_REGULAR 0x02
+#define BNO055_MAG_HIGH_ACCURACY    0x03
+
+#define BNO055_MAG_NORMAL     0x00
+#define BNO055_MAG_SLEEP      0x01
+#define BNO055_MAG_SUSPEND    0x02
+#define BNO055_MAG_FORCE_MODE 0x03
+
+/* Gyroscope Configuration */
+#define BNO055_GYR_2000DPS 0x00
+#define BNO055_GYR_1000DPS 0x01
+#define BNO055_GYR_500DPS  0x02
+#define BNO055_GYR_250DPS  0x03
+#define BNO055_GYR_125DPS  0x04
+
+#define BNO055_GYR_523Hz 0x00
+#define BNO055_GYR_230Hz 0x01
+#define BNO055_GYR_116Hz 0x02
+#define BNO055_GYR_47Hz  0x03
+#define BNO055_GYR_23Hz  0x04
+#define BNO055_GYR_12Hz  0x05
+#define BNO055_GYR_64Hz  0x06
+#define BNO055_GYR_32Hz  0x07
+
+#define BNO055_GYR_NORMAL             0x00
+#define BNO055_GYR_FAST_POWER_UP      0x01
+#define BNO055_GYR_DEEP_SUSPEND       0x02
+#define BNO055_GYR_SUSPEND            0x03
+#define BNO055_GYR_ADVANCED_POWERSAVE 0x04
+
+/* Custom Sensors Configuration */
+#if defined(CONFIG_BNO055_ACC_CUSTOM_CONFIG)
+#if defined(CONFIG_BNO055_ACC_2G_RANGE)
+#define BNO055_ACC_RANGE BNO055_ACC_2G
+#elif defined(CONFIG_BNO055_ACC_4G_RANGE)
+#define BNO055_ACC_RANGE BNO055_ACC_4G
+#elif defined(CONFIG_BNO055_ACC_8G_RANGE)
+#define BNO055_ACC_RANGE BNO055_ACC_8G
+#elif defined(CONFIG_BNO055_ACC_16G_RANGE)
+#define BNO055_ACC_RANGE BNO055_ACC_16G
 #endif
 
-	err = i2c_reg_write_byte_dt(&config->i2c_bus, BNO055_REGISTER_OPERATION_MODE, mode);
-	if (err < 0) {
-		return err;
-	}
-	k_sleep(K_MSEC(
-		33 *
-		BNO055_TIMING_SWITCH_FROM_CONFIG)); /* /!\ Datasheet not confrom WRONG DATASHEET */
-
-	err = i2c_reg_read_byte_dt(&config->i2c_bus, BNO055_REGISTER_OPERATION_MODE, &reg);
-	if (err < 0) {
-		return err;
-	}
-
-	if ((reg & BNO055_PAGE_ID_MASK) != mode) {
-		LOG_ERR("I2C communication compromised [%d]!=[%d]!!", mode,
-			reg & BNO055_OPERATION_MODE_MASK);
-		return -ECANCELED;
-	}
-
-	data->mode = reg & BNO055_OPERATION_MODE_MASK;
-	LOG_DBG("FUNC MODE[%d]", mode);
-	return 0;
-}
-
-static int bno055_set_power(const struct device *dev, enum bno055_PowerMode power)
-{
-	const struct bno055_config *config = dev->config;
-	struct bno055_data *data = dev->data;
-	uint8_t reg;
-	int err;
-
-	LOG_DBG("FUNC POWER[%d]", power);
-
-	enum bno055_OperatingMode mode = data->mode;
-	err = bno055_set_config(dev, BNO055_MODE_CONFIG, false);
-	if (err < 0) {
-		return err;
-	}
-
-	err = i2c_reg_read_byte_dt(&config->i2c_bus, BNO055_REGISTER_POWER_MODE, &reg);
-	if (err < 0) {
-		return err;
-	}
-
-	if (data->power != (reg & BNO055_POWER_MODE_MASK)) {
-		LOG_WRN("Update power mode from I2C power register [%d]<-[%d]!!", data->power,
-			reg & BNO055_POWER_MODE_MASK);
-		data->power = reg & BNO055_POWER_MODE_MASK;
-	}
-
-	if ((reg & BNO055_POWER_MODE_MASK) == power) {
-		LOG_DBG("I2C power register already good!!");
-	} else {
-		err = i2c_reg_write_byte_dt(&config->i2c_bus, BNO055_REGISTER_POWER_MODE, power);
-		if (err < 0) {
-			return err;
-		}
-
-		err = i2c_reg_read_byte_dt(&config->i2c_bus, BNO055_REGISTER_POWER_MODE, &power);
-		if (err < 0) {
-			return err;
-		}
-
-		if ((reg & BNO055_POWER_MODE_MASK) != mode) {
-			LOG_ERR("I2C communication compromised [%d]!=[%d]!!", mode,
-				reg & BNO055_POWER_MODE_MASK);
-			return -ECANCELED;
-		}
-		data->power = reg & BNO055_POWER_MODE_MASK;
-	}
-
-	err = bno055_set_config(dev, mode, mode < BNO055_MODE_IMU ? false : true);
-	if (err < 0) {
-		return err;
-	}
-
-	LOG_DBG("FUNC POWER[%d]", power);
-	return 0;
-}
-
-static int bno055_set_attribut(const struct device *dev, uint8_t reg, uint8_t mask, uint8_t shift,
-			       uint8_t val)
-{
-	const struct bno055_config *config = dev->config;
-	struct bno055_data *data = dev->data;
-	uint8_t res;
-	int err;
-
-	LOG_DBG("FUNC ATTR[%d][%d]", reg, val);
-
-	enum bno055_OperatingMode mode = data->mode;
-	err = bno055_set_config(dev, BNO055_MODE_CONFIG, false);
-	if (err < 0) {
-		return err;
-	}
-
-	/* Switch to Page 1 */
-	err = bno055_set_page(dev, BNO055_PAGE_ONE);
-	if (err < 0) {
-		return err;
-	}
-
-	err = i2c_reg_read_byte_dt(&config->i2c_bus, reg, &res);
-	if (err < 0) {
-		return err;
-	}
-
-	res &= ~mask;
-	res |= (val << shift) & mask;
-	err = i2c_reg_write_byte_dt(&config->i2c_bus, reg, res);
-	if (err < 0) {
-		return err;
-	}
-
-	err = i2c_reg_read_byte_dt(&config->i2c_bus, reg, &res);
-	if (err < 0) {
-		return err;
-	}
-
-	if ((res & mask) != (val << shift)) {
-		LOG_ERR("I2C communication compromised [%d]!=[%d]!!", val << shift, res & mask);
-		return -ECANCELED;
-	}
-
-	err = bno055_set_config(dev, mode, mode < BNO055_MODE_IMU ? false : true);
-	if (err < 0) {
-		return err;
-	}
-
-	LOG_DBG("FUNC ATTR[%d][%d]", reg, (res & mask) >> shift);
-	return 0;
-}
-
-static int bno055_vector3_fetch(const struct device *dev, const uint8_t data_register,
-				struct bno055_vector3_data *data)
-{
-	const struct bno055_config *config = dev->config;
-	int8_t regs[6];
-
-	int err = i2c_burst_read_dt(&config->i2c_bus, data_register, regs, sizeof(regs));
-	if (err < 0) {
-		return err;
-	}
-	data->x = (regs[1] << 8) | (0xFF & regs[0]);
-	data->y = (regs[3] << 8) | (0xFF & regs[2]);
-	data->z = (regs[5] << 8) | (0xFF & regs[4]);
-
-	return 0;
-}
-
-static int bno055_vector4_fetch(const struct device *dev, const uint8_t data_register,
-				struct bno055_vector4_data *data)
-{
-	const struct bno055_config *config = dev->config;
-	int8_t regs[8];
-
-	int err = i2c_burst_read_dt(&config->i2c_bus, data_register, regs, sizeof(regs));
-	if (err < 0) {
-		return err;
-	}
-	data->w = (regs[1] << 8) | (0xFF & regs[0]);
-	data->x = (regs[3] << 8) | (0xFF & regs[2]);
-	data->y = (regs[5] << 8) | (0xFF & regs[4]);
-	data->z = (regs[7] << 8) | (0xFF & regs[6]);
-
-	return 0;
-}
-
-static int bno055_calibration_fetch(const struct device *dev, struct bno055_calib_data *data)
-{
-	const struct bno055_config *config = dev->config;
-	int8_t regs[1];
-
-	int err = i2c_burst_read_dt(&config->i2c_bus, BNO055_REGISTER_CALIBRATION_STATUS, regs,
-				    sizeof(regs));
-	if (err < 0) {
-		return err;
-	}
-	data->sys = (regs[0] >> 6) & 0x03;
-	data->gyr = (regs[0] >> 4) & 0x03;
-	data->acc = (regs[0] >> 2) & 0x03;
-	data->mag = (regs[0] >> 0) & 0x03;
-
-	return 0;
-}
-
-static int bno055_attr_set(const struct device *dev, enum sensor_channel chan,
-			   enum sensor_attribute attr, const struct sensor_value *val)
-{
-	int err;
-
-	switch (chan) {
-	case SENSOR_CHAN_ALL:
-		if (attr == SENSOR_ATTR_CONFIGURATION) {
-			LOG_INF("SET MODE[%d]", val->val1);
-			switch (val->val1) {
-			case BNO055_MODE_CONFIG:
-				LOG_DBG("MODE BNO055_MODE_CONFIG");
-				err = bno055_set_config(dev, BNO055_MODE_CONFIG, false);
-				if (err < 0) {
-					return err;
-				}
-				break;
-
-			case BNO055_MODE_ACC_ONLY:
-				LOG_DBG("MODE BNO055_MODE_ACC_ONLY");
-				err = bno055_set_config(dev, BNO055_MODE_ACC_ONLY, false);
-				if (err < 0) {
-					return err;
-				}
-				break;
-
-			case BNO055_MODE_MAG_ONLY:
-				LOG_DBG("MODE BNO055_MODE_MAG_ONLY");
-				err = bno055_set_config(dev, BNO055_MODE_MAG_ONLY, false);
-				if (err < 0) {
-					return err;
-				}
-				break;
-
-			case BNO055_MODE_GYRO_ONLY:
-				LOG_DBG("MODE BNO055_MODE_GYRO_ONLY");
-				err = bno055_set_config(dev, BNO055_MODE_GYRO_ONLY, false);
-				if (err < 0) {
-					return err;
-				}
-				break;
-
-			case BNO055_MODE_ACC_MAG:
-				LOG_DBG("MODE BNO055_MODE_ACC_MAG");
-				err = bno055_set_config(dev, BNO055_MODE_ACC_MAG, false);
-				if (err < 0) {
-					return err;
-				}
-				break;
-
-			case BNO055_MODE_ACC_GYRO:
-				LOG_DBG("MODE BNO055_MODE_ACC_GYRO");
-				err = bno055_set_config(dev, BNO055_MODE_ACC_GYRO, false);
-				if (err < 0) {
-					return err;
-				}
-				break;
-
-			case BNO055_MODE_MAG_GYRO:
-				LOG_DBG("MODE BNO055_MODE_MAG_GYRO");
-				err = bno055_set_config(dev, BNO055_MODE_MAG_GYRO, false);
-				if (err < 0) {
-					return err;
-				}
-				break;
-
-			case BNO055_MODE_ACC_MAG_GYRO:
-				LOG_DBG("MODE BNO055_MODE_ACC_MAG_GYRO");
-				err = bno055_set_config(dev, BNO055_MODE_ACC_MAG_GYRO, false);
-				if (err < 0) {
-					return err;
-				}
-				break;
-
-			case BNO055_MODE_IMU:
-				LOG_DBG("MODE BNO055_MODE_IMU");
-				err = bno055_set_config(dev, BNO055_MODE_IMU, true);
-				if (err < 0) {
-					return err;
-				}
-				break;
-
-			case BNO055_MODE_COMPASS:
-				LOG_DBG("MODE BNO055_MODE_COMPASS");
-				err = bno055_set_config(dev, BNO055_MODE_COMPASS, true);
-				if (err < 0) {
-					return err;
-				}
-				break;
-
-			case BNO055_MODE_M4G:
-				LOG_DBG("MODE BNO055_MODE_M4G");
-				err = bno055_set_config(dev, BNO055_MODE_M4G, true);
-				if (err < 0) {
-					return err;
-				}
-				break;
-
-			case BNO055_MODE_NDOF_FMC_OFF:
-				LOG_DBG("MODE BNO055_MODE_NDOF_FMC_OFF");
-				err = bno055_set_config(dev, BNO055_MODE_NDOF_FMC_OFF, true);
-				if (err < 0) {
-					return err;
-				}
-				break;
-
-			case BNO055_MODE_NDOF:
-				LOG_DBG("MODE BNO055_MODE_NDOF");
-				err = bno055_set_config(dev, BNO055_MODE_NDOF, true);
-				if (err < 0) {
-					return err;
-				}
-				break;
-
-			default:
-				return -EINVAL;
-			}
-		} else if (attr == (enum sensor_attribute)BNO055_SENSOR_ATTR_POWER_MODE) {
-			LOG_INF("SET POWER[%d]", val->val1);
-			switch (val->val1) {
-			case BNO055_POWER_NORMAL:
-				LOG_DBG("POWER BNO055_POWER_NORMAL");
-				err = bno055_set_power(dev, BNO055_POWER_NORMAL);
-				if (err < 0) {
-					return err;
-				}
-				break;
-
-			case BNO055_POWER_LOW_POWER:
-				LOG_DBG("POWER BNO055_POWER_LOW_POWER");
-				err = bno055_set_power(dev, BNO055_POWER_LOW_POWER);
-				if (err < 0) {
-					return err;
-				}
-				break;
-
-			case BNO055_POWER_SUSPEND:
-				LOG_DBG("POWER BNO055_POWER_SUSPEND");
-				err = bno055_set_power(dev, BNO055_POWER_SUSPEND);
-				if (err < 0) {
-					return err;
-				}
-				break;
-
-			case BNO055_POWER_INVALID:
-				LOG_DBG("POWER BNO055_POWER_INVALID");
-				err = bno055_set_power(dev, BNO055_POWER_INVALID);
-				if (err < 0) {
-					return err;
-				}
-				break;
-
-			default:
-				return -EINVAL;
-			}
-		}
-		break;
-
-	case SENSOR_CHAN_ACCEL_XYZ:
-		LOG_INF("SET ACC ATTR[%d][%d]", attr, val->val1);
-		switch (attr) {
-		case SENSOR_ATTR_SLOPE_TH:
-			if (val->val1 == BNO055_ACC_THRESHOLD_MOTION_ANY) {
-				LOG_DBG("ACC ATTR AM THRESHOLD");
-				err = bno055_set_attribut(
-					dev, BNO055_REGISTER_ACC_ANY_MOTION_THRESHOLD,
-					BNO055_IRQ_ACC_MASK_THRESHOLD,
-					BNO055_IRQ_ACC_SHIFT_MOTION_ANY, val->val2);
-				if (err < 0) {
-					return err;
-				}
-			} else if (val->val1 == BNO055_ACC_THRESHOLD_MOTION_NO) {
-				LOG_DBG("ACC ATTR NM THRESHOLD");
-				err = bno055_set_attribut(
-					dev, BNO055_REGISTER_ACC_NO_MOTION_THRESHOLD,
-					BNO055_IRQ_ACC_MASK_THRESHOLD_MOTION_SLOWNO,
-					BNO055_IRQ_ACC_SHIFT_MOTION_SLOWNO, val->val2);
-				if (err < 0) {
-					return err;
-				}
-			} else if (val->val1 == BNO055_ACC_THRESHOLD_HIGH_G) {
-				LOG_DBG("ACC ATTR HG THRESHOLD");
-				err = bno055_set_attribut(
-					dev, BNO055_REGISTER_ACC_HIGH_GRAVITY_THRESHOLD,
-					BNO055_IRQ_ACC_MASK_THRESHOLD_HIGH_G,
-					BNO055_IRQ_ACC_NO_SHIFT, val->val2);
-				if (err < 0) {
-					return err;
-				}
-			} else {
-				return -ENOTSUP;
-			}
-			break;
-
-		case SENSOR_ATTR_SLOPE_DUR:
-			if (val->val1 == BNO055_ACC_DURATION_MOTION_ANY) {
-				LOG_DBG("ACC ATTR AM DURATION");
-				err = bno055_set_attribut(dev, BNO055_REGISTER_ACC_INT_SETTINGS,
-							  BNO055_IRQ_ACC_MASK_DUR_MOTION_ANY,
-							  BNO055_IRQ_ACC_SHIFT_MOTION_ANY,
-							  val->val2);
-				if (err < 0) {
-					return err;
-				}
-			} else if (val->val1 == BNO055_ACC_DURATION_MOTION_NO) {
-				LOG_DBG("ACC ATTR NM DURATION");
-				uint8_t snm = (val->val2 >> BNO055_IRQ_ACC_SHIFT_MOTION_SLOWNO);
-				uint32_t duration = val->val2 & (~BNO055_IRQ_ACC_SET_MOTION_NO);
-				uint8_t value = duration & (BNO055_IRQ_ACC_MASK_DUR_MOTION_SLOW >>
-							    BNO055_IRQ_ACC_MASK_DUR_MOTION_SLOW);
-
-				if (snm == BNO055_IRQ_ACC_SET_MOTION_NO) {
-					value = (duration >
-						 BNO055_ACC_DURATION_MOTION_SLOWNO_80_SECONDS)
-							? (0x01 << 5)
-							: 0x00;
-					if (duration >
-					    BNO055_ACC_DURATION_MOTION_SLOWNO_80_SECONDS) {
-						value |= ((duration - 88) >> 3);
-					} else {
-						value |=
-							(duration >
-							 BNO055_ACC_DURATION_MOTION_SLOWNO_20_SECONDS)
-								? (0x01 << 4)
-								: 0x00;
-						if (duration >
-						    BNO055_ACC_DURATION_MOTION_SLOWNO_20_SECONDS) {
-							value |= ((duration - 20) >> 2);
-						} else {
-							value |= ((duration - 1) >> 0);
-						}
-					}
-				}
-
-				err = bno055_set_attribut(
-					dev, BNO055_REGISTER_ACC_NO_MOTION_SET,
-					(snm == BNO055_IRQ_ACC_SET_MOTION_NO)
-						? BNO055_IRQ_ACC_MASK_DUR_MOTION_SLOWNO
-						: BNO055_IRQ_ACC_MASK_DUR_MOTION_SLOW,
-					BNO055_IRQ_ACC_SHIFT_MOTION_SLOWNO, value);
-				if (err < 0) {
-					return err;
-				}
-				err = bno055_set_attribut(dev, BNO055_REGISTER_ACC_NO_MOTION_SET,
-							  BNO055_IRQ_ACC_MASK_SET_MOTION_SLOWNO,
-							  BNO055_IRQ_ACC_NO_SHIFT, snm);
-				if (err < 0) {
-					return err;
-				}
-			} else if (val->val1 == BNO055_ACC_DURATION_HIGH_G) {
-				LOG_DBG("ACC ATTR HG DURATION");
-				err = bno055_set_attribut(dev,
-							  BNO055_REGISTER_ACC_HIGH_GRAVITY_DURATION,
-							  BNO055_IRQ_ACC_MASK_DUR_HIGH_G,
-							  BNO055_IRQ_ACC_NO_SHIFT, val->val2);
-				if (err < 0) {
-					return err;
-				}
-			} else {
-				return -ENOTSUP;
-			}
-			break;
-
-		default:
-			return -ENOTSUP;
-		}
-		break;
-
-	case SENSOR_CHAN_GYRO_XYZ:
-		LOG_INF("SET GYRO ATTR[%d][%d]", attr, val->val1);
-		switch (attr) {
-		case SENSOR_ATTR_SLOPE_TH:
-			LOG_DBG("GYRO ATTR AM THRESHOLD");
-			err = bno055_set_attribut(dev, BNO055_REGISTER_GYR_AM_THRESHOLD,
-						  BNO055_IRQ_GYR_MASK_THRESHOLD_MOTION_ANY,
-						  BNO055_IRQ_GYR_SHIFT_THRESHOLD_MOTION_ANY,
-						  val->val1);
-			if (err < 0) {
-				return err;
-			}
-			break;
-
-		case SENSOR_ATTR_SLOPE_DUR:
-			LOG_DBG("GYRO ATTR AM DURATION");
-			err = bno055_set_attribut(dev, BNO055_REGISTER_GYR_AM_SET,
-						  BNO055_IRQ_GYR_MASK_AWAKE_DURATION_MOTION_ANY,
-						  BNO055_IRQ_GYR_SHIFT_AWAKE_DURATION_MOTION_ANY,
-						  val->val1);
-			if (err < 0) {
-				return err;
-			}
-			err = bno055_set_attribut(dev, BNO055_REGISTER_GYR_AM_SET,
-						  BNO055_IRQ_GYR_MASK_SAMPLES_MOTION_ANY,
-						  BNO055_IRQ_GYR_SHIFT_SAMPLES_MOTION_ANY,
-						  val->val1);
-			if (err < 0) {
-				return err;
-			}
-			break;
-
-		case SENSOR_ATTR_FEATURE_MASK:
-			LOG_DBG("GYRO ATTR FEATURE");
-			err = bno055_set_attribut(dev, BNO055_REGISTER_GYR_INT_SETTINGS,
-						  BNO055_IRQ_GYR_SETTINGS_FILT_HIGH_RATE,
-						  BNO055_IRQ_GYR_SHIFT_FILT_HIGH_RATE, val->val1);
-			if (err < 0) {
-				return err;
-			}
-			err = bno055_set_attribut(dev, BNO055_REGISTER_GYR_INT_SETTINGS,
-						  BNO055_IRQ_GYR_SETTINGS_FILT_MOTION_ANY,
-						  BNO055_IRQ_GYR_SHIFT_FILT_MOTION_ANY, val->val2);
-			if (err < 0) {
-				return err;
-			}
-			break;
-		default:
-			return -ENOTSUP;
-		}
-		break;
-
-	case SENSOR_CHAN_GYRO_X:
-		LOG_INF("SET GYRO_X ATTR[%d]", attr);
-		switch (attr) {
-		case SENSOR_ATTR_HYSTERESIS:
-			LOG_DBG("GYRO_X ATTR HR THRESHOLD");
-			err = bno055_set_attribut(
-				dev, BNO055_REGISTER_GYR_HIGH_RATE_X_SET,
-				BNO055_IRQ_GYR_MASK_THRESHOLD_MOTION_ANY,
-				BNO055_IRQ_GYR_SHIFT_THRESHOLD_MOTION_ANY,
-				val->val1 & (BNO055_IRQ_GYR_MASK_THRESHOLD_MOTION_ANY >>
-					     BNO055_IRQ_GYR_SHIFT_THRESHOLD_MOTION_ANY));
-			if (err < 0) {
-				return err;
-			}
-			LOG_DBG("GYRO_X ATTR HR HYSTERESIS");
-			err = bno055_set_attribut(
-				dev, BNO055_REGISTER_GYR_HIGH_RATE_X_SET,
-				BNO055_IRQ_GYR_MASK_HYSTERESIS_HIGH_RATE,
-				BNO055_IRQ_GYR_SHIFT_HYSTERESIS_HIGH_RATE,
-				val->val2 & (BNO055_IRQ_GYR_MASK_HYSTERESIS_HIGH_RATE >>
-					     BNO055_IRQ_GYR_SHIFT_HYSTERESIS_HIGH_RATE));
-			if (err < 0) {
-				return err;
-			}
-			break;
-
-		case SENSOR_ATTR_SLOPE_DUR:
-			LOG_DBG("GYRO_X ATTR HR DURATION");
-			err = bno055_set_attribut(dev, BNO055_REGISTER_GYR_DURATION_X,
-						  BNO055_IRQ_GYR_MASK_DURATION_HIGH_RATE,
-						  BNO055_IRQ_GYR_NO_SHIFT, val->val1);
-			if (err < 0) {
-				return err;
-			}
-			break;
-
-		default:
-			return -ENOTSUP;
-		}
-		break;
-
-	case SENSOR_CHAN_GYRO_Y:
-		LOG_INF("SET GYRO_Y ATTR[%d]", attr);
-		switch (attr) {
-		case SENSOR_ATTR_HYSTERESIS:
-			LOG_DBG("GYRO_Y ATTR HR THRESHOLD");
-			err = bno055_set_attribut(
-				dev, BNO055_REGISTER_GYR_HIGH_RATE_Y_SET,
-				BNO055_IRQ_GYR_MASK_THRESHOLD_MOTION_ANY,
-				BNO055_IRQ_GYR_SHIFT_THRESHOLD_MOTION_ANY,
-				val->val1 & (BNO055_IRQ_GYR_MASK_THRESHOLD_MOTION_ANY >>
-					     BNO055_IRQ_GYR_SHIFT_THRESHOLD_MOTION_ANY));
-			if (err < 0) {
-				return err;
-			}
-			LOG_DBG("GYRO_Y ATTR HR HYSTERESIS");
-			err = bno055_set_attribut(
-				dev, BNO055_REGISTER_GYR_HIGH_RATE_Y_SET,
-				BNO055_IRQ_GYR_MASK_HYSTERESIS_HIGH_RATE,
-				BNO055_IRQ_GYR_SHIFT_HYSTERESIS_HIGH_RATE,
-				val->val2 & (BNO055_IRQ_GYR_MASK_HYSTERESIS_HIGH_RATE >>
-					     BNO055_IRQ_GYR_SHIFT_HYSTERESIS_HIGH_RATE));
-			if (err < 0) {
-				return err;
-			}
-			break;
-
-		case SENSOR_ATTR_SLOPE_DUR:
-			LOG_DBG("GYRO_Y ATTR HR DURATION");
-			err = bno055_set_attribut(dev, BNO055_REGISTER_GYR_DURATION_Y,
-						  BNO055_IRQ_GYR_MASK_DURATION_HIGH_RATE,
-						  BNO055_IRQ_GYR_NO_SHIFT, val->val1);
-			if (err < 0) {
-				return err;
-			}
-			break;
-
-		default:
-			return -ENOTSUP;
-		}
-		break;
-
-	case SENSOR_CHAN_GYRO_Z:
-		LOG_INF("SET GYRO_X ATTR[%d]", attr);
-		switch (attr) {
-		case SENSOR_ATTR_HYSTERESIS:
-			LOG_DBG("GYRO_Z ATTR HR THRESHOLD");
-			err = bno055_set_attribut(
-				dev, BNO055_REGISTER_GYR_HIGH_RATE_Z_SET,
-				BNO055_IRQ_GYR_MASK_THRESHOLD_MOTION_ANY,
-				BNO055_IRQ_GYR_SHIFT_THRESHOLD_MOTION_ANY,
-				val->val1 & (BNO055_IRQ_GYR_MASK_THRESHOLD_MOTION_ANY >>
-					     BNO055_IRQ_GYR_SHIFT_THRESHOLD_MOTION_ANY));
-			if (err < 0) {
-				return err;
-			}
-			LOG_DBG("GYRO_Z ATTR HR HYSTERESIS");
-			err = bno055_set_attribut(
-				dev, BNO055_REGISTER_GYR_HIGH_RATE_Z_SET,
-				BNO055_IRQ_GYR_MASK_HYSTERESIS_HIGH_RATE,
-				BNO055_IRQ_GYR_SHIFT_HYSTERESIS_HIGH_RATE,
-				val->val2 & (BNO055_IRQ_GYR_MASK_HYSTERESIS_HIGH_RATE >>
-					     BNO055_IRQ_GYR_SHIFT_HYSTERESIS_HIGH_RATE));
-			if (err < 0) {
-				return err;
-			}
-			break;
-
-		case SENSOR_ATTR_SLOPE_DUR:
-			LOG_DBG("GYRO_Z ATTR HR DURATION");
-			err = bno055_set_attribut(dev, BNO055_REGISTER_GYR_DURATION_Z,
-						  BNO055_IRQ_GYR_MASK_DURATION_HIGH_RATE,
-						  BNO055_IRQ_GYR_NO_SHIFT, val->val1);
-			if (err < 0) {
-				return err;
-			}
-			break;
-
-		default:
-			return -ENOTSUP;
-		}
-		break;
-
-	default:
-		return -ENOTSUP;
-	}
-	return 0;
-}
-
-static int bno055_sample_fetch(const struct device *dev, enum sensor_channel chan)
-{
-	struct bno055_data *data = dev->data;
-	int err;
-
-	/* Switch to Page 0 */
-	err = bno055_set_page(dev, BNO055_PAGE_ZERO);
-	if (err < 0) {
-		return err;
-	}
-
-	switch (data->mode) {
-	case BNO055_MODE_CONFIG:
-		LOG_WRN("CONFIG Mode no sample");
-		break;
-
-	case BNO055_MODE_ACC_ONLY:
-		LOG_DBG("ACC fetching..");
-		err = bno055_vector3_fetch(dev, BNO055_REGISTER_ACC_DATA, &data->acc);
-		if (err < 0) {
-			return err;
-		}
-		break;
-
-	case BNO055_MODE_MAG_ONLY:
-		LOG_DBG("MAG fetching..");
-		err = bno055_vector3_fetch(dev, BNO055_REGISTER_MAG_DATA, &data->mag);
-		if (err < 0) {
-			return err;
-		}
-		break;
-
-	case BNO055_MODE_GYRO_ONLY:
-		LOG_DBG("GYR fetching..");
-		err = bno055_vector3_fetch(dev, BNO055_REGISTER_GYR_DATA, &data->gyr);
-		if (err < 0) {
-			return err;
-		}
-		break;
-
-	case BNO055_MODE_ACC_MAG:
-		LOG_DBG("ACC_MAG fetching..");
-		err = bno055_vector3_fetch(dev, BNO055_REGISTER_ACC_DATA, &data->acc);
-		if (err < 0) {
-			return err;
-		}
-		err = bno055_vector3_fetch(dev, BNO055_REGISTER_MAG_DATA, &data->mag);
-		if (err < 0) {
-			return err;
-		}
-		break;
-
-	case BNO055_MODE_ACC_GYRO:
-		LOG_DBG("ACC_GYRO fetching..");
-		err = bno055_vector3_fetch(dev, BNO055_REGISTER_ACC_DATA, &data->acc);
-		if (err < 0) {
-			return err;
-		}
-		err = bno055_vector3_fetch(dev, BNO055_REGISTER_GYR_DATA, &data->gyr);
-		if (err < 0) {
-			return err;
-		}
-		break;
-
-	case BNO055_MODE_MAG_GYRO:
-		LOG_DBG("MAG_GYRO fetching..");
-		err = bno055_vector3_fetch(dev, BNO055_REGISTER_MAG_DATA, &data->mag);
-		if (err < 0) {
-			return err;
-		}
-		err = bno055_vector3_fetch(dev, BNO055_REGISTER_GYR_DATA, &data->gyr);
-		if (err < 0) {
-			return err;
-		}
-		break;
-
-	case BNO055_MODE_ACC_MAG_GYRO:
-		LOG_DBG("ACC_MAG_GYRO fetching..");
-		err = bno055_vector3_fetch(dev, BNO055_REGISTER_ACC_DATA, &data->acc);
-		if (err < 0) {
-			return err;
-		}
-		err = bno055_vector3_fetch(dev, BNO055_REGISTER_MAG_DATA, &data->mag);
-		if (err < 0) {
-			return err;
-		}
-		err = bno055_vector3_fetch(dev, BNO055_REGISTER_GYR_DATA, &data->gyr);
-		if (err < 0) {
-			return err;
-		}
-		break;
-
-	case BNO055_MODE_IMU:
-		LOG_DBG("IMU fetching..");
-		err = bno055_vector3_fetch(dev, BNO055_REGISTER_EUL_DATA, &data->eul);
-		if (err < 0) {
-			return err;
-		}
-		err = bno055_vector4_fetch(dev, BNO055_REGISTER_QUA_DATA, &data->qua);
-		if (err < 0) {
-			return err;
-		}
-		err = bno055_vector3_fetch(dev, BNO055_REGISTER_LIA_DATA, &data->lia);
-		if (err < 0) {
-			return err;
-		}
-		err = bno055_vector3_fetch(dev, BNO055_REGISTER_GRV_DATA, &data->grv);
-		if (err < 0) {
-			return err;
-		}
-		err = bno055_calibration_fetch(dev, &data->calib);
-		if (err < 0) {
-			return err;
-		}
-		break;
-
-	case BNO055_MODE_COMPASS:
-		LOG_DBG("COMPASS fetching..");
-		err = bno055_vector3_fetch(dev, BNO055_REGISTER_EUL_DATA, &data->eul);
-		if (err < 0) {
-			return err;
-		}
-		err = bno055_vector4_fetch(dev, BNO055_REGISTER_QUA_DATA, &data->qua);
-		if (err < 0) {
-			return err;
-		}
-		err = bno055_vector3_fetch(dev, BNO055_REGISTER_LIA_DATA, &data->lia);
-		if (err < 0) {
-			return err;
-		}
-		err = bno055_vector3_fetch(dev, BNO055_REGISTER_GRV_DATA, &data->grv);
-		if (err < 0) {
-			return err;
-		}
-		err = bno055_calibration_fetch(dev, &data->calib);
-		if (err < 0) {
-			return err;
-		}
-		break;
-
-	case BNO055_MODE_M4G:
-		LOG_DBG("M4G fetching..");
-		err = bno055_vector3_fetch(dev, BNO055_REGISTER_EUL_DATA, &data->eul);
-		if (err < 0) {
-			return err;
-		}
-		err = bno055_vector4_fetch(dev, BNO055_REGISTER_QUA_DATA, &data->qua);
-		if (err < 0) {
-			return err;
-		}
-		err = bno055_vector3_fetch(dev, BNO055_REGISTER_LIA_DATA, &data->lia);
-		if (err < 0) {
-			return err;
-		}
-		err = bno055_vector3_fetch(dev, BNO055_REGISTER_GRV_DATA, &data->grv);
-		if (err < 0) {
-			return err;
-		}
-		err = bno055_calibration_fetch(dev, &data->calib);
-		if (err < 0) {
-			return err;
-		}
-		break;
-
-	case BNO055_MODE_NDOF_FMC_OFF:
-		LOG_DBG("NDOF_FMC_OFF fetching..");
-		err = bno055_vector3_fetch(dev, BNO055_REGISTER_EUL_DATA, &data->eul);
-		if (err < 0) {
-			return err;
-		}
-		err = bno055_vector4_fetch(dev, BNO055_REGISTER_QUA_DATA, &data->qua);
-		if (err < 0) {
-			return err;
-		}
-		err = bno055_vector3_fetch(dev, BNO055_REGISTER_LIA_DATA, &data->lia);
-		if (err < 0) {
-			return err;
-		}
-		err = bno055_vector3_fetch(dev, BNO055_REGISTER_GRV_DATA, &data->grv);
-		if (err < 0) {
-			return err;
-		}
-		err = bno055_calibration_fetch(dev, &data->calib);
-		if (err < 0) {
-			return err;
-		}
-		break;
-
-	case BNO055_MODE_NDOF:
-		LOG_DBG("NDOF fetching..");
-		err = bno055_vector3_fetch(dev, BNO055_REGISTER_EUL_DATA, &data->eul);
-		if (err < 0) {
-			return err;
-		}
-		err = bno055_vector4_fetch(dev, BNO055_REGISTER_QUA_DATA, &data->qua);
-		if (err < 0) {
-			return err;
-		}
-		err = bno055_vector3_fetch(dev, BNO055_REGISTER_LIA_DATA, &data->lia);
-		if (err < 0) {
-			return err;
-		}
-		err = bno055_vector3_fetch(dev, BNO055_REGISTER_GRV_DATA, &data->grv);
-		if (err < 0) {
-			return err;
-		}
-		err = bno055_calibration_fetch(dev, &data->calib);
-		if (err < 0) {
-			return err;
-		}
-		break;
-
-	default:
-		LOG_WRN("BNO055 Not in Computation Mode!!");
-		return -ENOTSUP;
-	}
-
-	return 0;
-}
-
-static int bno055_channel_get(const struct device *dev, enum sensor_channel chan,
-			      struct sensor_value *val)
-{
-	struct bno055_data *data = dev->data;
-
-	if (chan == SENSOR_CHAN_ACCEL_X) {
-		(val)->val1 = data->acc.x / BNO055_ACCEL_RESOLUTION;
-		(val)->val2 = (1000000 / BNO055_ACCEL_RESOLUTION) *
-			      (data->acc.x - (val)->val1 * BNO055_ACCEL_RESOLUTION);
-		return 0;
-	}
-
-	if (chan == SENSOR_CHAN_ACCEL_Y) {
-		(val)->val1 = data->acc.y / BNO055_ACCEL_RESOLUTION;
-		(val)->val2 = (1000000 / BNO055_ACCEL_RESOLUTION) *
-			      (data->acc.y - (val)->val1 * BNO055_ACCEL_RESOLUTION);
-		return 0;
-	}
-
-	if (chan == SENSOR_CHAN_ACCEL_Z) {
-		(val)->val1 = data->acc.z / BNO055_ACCEL_RESOLUTION;
-		(val)->val2 = (1000000 / BNO055_ACCEL_RESOLUTION) *
-			      (data->acc.z - (val)->val1 * BNO055_ACCEL_RESOLUTION);
-		return 0;
-	}
-
-	if (chan == SENSOR_CHAN_ACCEL_XYZ) {
-		(val)->val1 = data->acc.x / BNO055_ACCEL_RESOLUTION;
-		(val)->val2 = (1000000 / BNO055_ACCEL_RESOLUTION) *
-			      (data->acc.x - (val)->val1 * BNO055_ACCEL_RESOLUTION);
-		(val + 1)->val1 = data->acc.y / BNO055_ACCEL_RESOLUTION;
-		(val + 1)->val2 = (1000000 / BNO055_ACCEL_RESOLUTION) *
-				  (data->acc.y - (val + 1)->val1 * BNO055_ACCEL_RESOLUTION);
-		(val + 2)->val1 = data->acc.z / BNO055_ACCEL_RESOLUTION;
-		(val + 2)->val2 = (1000000 / BNO055_ACCEL_RESOLUTION) *
-				  (data->acc.z - (val + 2)->val1 * BNO055_ACCEL_RESOLUTION);
-		return 0;
-	}
-
-	if (chan == SENSOR_CHAN_GYRO_X) {
-		(val)->val1 = data->gyr.x / BNO055_GYRO_RESOLUTION;
-		(val)->val2 = (1000000 / BNO055_GYRO_RESOLUTION) *
-			      (data->gyr.x - (val)->val1 * BNO055_GYRO_RESOLUTION);
-		return 0;
-	}
-
-	if (chan == SENSOR_CHAN_GYRO_Y) {
-		(val)->val1 = data->gyr.y / BNO055_GYRO_RESOLUTION;
-		(val)->val2 = (1000000 / BNO055_GYRO_RESOLUTION) *
-			      (data->gyr.y - (val)->val1 * BNO055_GYRO_RESOLUTION);
-		return 0;
-	}
-
-	if (chan == SENSOR_CHAN_GYRO_Z) {
-		(val)->val1 = data->gyr.z / BNO055_GYRO_RESOLUTION;
-		(val)->val2 = (1000000 / BNO055_GYRO_RESOLUTION) *
-			      (data->gyr.z - (val)->val1 * BNO055_GYRO_RESOLUTION);
-		return 0;
-	}
-
-	if (chan == SENSOR_CHAN_GYRO_XYZ) {
-		(val)->val1 = data->gyr.x / BNO055_GYRO_RESOLUTION;
-		(val)->val2 = (1000000 / BNO055_GYRO_RESOLUTION) *
-			      (data->gyr.x - (val)->val1 * BNO055_GYRO_RESOLUTION);
-		(val + 1)->val1 = data->gyr.y / BNO055_GYRO_RESOLUTION;
-		(val + 1)->val2 = (1000000 / BNO055_GYRO_RESOLUTION) *
-				  (data->gyr.y - (val + 1)->val1 * BNO055_GYRO_RESOLUTION);
-		(val + 2)->val1 = data->gyr.z / BNO055_GYRO_RESOLUTION;
-		(val + 2)->val2 = (1000000 / BNO055_GYRO_RESOLUTION) *
-				  (data->gyr.z - (val + 2)->val1 * BNO055_GYRO_RESOLUTION);
-		return 0;
-	}
-
-	if (chan == SENSOR_CHAN_MAGN_X) {
-		(val)->val1 = (BNO055_UTESLA_TO_GAUSS * data->mag.x) / BNO055_UTESLA_RESOLUTION;
-		(val)->val2 = (1000000 / BNO055_UTESLA_RESOLUTION) *
-			      ((BNO055_UTESLA_TO_GAUSS * data->mag.x) -
-			       (val)->val1 * BNO055_UTESLA_RESOLUTION);
-		return 0;
-	}
-
-	if (chan == SENSOR_CHAN_MAGN_Y) {
-		(val)->val1 = (BNO055_UTESLA_TO_GAUSS * data->mag.y) / BNO055_UTESLA_RESOLUTION;
-		(val)->val2 = (1000000 / BNO055_UTESLA_RESOLUTION) *
-			      ((BNO055_UTESLA_TO_GAUSS * data->mag.y) -
-			       (val)->val1 * BNO055_UTESLA_RESOLUTION);
-		return 0;
-	}
-
-	if (chan == SENSOR_CHAN_MAGN_Z) {
-		(val)->val1 = (BNO055_UTESLA_TO_GAUSS * data->mag.z) / BNO055_UTESLA_RESOLUTION;
-		(val)->val2 = (1000000 / BNO055_UTESLA_RESOLUTION) *
-			      ((BNO055_UTESLA_TO_GAUSS * data->mag.z) -
-			       (val)->val1 * BNO055_UTESLA_RESOLUTION);
-		return 0;
-	}
-
-	if (chan == SENSOR_CHAN_MAGN_XYZ) {
-		(val)->val1 = (BNO055_UTESLA_TO_GAUSS * data->mag.x) / BNO055_UTESLA_RESOLUTION;
-		(val)->val2 = (1000000 / BNO055_UTESLA_RESOLUTION) *
-			      ((BNO055_UTESLA_TO_GAUSS * data->mag.x) -
-			       (val)->val1 * BNO055_UTESLA_RESOLUTION);
-		(val + 1)->val1 = (BNO055_UTESLA_TO_GAUSS * data->mag.y) / BNO055_UTESLA_RESOLUTION;
-		(val + 1)->val2 = (1000000 / BNO055_UTESLA_RESOLUTION) *
-				  ((BNO055_UTESLA_TO_GAUSS * data->mag.y) -
-				   (val + 1)->val1 * BNO055_UTESLA_RESOLUTION);
-		(val + 2)->val1 = (BNO055_UTESLA_TO_GAUSS * data->mag.z) / BNO055_UTESLA_RESOLUTION;
-		(val + 2)->val2 = (1000000 / BNO055_UTESLA_RESOLUTION) *
-				  ((BNO055_UTESLA_TO_GAUSS * data->mag.z) -
-				   (val + 2)->val1 * BNO055_UTESLA_RESOLUTION);
-		return 0;
-	}
-
-	if (chan == (enum sensor_channel)BNO055_SENSOR_CHAN_EULER_Y) {
-		(val)->val1 = data->eul.x / BNO055_EULER_RESOLUTION;
-		(val)->val2 = (1000000 / BNO055_EULER_RESOLUTION) *
-			      (data->eul.x - (val)->val1 * BNO055_EULER_RESOLUTION);
-		return 0;
-	}
-
-	if (chan == (enum sensor_channel)BNO055_SENSOR_CHAN_EULER_R) {
-		(val)->val1 = data->eul.y / BNO055_EULER_RESOLUTION;
-		(val)->val2 = (1000000 / BNO055_EULER_RESOLUTION) *
-			      (data->eul.y - (val)->val1 * BNO055_EULER_RESOLUTION);
-		return 0;
-	}
-
-	if (chan == (enum sensor_channel)BNO055_SENSOR_CHAN_EULER_P) {
-		(val)->val1 = data->eul.z / BNO055_EULER_RESOLUTION;
-		(val)->val2 = (1000000 / BNO055_EULER_RESOLUTION) *
-			      (data->eul.z - (val)->val1 * BNO055_EULER_RESOLUTION);
-		return 0;
-	}
-
-	if (chan == (enum sensor_channel)BNO055_SENSOR_CHAN_EULER_YRP) {
-		(val)->val1 = data->eul.x / BNO055_EULER_RESOLUTION;
-		(val)->val2 = (1000000 / BNO055_EULER_RESOLUTION) *
-			      (data->eul.x - (val)->val1 * BNO055_EULER_RESOLUTION);
-		(val + 1)->val1 = data->eul.y / BNO055_EULER_RESOLUTION;
-		(val + 1)->val2 = (1000000 / BNO055_EULER_RESOLUTION) *
-				  (data->eul.y - (val + 1)->val1 * BNO055_EULER_RESOLUTION);
-		(val + 2)->val1 = data->eul.z / BNO055_EULER_RESOLUTION;
-		(val + 2)->val2 = (1000000 / BNO055_EULER_RESOLUTION) *
-				  (data->eul.z - (val + 2)->val1 * BNO055_EULER_RESOLUTION);
-		return 0;
-	}
-
-	if (chan == (enum sensor_channel)BNO055_SENSOR_CHAN_QUATERNION_W) {
-		(val)->val1 = data->qua.w / BNO055_QUATERNION_RESOLUTION;
-		(val)->val2 = (1000000 / BNO055_QUATERNION_RESOLUTION) *
-			      (data->qua.w - (val)->val1 * BNO055_QUATERNION_RESOLUTION);
-		return 0;
-	}
-
-	if (chan == (enum sensor_channel)BNO055_SENSOR_CHAN_QUATERNION_X) {
-		(val)->val1 = data->qua.x / BNO055_QUATERNION_RESOLUTION;
-		(val)->val2 = (1000000 / BNO055_QUATERNION_RESOLUTION) *
-			      (data->qua.x - (val)->val1 * BNO055_QUATERNION_RESOLUTION);
-		return 0;
-	}
-
-	if (chan == (enum sensor_channel)BNO055_SENSOR_CHAN_QUATERNION_Y) {
-		(val)->val1 = data->qua.y / BNO055_QUATERNION_RESOLUTION;
-		(val)->val2 = (1000000 / BNO055_QUATERNION_RESOLUTION) *
-			      (data->qua.y - (val)->val1 * BNO055_QUATERNION_RESOLUTION);
-		return 0;
-	}
-
-	if (chan == (enum sensor_channel)BNO055_SENSOR_CHAN_QUATERNION_Z) {
-		(val)->val1 = data->qua.z / BNO055_QUATERNION_RESOLUTION;
-		(val)->val2 = (1000000 / BNO055_QUATERNION_RESOLUTION) *
-			      (data->qua.z - (val)->val1 * BNO055_QUATERNION_RESOLUTION);
-		return 0;
-	}
-
-	if (chan == (enum sensor_channel)BNO055_SENSOR_CHAN_QUATERNION_WXYZ) {
-		(val)->val1 = data->qua.w / BNO055_QUATERNION_RESOLUTION;
-		(val)->val2 = (1000000 / BNO055_QUATERNION_RESOLUTION) *
-			      (data->qua.w - (val)->val1 * BNO055_QUATERNION_RESOLUTION);
-		(val + 1)->val1 = data->qua.x / BNO055_QUATERNION_RESOLUTION;
-		(val + 1)->val2 = (1000000 / BNO055_QUATERNION_RESOLUTION) *
-				  (data->qua.x - (val + 1)->val1 * BNO055_QUATERNION_RESOLUTION);
-		(val + 2)->val1 = data->qua.y / BNO055_QUATERNION_RESOLUTION;
-		(val + 2)->val2 = (1000000 / BNO055_QUATERNION_RESOLUTION) *
-				  (data->qua.y - (val + 2)->val1 * BNO055_QUATERNION_RESOLUTION);
-		(val + 3)->val1 = data->qua.z / BNO055_QUATERNION_RESOLUTION;
-		(val + 3)->val2 = (1000000 / BNO055_QUATERNION_RESOLUTION) *
-				  (data->qua.z - (val + 3)->val1 * BNO055_QUATERNION_RESOLUTION);
-		return 0;
-	}
-
-	if (chan == (enum sensor_channel)BNO055_SENSOR_CHAN_LINEAR_ACCEL_X) {
-		(val)->val1 = data->lia.x / BNO055_ACCEL_RESOLUTION;
-		(val)->val2 = (1000000 / BNO055_ACCEL_RESOLUTION) *
-			      (data->lia.x - (val)->val1 * BNO055_ACCEL_RESOLUTION);
-		return 0;
-	}
-
-	if (chan == (enum sensor_channel)BNO055_SENSOR_CHAN_LINEAR_ACCEL_Y) {
-		(val)->val1 = data->lia.y / BNO055_ACCEL_RESOLUTION;
-		(val)->val2 = (1000000 / BNO055_ACCEL_RESOLUTION) *
-			      (data->lia.y - (val)->val1 * BNO055_ACCEL_RESOLUTION);
-		return 0;
-	}
-
-	if (chan == (enum sensor_channel)BNO055_SENSOR_CHAN_LINEAR_ACCEL_Z) {
-		(val)->val1 = data->lia.z / BNO055_ACCEL_RESOLUTION;
-		(val)->val2 = (1000000 / BNO055_ACCEL_RESOLUTION) *
-			      (data->lia.z - (val)->val1 * BNO055_ACCEL_RESOLUTION);
-		return 0;
-	}
-
-	if (chan == (enum sensor_channel)BNO055_SENSOR_CHAN_LINEAR_ACCEL_XYZ) {
-		(val)->val1 = data->lia.x / BNO055_ACCEL_RESOLUTION;
-		(val)->val2 = (1000000 / BNO055_ACCEL_RESOLUTION) *
-			      (data->lia.x - (val)->val1 * BNO055_ACCEL_RESOLUTION);
-		(val + 1)->val1 = data->lia.y / BNO055_ACCEL_RESOLUTION;
-		(val + 1)->val2 = (1000000 / BNO055_ACCEL_RESOLUTION) *
-				  (data->lia.y - (val + 1)->val1 * BNO055_ACCEL_RESOLUTION);
-		(val + 2)->val1 = data->lia.z / BNO055_ACCEL_RESOLUTION;
-		(val + 2)->val2 = (1000000 / BNO055_ACCEL_RESOLUTION) *
-				  (data->lia.z - (val + 2)->val1 * BNO055_ACCEL_RESOLUTION);
-		return 0;
-	}
-
-	if (chan == (enum sensor_channel)BNO055_SENSOR_CHAN_GRAVITY_X) {
-		(val)->val1 = data->grv.x / BNO055_ACCEL_RESOLUTION;
-		(val)->val2 = (1000000 / BNO055_ACCEL_RESOLUTION) *
-			      (data->grv.x - (val)->val1 * BNO055_ACCEL_RESOLUTION);
-		return 0;
-	}
-
-	if (chan == (enum sensor_channel)BNO055_SENSOR_CHAN_GRAVITY_Y) {
-		(val)->val1 = data->grv.y / BNO055_ACCEL_RESOLUTION;
-		(val)->val2 = (1000000 / BNO055_ACCEL_RESOLUTION) *
-			      (data->grv.y - (val)->val1 * BNO055_ACCEL_RESOLUTION);
-		return 0;
-	}
-
-	if (chan == (enum sensor_channel)BNO055_SENSOR_CHAN_GRAVITY_Z) {
-		(val)->val1 = data->grv.z / BNO055_ACCEL_RESOLUTION;
-		(val)->val2 = (1000000 / BNO055_ACCEL_RESOLUTION) *
-			      (data->grv.z - (val)->val1 * BNO055_ACCEL_RESOLUTION);
-		return 0;
-	}
-
-	if (chan == (enum sensor_channel)BNO055_SENSOR_CHAN_GRAVITY_XYZ) {
-		(val)->val1 = data->grv.x / BNO055_ACCEL_RESOLUTION;
-		(val)->val2 = (1000000 / BNO055_ACCEL_RESOLUTION) *
-			      (data->grv.x - (val)->val1 * BNO055_ACCEL_RESOLUTION);
-		(val + 1)->val1 = data->grv.y / BNO055_ACCEL_RESOLUTION;
-		(val + 1)->val2 = (1000000 / BNO055_ACCEL_RESOLUTION) *
-				  (data->grv.y - (val + 1)->val1 * BNO055_ACCEL_RESOLUTION);
-		(val + 2)->val1 = data->grv.z / BNO055_ACCEL_RESOLUTION;
-		(val + 2)->val2 = (1000000 / BNO055_ACCEL_RESOLUTION) *
-				  (data->grv.z - (val + 2)->val1 * BNO055_ACCEL_RESOLUTION);
-		return 0;
-	}
-
-	if (chan == (enum sensor_channel)BNO055_SENSOR_CHAN_CALIBRATION_SYS) {
-		(val)->val1 = data->calib.sys;
-		(val)->val2 = 0;
-		return 0;
-	}
-
-	if (chan == (enum sensor_channel)BNO055_SENSOR_CHAN_CALIBRATION_GYR) {
-		(val)->val1 = data->calib.gyr;
-		(val)->val2 = 0;
-		return 0;
-	}
-
-	if (chan == (enum sensor_channel)BNO055_SENSOR_CHAN_CALIBRATION_ACC) {
-		(val)->val1 = data->calib.acc;
-		(val)->val2 = 0;
-		return 0;
-	}
-
-	if (chan == (enum sensor_channel)BNO055_SENSOR_CHAN_CALIBRATION_MAG) {
-		(val)->val1 = data->calib.mag;
-		(val)->val2 = 0;
-		return 0;
-	}
-
-	if (chan == (enum sensor_channel)BNO055_SENSOR_CHAN_CALIBRATION_SGAM) {
-		(val)->val1 = data->calib.sys;
-		(val)->val2 = 0;
-		(val + 1)->val1 = data->calib.gyr;
-		(val + 1)->val2 = 0;
-		(val + 2)->val1 = data->calib.acc;
-		(val + 2)->val2 = 0;
-		(val + 3)->val1 = data->calib.mag;
-		(val + 3)->val2 = 0;
-		return 0;
-	}
-
-	return -ENOTSUP;
-}
-
-#if BNO055_USE_IRQ
-static void bno055_gpio_callback_handler(const struct device *p_port, struct gpio_callback *p_cb,
-					 uint32_t pins)
-{
-	ARG_UNUSED(p_port);
-	ARG_UNUSED(pins);
-	LOG_DBG("Process GPIO callback!!");
-
-	struct bno055_data *data = CONTAINER_OF(p_cb, struct bno055_data, gpio_cb);
-
-	k_work_submit(&data->cb_work); // Using work queue to exit isr context
-}
-
-static void bno055_work_cb(struct k_work *p_work)
-{
-	struct bno055_data *data = CONTAINER_OF(p_work, struct bno055_data, cb_work);
-	const struct bno055_config *config = data->dev->config;
-	uint8_t reg;
-	int err;
-
-	LOG_DBG("Process Trigger worker from interrupt");
-
-	err = i2c_reg_read_byte_dt(&config->i2c_bus, BNO055_REGISTER_IRQ_STATUS, &reg);
-	if (err < 0) {
-		LOG_ERR("Trigger worker I2C read FLAGS error");
-	}
-
-	if (reg & BNO055_IRQ_MASK_ACC_BSX_DRDY) {
-		if (data->trigger_handler[BNO055_IRQ_ACC_BSX_DRDY]) {
-			LOG_DBG("Calling ACC_BSX_DRDY callback");
-			data->trigger_handler[BNO055_IRQ_ACC_BSX_DRDY](
-				data->dev, data->trigger[BNO055_IRQ_ACC_BSX_DRDY]);
-		}
-	}
-
-	if (reg & BNO055_IRQ_MASK_MAG_DRDY) {
-		if (data->trigger_handler[BNO055_IRQ_MAG_DRDY]) {
-			LOG_DBG("Calling MAG_DRDY callback");
-			data->trigger_handler[BNO055_IRQ_MAG_DRDY](
-				data->dev, data->trigger[BNO055_IRQ_MAG_DRDY]);
-		}
-	}
-
-	if (reg & BNO055_IRQ_MASK_GYR_MOTION_ANY) {
-		if (data->trigger_handler[BNO055_IRQ_GYR_MOTION_ANY]) {
-			LOG_DBG("Calling GYR_AM callback");
-			data->trigger_handler[BNO055_IRQ_GYR_MOTION_ANY](
-				data->dev, data->trigger[BNO055_IRQ_GYR_MOTION_ANY]);
-		}
-	}
-
-	if (reg & BNO055_IRQ_MASK_GYR_HIGH_RATE) {
-		if (data->trigger_handler[BNO055_IRQ_GYR_HIGH_RATE]) {
-			LOG_DBG("Calling GYR_HIGH_RATE callback");
-			data->trigger_handler[BNO055_IRQ_GYR_HIGH_RATE](
-				data->dev, data->trigger[BNO055_IRQ_GYR_HIGH_RATE]);
-		}
-	}
-
-	if (reg & BNO055_IRQ_MASK_GYR_DRDY) {
-		if (data->trigger_handler[BNO055_IRQ_GYR_DRDY]) {
-			LOG_DBG("Calling GYR_DRDY callback");
-			data->trigger_handler[BNO055_IRQ_GYR_DRDY](
-				data->dev, data->trigger[BNO055_IRQ_GYR_DRDY]);
-		}
-	}
-
-	if (reg & BNO055_IRQ_MASK_ACC_HIGH_G) {
-		if (data->trigger_handler[BNO055_IRQ_ACC_HIGH_G]) {
-			LOG_DBG("Calling ACC_HIGH_G callback");
-			data->trigger_handler[BNO055_IRQ_ACC_HIGH_G](
-				data->dev, data->trigger[BNO055_IRQ_ACC_HIGH_G]);
-		}
-	}
-
-	if (reg & BNO055_IRQ_MASK_ACC_MOTION_ANY) {
-		if (data->trigger_handler[BNO055_IRQ_ACC_MOTION_ANYNO]) {
-			LOG_DBG("Calling ACC_AM callback");
-			data->trigger_handler[BNO055_IRQ_ACC_MOTION_ANYNO](
-				data->dev, data->trigger[BNO055_IRQ_ACC_MOTION_ANYNO]);
-		}
-	}
-
-	if (reg & BNO055_IRQ_MASK_ACC_MOTION_NO) {
-		if (data->trigger_handler[BNO055_IRQ_ACC_MOTION_ANYNO]) {
-			LOG_DBG("Calling ACC_NM callback");
-			data->trigger_handler[BNO055_IRQ_ACC_MOTION_ANYNO](
-				data->dev, data->trigger[BNO055_IRQ_ACC_MOTION_ANYNO]);
-		}
-	}
-
-	err = i2c_reg_read_byte_dt(&config->i2c_bus, BNO055_REGISTER_SYS_TRIGGER, &reg);
-	if (err < 0) {
-		LOG_ERR("Trigger worker I2C read SYS_TRIG error");
-	}
-
-	reg |= BNO055_RESET_INT;
-	err = i2c_reg_write_byte_dt(&config->i2c_bus, BNO055_REGISTER_SYS_TRIGGER, reg);
-	if (err < 0) {
-		LOG_ERR("Trigger worker I2C write SYS_TRIG error");
-	}
-}
-
-static int bno055_trigger_configuation(const struct device *dev, const struct sensor_trigger *trig,
-				       uint8_t irq, uint8_t mask, bool enable)
-{
-	const struct bno055_config *config = dev->config;
-	struct bno055_data *data = dev->data;
-	int err;
-
-	LOG_DBG("FUNC TRIGGER[%d][%d]", mask, enable);
-	enum bno055_OperatingMode mode = data->mode;
-	err = bno055_set_config(dev, BNO055_MODE_CONFIG, false);
-	if (err < 0) {
-		return err;
-	}
-
-	/* Switch to Page 1 */
-	err = bno055_set_page(dev, BNO055_PAGE_ONE);
-	if (err < 0) {
-		return err;
-	}
-
-	uint8_t reg[2];
-	if ((trig->type == SENSOR_TRIG_DELTA) || (trig->type == SENSOR_TRIG_STATIONARY) ||
-	    (trig->type == (enum sensor_trigger_type)BNO055_SENSOR_TRIG_HIGH_G) ||
-	    (trig->type == (enum sensor_trigger_type)BNO055_SENSOR_TRIG_HIGH_RATE)) {
-		uint8_t i2c_reg = BNO055_REGISTER_CHIP_ID;
-		uint8_t reg_mask = BNO055_REGISTER_CHIP_ID;
-		if ((trig->chan == SENSOR_CHAN_ACCEL_XYZ) || (trig->chan == SENSOR_CHAN_ACCEL_X) ||
-		    (trig->chan == SENSOR_CHAN_ACCEL_Y) || (trig->chan == SENSOR_CHAN_ACCEL_Z)) {
-			i2c_reg = BNO055_REGISTER_ACC_INT_SETTINGS;
-			reg_mask = BNO055_IRQ_ACC_MASK_AXIS_MOTION_ANYNO;
-			if (trig->type == (enum sensor_trigger_type)BNO055_SENSOR_TRIG_HIGH_G) {
-				reg_mask = BNO055_IRQ_ACC_MASK_AXIS_HIGH_G;
-			}
-		} else if ((trig->chan == SENSOR_CHAN_GYRO_XYZ) ||
-			   (trig->chan == SENSOR_CHAN_GYRO_X) ||
-			   (trig->chan == SENSOR_CHAN_GYRO_Y) ||
-			   (trig->chan == SENSOR_CHAN_GYRO_Z)) {
-			i2c_reg = BNO055_REGISTER_GYR_INT_SETTINGS;
-			reg_mask = BNO055_IRQ_GYR_MASK_AXIS_MOTION_ANYNO;
-			if (trig->type == (enum sensor_trigger_type)BNO055_SENSOR_TRIG_HIGH_RATE) {
-				reg_mask = BNO055_IRQ_GYR_MASK_AXIS_HIGH_RATE;
-			}
-		}
-
-		err = i2c_reg_read_byte_dt(&config->i2c_bus, i2c_reg, &reg[0]);
-		if (err < 0) {
-			return err;
-		}
-
-		if (i2c_reg == BNO055_REGISTER_CHIP_ID) {
-			return -1;
-		}
-		reg[0] &= ~reg_mask;
-		reg[0] |= mask;
-
-		err = i2c_reg_write_byte_dt(&config->i2c_bus, i2c_reg, reg[0]);
-		if (err < 0) {
-			return err;
-		}
-	}
-
-	err = i2c_burst_read_dt(&config->i2c_bus, BNO055_REGISTER_INT_MASK, reg, sizeof(reg));
-	if (err < 0) {
-		return err;
-	}
-	LOG_DBG("MASK[%d] | ENABLE[%d]", reg[0], reg[1]);
-
-	if (enable) {
-		LOG_DBG("TRIGGER %d Enable!!", irq);
-		reg[0] |= irq;
-		if (irq & BNO055_IRQ_MASK_ACC_MOTION_ANY) {
-			reg[1] &= ~BNO055_IRQ_MASK_ACC_MOTION_NO;
-		} else if (irq & BNO055_IRQ_MASK_ACC_MOTION_NO) {
-			reg[1] &= ~BNO055_IRQ_MASK_ACC_MOTION_ANY;
-		}
-		reg[1] |= irq;
-		LOG_DBG("TARGET[%d][%d]", reg[0], reg[1]);
-		err = i2c_burst_write_dt(&config->i2c_bus, BNO055_REGISTER_INT_MASK, reg,
-					 sizeof(reg));
-		if (err < 0) {
-			return err;
-		}
-	} else {
-		LOG_DBG("TRIGGER %d Disable!!", irq);
-		reg[0] &= ~irq;
-		reg[1] &= ~irq;
-		err = i2c_burst_write_dt(&config->i2c_bus, BNO055_REGISTER_INT_MASK, reg,
-					 sizeof(reg));
-		if (err < 0) {
-			return err;
-		}
-	}
-
-	err = i2c_burst_read_dt(&config->i2c_bus, BNO055_REGISTER_INT_MASK, reg, sizeof(reg));
-	if (err < 0) {
-		return err;
-	}
-	LOG_DBG("MASK[%d] | ENABLE[%d]", reg[0], reg[1]);
-
-	err = bno055_set_config(dev, mode, mode < BNO055_MODE_IMU ? false : true);
-	if (err < 0) {
-		return err;
-	}
-
-	LOG_DBG("FUNC TRIGGER[%d][%d]", reg[0], reg[1]);
-	return 0;
-}
-
-static int bno055_trigger_set(const struct device *dev, const struct sensor_trigger *trig,
-			      sensor_trigger_handler_t handler)
-{
-	struct bno055_data *data = dev->data;
-	int err;
-	LOG_INF("SET TRIGGER [%d][%d]", trig->type, trig->chan);
-
-	if ((trig->type == SENSOR_TRIG_DATA_READY) && (trig->chan == SENSOR_CHAN_ACCEL_XYZ)) {
-		LOG_DBG("TRIGGER SET ACC DATA READY");
-		err = bno055_trigger_configuation(dev, trig, BNO055_IRQ_MASK_ACC_BSX_DRDY,
-						  BNO055_IRQ_MASK_ACC_BSX_DRDY, handler != NULL);
-		if (err < 0) {
-			return err;
-		}
-
-		data->trigger_handler[BNO055_IRQ_ACC_BSX_DRDY] = handler;
-		data->trigger[BNO055_IRQ_ACC_BSX_DRDY] = (handler != NULL) ? trig : NULL;
-		return 0;
-	}
-
-	if ((trig->type == SENSOR_TRIG_DATA_READY) && (trig->chan == SENSOR_CHAN_MAGN_XYZ)) {
-		LOG_DBG("TRIGGER SET MAG DATA READY");
-		err = bno055_trigger_configuation(dev, trig, BNO055_IRQ_MASK_MAG_DRDY,
-						  BNO055_IRQ_MASK_MAG_DRDY, handler != NULL);
-		if (err < 0) {
-			return err;
-		}
-
-		data->trigger_handler[BNO055_IRQ_MAG_DRDY] = handler;
-		data->trigger[BNO055_IRQ_MAG_DRDY] = (handler != NULL) ? trig : NULL;
-		return 0;
-	}
-
-	if ((trig->type == SENSOR_TRIG_DATA_READY) && (trig->chan == SENSOR_CHAN_GYRO_XYZ)) {
-		LOG_DBG("TRIGGER SET GYR DATA READY");
-		err = bno055_trigger_configuation(dev, trig, BNO055_IRQ_MASK_GYR_DRDY,
-						  BNO055_IRQ_MASK_GYR_DRDY, handler != NULL);
-		if (err < 0) {
-			return err;
-		}
-
-		data->trigger_handler[BNO055_IRQ_GYR_DRDY] = handler;
-		data->trigger[BNO055_IRQ_GYR_DRDY] = (handler != NULL) ? trig : NULL;
-		return 0;
-	}
-
-	if ((trig->type == SENSOR_TRIG_DELTA) && BNO055_IS_GYRO_CHANNEL(trig->chan)) {
-		if (trig->chan == SENSOR_CHAN_GYRO_XYZ) {
-			LOG_DBG("TRIGGER SET GYR_XYZ DELTA");
-			err = bno055_trigger_configuation(dev, trig, BNO055_IRQ_MASK_GYR_MOTION_ANY,
-							  BNO055_IRQ_GYR_MASK_AXIS_MOTION_ANYNO,
-							  handler != NULL);
-			if (err < 0) {
-				return err;
-			}
-		} else if (trig->chan == SENSOR_CHAN_GYRO_X) {
-			LOG_DBG("TRIGGER SET GYR_X DELTA");
-			err = bno055_trigger_configuation(dev, trig, BNO055_IRQ_MASK_GYR_MOTION_ANY,
-							  BNO055_IRQ_GYR_SETTINGS_X_MOTION_ANYNO,
-							  handler != NULL);
-			if (err < 0) {
-				return err;
-			}
-		} else if (trig->chan == SENSOR_CHAN_GYRO_Y) {
-			LOG_DBG("TRIGGER SET GYR_Y DELTA");
-			err = bno055_trigger_configuation(dev, trig, BNO055_IRQ_MASK_GYR_MOTION_ANY,
-							  BNO055_IRQ_GYR_SETTINGS_Y_MOTION_ANYNO,
-							  handler != NULL);
-			if (err < 0) {
-				return err;
-			}
-		} else if (trig->chan == SENSOR_CHAN_GYRO_Z) {
-			LOG_DBG("TRIGGER SET GYR_Z DELTA");
-			err = bno055_trigger_configuation(dev, trig, BNO055_IRQ_MASK_GYR_MOTION_ANY,
-							  BNO055_IRQ_GYR_SETTINGS_Z_MOTION_ANYNO,
-							  handler != NULL);
-			if (err < 0) {
-				return err;
-			}
-		}
-
-		data->trigger_handler[BNO055_IRQ_GYR_MOTION_ANY] = handler;
-		data->trigger[BNO055_IRQ_GYR_MOTION_ANY] = (handler != NULL) ? trig : NULL;
-		return 0;
-	}
-
-	if ((trig->type == SENSOR_TRIG_DELTA) && BNO055_IS_ACCEL_CHANNEL(trig->chan)) {
-		LOG_DBG("TRIGGER SET ACC DELTA");
-		if ((data->trigger_handler[BNO055_IRQ_ACC_MOTION_ANYNO] != NULL) &&
-		    (data->trigger[BNO055_IRQ_ACC_MOTION_ANYNO] != NULL) && (handler != NULL)) {
-			LOG_ERR("Any/No Motion trigger already affected!!");
-			LOG_ERR("Clear the trigger with NULL callback to setup a new trigger!!");
-			return -ENOTSUP;
-		}
-
-		if ((trig->chan == SENSOR_CHAN_ACCEL_XYZ)) {
-			LOG_DBG("TRIGGER SET ACC_XYZ DELTA");
-			err = bno055_trigger_configuation(dev, trig, BNO055_IRQ_MASK_ACC_MOTION_ANY,
-							  BNO055_IRQ_ACC_MASK_AXIS_MOTION_ANYNO,
-							  handler != NULL);
-			if (err < 0) {
-				return err;
-			}
-		} else if ((trig->chan == SENSOR_CHAN_ACCEL_X)) {
-			LOG_DBG("TRIGGER SET ACC_X DELTA");
-			err = bno055_trigger_configuation(dev, trig, BNO055_IRQ_MASK_ACC_MOTION_ANY,
-							  BNO055_IRQ_ACC_SETTINGS_X_MOTION_ANYNO,
-							  handler != NULL);
-			if (err < 0) {
-				return err;
-			}
-		} else if ((trig->chan == SENSOR_CHAN_ACCEL_Y)) {
-			LOG_DBG("TRIGGER SET ACC_Y DELTA");
-			err = bno055_trigger_configuation(dev, trig, BNO055_IRQ_MASK_ACC_MOTION_ANY,
-							  BNO055_IRQ_ACC_SETTINGS_Y_MOTION_ANYNO,
-							  handler != NULL);
-			if (err < 0) {
-				return err;
-			}
-		} else if ((trig->chan == SENSOR_CHAN_ACCEL_Z)) {
-			LOG_DBG("TRIGGER SET ACC_Z DELTA");
-			err = bno055_trigger_configuation(dev, trig, BNO055_IRQ_MASK_ACC_MOTION_ANY,
-							  BNO055_IRQ_ACC_SETTINGS_Z_MOTION_ANYNO,
-							  handler != NULL);
-			if (err < 0) {
-				return err;
-			}
-		}
-
-		data->trigger_handler[BNO055_IRQ_ACC_MOTION_ANYNO] = handler;
-		data->trigger[BNO055_IRQ_ACC_MOTION_ANYNO] = (handler != NULL) ? trig : NULL;
-		return 0;
-	}
-
-	if ((trig->type == SENSOR_TRIG_STATIONARY) && BNO055_IS_ACCEL_CHANNEL(trig->chan)) {
-		LOG_DBG("TRIGGER SET ACC NO MOTION");
-		if ((data->trigger_handler[BNO055_IRQ_ACC_MOTION_ANYNO] != NULL) &&
-		    (data->trigger[BNO055_IRQ_ACC_MOTION_ANYNO] != NULL) && (handler != NULL)) {
-			LOG_ERR("Any/No Motion trigger already affected!!");
-			LOG_ERR("Clear the trigger with NULL callback to setup a new trigger!!");
-			return -ENOTSUP;
-		}
-
-		if ((trig->chan == SENSOR_CHAN_ACCEL_XYZ)) {
-			LOG_DBG("TRIGGER SET ACC_XYZ NO MOTION");
-			err = bno055_trigger_configuation(dev, trig, BNO055_IRQ_MASK_ACC_MOTION_NO,
-							  BNO055_IRQ_ACC_MASK_AXIS_MOTION_ANYNO,
-							  handler != NULL);
-			if (err < 0) {
-				return err;
-			}
-		} else if ((trig->chan == SENSOR_CHAN_ACCEL_X)) {
-			LOG_DBG("TRIGGER SET ACC_X NO MOTION");
-			err = bno055_trigger_configuation(dev, trig, BNO055_IRQ_MASK_ACC_MOTION_NO,
-							  BNO055_IRQ_ACC_SETTINGS_X_MOTION_ANYNO,
-							  handler != NULL);
-			if (err < 0) {
-				return err;
-			}
-		} else if ((trig->chan == SENSOR_CHAN_ACCEL_Y)) {
-			LOG_DBG("TRIGGER SET ACC_Y NO MOTION");
-			err = bno055_trigger_configuation(dev, trig, BNO055_IRQ_MASK_ACC_MOTION_NO,
-							  BNO055_IRQ_ACC_SETTINGS_Y_MOTION_ANYNO,
-							  handler != NULL);
-			if (err < 0) {
-				return err;
-			}
-		} else if ((trig->chan == SENSOR_CHAN_ACCEL_Z)) {
-			LOG_DBG("TRIGGER SET ACC_Z NO MOTION");
-			err = bno055_trigger_configuation(dev, trig, BNO055_IRQ_MASK_ACC_MOTION_NO,
-							  BNO055_IRQ_ACC_SETTINGS_Z_MOTION_ANYNO,
-							  handler != NULL);
-			if (err < 0) {
-				return err;
-			}
-		}
-
-		data->trigger_handler[BNO055_IRQ_ACC_MOTION_ANYNO] = handler;
-		data->trigger[BNO055_IRQ_ACC_MOTION_ANYNO] = (handler != NULL) ? trig : NULL;
-		return 0;
-	}
-
-	if ((trig->type == (enum sensor_trigger_type)BNO055_SENSOR_TRIG_HIGH_G) &&
-	    BNO055_IS_ACCEL_CHANNEL(trig->chan)) {
-		if ((trig->chan == SENSOR_CHAN_ACCEL_XYZ)) {
-			LOG_DBG("TRIGGER SET ACC_XYZ High G");
-			err = bno055_trigger_configuation(dev, trig, BNO055_IRQ_MASK_ACC_HIGH_G,
-							  BNO055_IRQ_ACC_MASK_AXIS_HIGH_G,
-							  handler != NULL);
-			if (err < 0) {
-				return err;
-			}
-		} else if ((trig->chan == SENSOR_CHAN_ACCEL_X)) {
-			LOG_DBG("TRIGGER SET ACC_X High G");
-			err = bno055_trigger_configuation(dev, trig, BNO055_IRQ_MASK_ACC_HIGH_G,
-							  BNO055_IRQ_ACC_SETTINGS_X_HIGH_G,
-							  handler != NULL);
-			if (err < 0) {
-				return err;
-			}
-		} else if ((trig->chan == SENSOR_CHAN_ACCEL_Y)) {
-			LOG_DBG("TRIGGER SET ACC_Y High G");
-			err = bno055_trigger_configuation(dev, trig, BNO055_IRQ_MASK_ACC_HIGH_G,
-							  BNO055_IRQ_ACC_SETTINGS_Y_HIGH_G,
-							  handler != NULL);
-			if (err < 0) {
-				return err;
-			}
-		} else if ((trig->chan == SENSOR_CHAN_ACCEL_Z)) {
-			LOG_DBG("TRIGGER SET ACC_Z High G");
-			err = bno055_trigger_configuation(dev, trig, BNO055_IRQ_MASK_ACC_HIGH_G,
-							  BNO055_IRQ_ACC_SETTINGS_Z_HIGH_G,
-							  handler != NULL);
-			if (err < 0) {
-				return err;
-			}
-		}
-
-		data->trigger_handler[BNO055_IRQ_ACC_HIGH_G] = handler;
-		data->trigger[BNO055_IRQ_ACC_HIGH_G] = (handler != NULL) ? trig : NULL;
-		return 0;
-	}
-
-	if ((trig->type == (enum sensor_trigger_type)BNO055_SENSOR_TRIG_HIGH_RATE) &&
-	    BNO055_IS_GYRO_CHANNEL(trig->chan)) {
-		if (trig->chan == SENSOR_CHAN_GYRO_XYZ) {
-			LOG_DBG("TRIGGER SET GYR_XYZ High RATE");
-			err = bno055_trigger_configuation(dev, trig, BNO055_IRQ_MASK_GYR_HIGH_RATE,
-							  BNO055_IRQ_GYR_MASK_AXIS_HIGH_RATE,
-							  handler != NULL);
-			if (err < 0) {
-				return err;
-			}
-		} else if (trig->chan == SENSOR_CHAN_GYRO_X) {
-			LOG_DBG("TRIGGER SET GYR_X High RATE");
-			err = bno055_trigger_configuation(dev, trig, BNO055_IRQ_MASK_GYR_HIGH_RATE,
-							  BNO055_IRQ_GYR_SETTINGS_X_HIGH_RATE,
-							  handler != NULL);
-			if (err < 0) {
-				return err;
-			}
-		} else if (trig->chan == SENSOR_CHAN_GYRO_Y) {
-			LOG_DBG("TRIGGER SET GYR_Y High RATE");
-			err = bno055_trigger_configuation(dev, trig, BNO055_IRQ_MASK_GYR_HIGH_RATE,
-							  BNO055_IRQ_GYR_SETTINGS_Y_HIGH_RATE,
-							  handler != NULL);
-			if (err < 0) {
-				return err;
-			}
-		} else if (trig->chan == SENSOR_CHAN_GYRO_Z) {
-			LOG_DBG("TRIGGER SET GYR_Z High RATE");
-			err = bno055_trigger_configuation(dev, trig, BNO055_IRQ_MASK_GYR_HIGH_RATE,
-							  BNO055_IRQ_GYR_SETTINGS_Z_HIGH_RATE,
-							  handler != NULL);
-			if (err < 0) {
-				return err;
-			}
-		}
-
-		data->trigger_handler[BNO055_IRQ_GYR_HIGH_RATE] = handler;
-		data->trigger[BNO055_IRQ_GYR_HIGH_RATE] = (handler != NULL) ? trig : NULL;
-		return 0;
-	}
-
-	return -ENOTSUP;
-}
+#if defined(CONFIG_BNO055_ACC_8HZ_BANDWIDTH)
+#define BNO055_ACC_BANDWIDTH BNO055_ACC_8Hz
+#elif defined(CONFIG_BNO055_ACC_16HZ_BANDWIDTH)
+#define BNO055_ACC_BANDWIDTH BNO055_ACC_16Hz
+#elif defined(CONFIG_BNO055_ACC_31HZ_BANDWIDTH)
+#define BNO055_ACC_BANDWIDTH BNO055_ACC_31Hz
+#elif defined(CONFIG_BNO055_ACC_62HZ_BANDWIDTH)
+#define BNO055_ACC_BANDWIDTH BNO055_ACC_62Hz
+#elif defined(CONFIG_BNO055_ACC_125HZ_BANDWIDTH)
+#define BNO055_ACC_BANDWIDTH BNO055_ACC_125Hz
+#elif defined(CONFIG_BNO055_ACC_250HZ_BANDWIDTH)
+#define BNO055_ACC_BANDWIDTH BNO055_ACC_250Hz
+#elif defined(CONFIG_BNO055_ACC_500HZ_BANDWIDTH)
+#define BNO055_ACC_BANDWIDTH BNO055_ACC_500Hz
+#elif defined(CONFIG_BNO055_ACC_1000HZ_BANDWIDTH)
+#define BNO055_ACC_BANDWIDTH BNO055_ACC_1000Hz
 #endif
 
-static int bno055_init(const struct device *dev)
-{
-	const struct bno055_config *config = dev->config;
-	struct bno055_data *data = dev->data;
-
-	if (!i2c_is_ready_dt(&config->i2c_bus)) {
-		LOG_ERR("I2C bus not ready!!");
-		return -ENODEV;
-	}
-
-	LOG_INF("DEFERRED [%d]", config->deferred);
-	if (!config->deferred) {
-		k_sleep(K_MSEC(BNO055_TIMING_STARTUP));
-	}
-
-	LOG_INF("CONFIG");
-	LOG_INF("USE XTAL [%d]", config->use_xtal);
-	int err;
-
-	/* Switch to Page 0 */
-	err = bno055_set_page(dev, BNO055_PAGE_ZERO);
-	if (err < 0) {
-		return err;
-	}
-
-	/* Send Reset Command */
-	err = i2c_reg_write_byte_dt(&config->i2c_bus, BNO055_REGISTER_SYS_TRIGGER,
-				    BNO055_COMMAND_RESET);
-	if (err < 0) {
-		LOG_ERR("RESET write I2C Failed!!");
-		return err;
-	}
-	data->mode = BNO055_MODE_CONFIG;
-	k_sleep(K_MSEC(BNO055_TIMING_RESET_CONFIG));
-
-	/* Check for chip id to validate the power on of the sensor */
-	uint8_t reg;
-	err = i2c_reg_read_byte_dt(&config->i2c_bus, BNO055_REGISTER_CHIP_ID, &reg);
-	if (err < 0) {
-		LOG_ERR("CHIP_ID read I2C Failed!!");
-		return err;
-	}
-	LOG_INF("CHIP ID [%d]", reg);
-
-	if (reg != BNO055_CHIP_ID) {
-		LOG_WRN("BNO055 Not Ready yet!!");
-		k_sleep(K_MSEC(BNO055_TIMING_RESET_CONFIG));
-
-		err = i2c_reg_read_byte_dt(&config->i2c_bus, BNO055_REGISTER_CHIP_ID, &reg);
-		if (err < 0) {
-			LOG_ERR("CHIP_ID read I2C Failed!!");
-			return err;
-		}
-		if (reg != BNO055_CHIP_ID) {
-			LOG_ERR("CHIP_ID Failed!!");
-			return -ENODEV;
-		}
-	}
-
-	uint8_t soft[2];
-	err = i2c_burst_read_dt(&config->i2c_bus, BNO055_REGISTER_SOFTWARE_REV, soft, sizeof(soft));
-	LOG_INF("SOFTWARE REV [%d][%d]", soft[1], soft[0]);
-
-	/* Configure Unit according to Zephyr */
-	uint8_t selection = (BNO055_ORIENTATION_WINDOWS << 7) | (BNO055_TEMP_UNIT_CELSIUS << 4) |
-			    (BNO055_EULER_UNIT_RADIANS << 2) | (BNO055_GYRO_UNIT_RPS << 1) |
-			    (BNO055_ACCEL_UNIT_MS_2 << 0);
-	err = i2c_reg_write_byte_dt(&config->i2c_bus, BNO055_REGISTER_UNIT_SELECT, selection);
-	if (err < 0) {
-		return err;
-	}
-
-	if (config->use_xtal) {
-		err = i2c_reg_write_byte_dt(&config->i2c_bus, BNO055_REGISTER_SYS_TRIGGER,
-					    BNO055_COMMAND_XTAL);
-		if (err < 0) {
-			return err;
-		}
-	}
-
-	err = i2c_reg_read_byte_dt(&config->i2c_bus, BNO055_REGISTER_SYS_TRIGGER, &reg);
-	LOG_INF("SYS TRIGGER [%d]", reg);
-
-	/* Configure GPIO interrupt */
-#if BNO055_USE_IRQ
-	if (!gpio_is_ready_dt(&config->irq_gpio)) {
-		LOG_ERR("GPIO not ready!!");
-		return -ENODEV;
-	}
-
-	err = gpio_pin_configure_dt(&config->irq_gpio, GPIO_INPUT);
-	if (err < 0) {
-		LOG_ERR("Failed to configure GPIO!!");
-		return err;
-	}
-
-	err = gpio_pin_interrupt_configure_dt(&config->irq_gpio, GPIO_INT_EDGE_RISING);
-	if (err < 0) {
-		LOG_ERR("Failed to configure interrupt!!");
-		return err;
-	}
-
-	gpio_init_callback(&data->gpio_cb, bno055_gpio_callback_handler, BIT(config->irq_gpio.pin));
-
-	err = gpio_add_callback_dt(&config->irq_gpio, &data->gpio_cb);
-	if (err < 0) {
-		LOG_ERR("Failed to add GPIO callback!!");
-		return err;
-	}
-	LOG_INF("GPIO callback configured!!");
-
-	data->dev = dev;
-	memset(&(data->trigger_handler[0]), 0, sizeof(data->trigger_handler));
-	memset(&(data->trigger[0]), 0, sizeof(data->trigger));
-	data->cb_work.handler = bno055_work_cb;
+#if defined(CONFIG_BNO055_ACC_NORMAL_POWER)
+#define BNO055_ACC_POWER BNO055_ACC_NORMAL
+#elif defined(CONFIG_BNO055_ACC_LOW_1_POWER)
+#define BNO055_ACC_POWER BNO055_ACC_LOW_POWER_1
+#elif defined(CONFIG_BNO055_ACC_LOW_2_POWER)
+#define BNO055_ACC_POWER BNO055_ACC_LOW_POWER_2
+#elif defined(CONFIG_BNO055_ACC_STANDBY_POWER)
+#define BNO055_ACC_POWER BNO055_ACC_STANDBY
+#elif defined(CONFIG_BNO055_ACC_SUSPEND_POWER)
+#define BNO055_ACC_POWER BNO055_ACC_SUSPEND
+#elif defined(CONFIG_BNO055_ACC_DEEP_SUSPEND_POWER)
+#define BNO055_ACC_POWER BNO055_ACC_DEEP_SUSPEND
 #endif
 
-	return 0;
-}
-
-static const struct sensor_driver_api bno055_driver_api = {
-	.attr_set = bno055_attr_set,
-	.sample_fetch = bno055_sample_fetch,
-	.channel_get = bno055_channel_get,
-#if BNO055_USE_IRQ
-	.trigger_set = bno055_trigger_set,
+#else
+#define BNO055_ACC_RANGE     BNO055_ACC_4G
+#define BNO055_ACC_BANDWIDTH BNO055_ACC_62Hz
+#define BNO055_ACC_POWER     BNO055_ACC_NORMAL
 #endif
+
+#if defined(CONFIG_BNO055_MAG_CUSTOM_CONFIG)
+#if defined(CONFIG_BNO055_MAG_2HZ_RATE)
+#define BNO055_MAG_RATE BNO055_MAG_2Hz
+#elif defined(CONFIG_BNO055_MAG_6HZ_RATE)
+#define BNO055_MAG_RATE BNO055_MAG_6Hz
+#elif defined(CONFIG_BNO055_MAG_8HZ_RATE)
+#define BNO055_MAG_RATE BNO055_MAG_8Hz
+#elif defined(CONFIG_BNO055_MAG_10HZ_RATE)
+#define BNO055_MAG_RATE BNO055_MAG_10Hz
+#elif defined(CONFIG_BNO055_MAG_15HZ_RATE)
+#define BNO055_MAG_RATE BNO055_MAG_15Hz
+#elif defined(CONFIG_BNO055_MAG_20HZ_RATE)
+#define BNO055_MAG_RATE BNO055_MAG_20Hz
+#elif defined(CONFIG_BNO055_MAG_25HZ_RATE)
+#define BNO055_MAG_RATE BNO055_MAG_25Hz
+#elif defined(CONFIG_BNO055_MAG_30HZ_RATE)
+#define BNO055_MAG_RATE BNO055_MAG_30Hz
+#endif
+
+#if defined(CONFIG_BNO055_MAG_LOW_POWER_MODE)
+#define BNO055_MAG_MODE BNO055_MAG_LOW_POWER
+#elif defined(CONFIG_BNO055_MAG_REGULAR_MODE)
+#define BNO055_MAG_MODE BNO055_MAG_REGULAR
+#elif defined(CONFIG_BNO055_MAG_ENHANCED_REGULAR_MODE)
+#define BNO055_MAG_MODE BNO055_MAG_ENHANCED_REGULAR
+#elif defined(CONFIG_BNO055_MAG_HIGH_ACCURACY_MODE)
+#define BNO055_MAG_MODE BNO055_MAG_HIGH_ACCURACY
+#endif
+
+#if defined(CONFIG_BNO055_MAG_NORMAL_POWER)
+#define BNO055_MAG_POWER BNO055_MAG_NORMAL
+#elif defined(CONFIG_BNO055_MAG_SUSPEND_POWER)
+#define BNO055_MAG_POWER BNO055_MAG_SUSPEND
+#elif defined(CONFIG_BNO055_MAG_SLEEP_POWER)
+#define BNO055_MAG_POWER BNO055_MAG_SLEEP
+#elif defined(CONFIG_BNO055_MAG_FORCED_POWER)
+#define BNO055_MAG_POWER BNO055_MAG_FORCE_MODE
+#endif
+
+#else
+#define BNO055_MAG_RATE  BNO055_MAG_20Hz
+#define BNO055_MAG_MODE  BNO055_MAG_REGULAR
+#define BNO055_MAG_POWER BNO055_MAG_FORCE_MODE
+#endif
+
+#if defined(CONFIG_BNO055_GYR_CUSTOM_CONFIG)
+#if defined(CONFIG_BNO055_GYR_125_RANGE)
+#define BNO055_GYR_RANGE BNO055_GYR_125DPS
+#elif defined(CONFIG_BNO055_GYR_250_RANGE)
+#define BNO055_GYR_RANGE BNO055_GYR_250DPS
+#elif defined(CONFIG_BNO055_GYR_500_RANGE)
+#define BNO055_GYR_RANGE BNO055_GYR_500DPS
+#elif defined(CONFIG_BNO055_GYR_1000_RANGE)
+#define BNO055_GYR_RANGE BNO055_GYR_1000DPS
+#elif defined(CONFIG_BNO055_GYR_2000_RANGE)
+#define BNO055_GYR_RANGE BNO055_GYR_2000DPS
+#endif
+
+#if defined(CONFIG_BNO055_GYR_12HZ_BANDWIDTH)
+#define BNO055_GYR_BANDWIDTH BNO055_GYR_12Hz
+#elif defined(CONFIG_BNO055_GYR_23HZ_BANDWIDTH)
+#define BNO055_GYR_BANDWIDTH BNO055_GYR_23Hz
+#elif defined(CONFIG_BNO055_GYR_32HZ_BANDWIDTH)
+#define BNO055_GYR_BANDWIDTH BNO055_GYR_32Hz
+#elif defined(CONFIG_BNO055_GYR_47HZ_BANDWIDTH)
+#define BNO055_GYR_BANDWIDTH BNO055_GYR_47Hz
+#elif defined(CONFIG_BNO055_GYR_64HZ_BANDWIDTH)
+#define BNO055_GYR_BANDWIDTH BNO055_GYR_64Hz
+#elif defined(CONFIG_BNO055_GYR_116HZ_BANDWIDTH)
+#define BNO055_GYR_BANDWIDTH BNO055_GYR_116Hz
+#elif defined(CONFIG_BNO055_GYR_230HZ_BANDWIDTH)
+#define BNO055_GYR_BANDWIDTH BNO055_GYR_230Hz
+#elif defined(CONFIG_BNO055_GYR_523HZ_BANDWIDTH)
+#define BNO055_GYR_BANDWIDTH BNO055_GYR_523Hz
+#endif
+
+#if defined(CONFIG_BNO055_GYR_NORMAL_POWER)
+#define BNO055_GYR_POWER BNO055_GYR_NORMAL
+#elif defined(CONFIG_BNO055_GYR_FAST_POWER)
+#define BNO055_GYR_POWER BNO055_GYR_FAST_POWER_UP
+#elif defined(CONFIG_BNO055_GYR_SUSPEND_POWER)
+#define BNO055_GYR_POWER BNO055_GYR_SUSPEND
+#elif defined(CONFIG_BNO055_GYR_DEEP_SUSPEND_POWER)
+#define BNO055_GYR_POWER BNO055_GYR_DEEP_SUSPEND
+#elif defined(CONFIG_BNO055_GYR_POWERSAVE_POWER)
+#define BNO055_GYR_POWER BNO055_GYR_ADVANCED_POWERSAVE
+#endif
+
+#else
+#define BNO055_GYR_RANGE     BNO055_GYR_2000DPS
+#define BNO055_GYR_BANDWIDTH BNO055_GYR_32Hz
+#define BNO055_GYR_POWER     BNO055_GYR_NORMAL
+#endif
+
+/* BNO055 Configuration */
+#define BNO055_PAGE_ID_MASK 0xFF
+enum bno055_PageId {
+	BNO055_PAGE_ZERO = 0x00,
+	BNO055_PAGE_ONE = 0x01
 };
 
-#define BNO055_INIT(n)                                                                             \
-	static struct bno055_config bno055_config_##n = {                                          \
-		.i2c_bus = I2C_DT_SPEC_INST_GET(n),                                                \
-		.use_xtal = DT_INST_PROP(n, use_xtal),                                             \
-		IF_ENABLED(BNO055_USE_IRQ,                                                         \
-			   (.irq_gpio = GPIO_DT_SPEC_INST_GET_OR(n, irq_gpios, {0}))),             \
-		IF_ENABLED(DT_ANY_INST_HAS_PROP_STATUS_OKAY(zephyr_deferred_init),                 \
-			   (.deferred = DT_INST_PROP(n, zephyr_deferred_init))),                   \
-	};                                                                                         \
-	static struct bno055_data bno055_data_##n;                                                 \
-	DEVICE_DT_INST_DEFINE(n, bno055_init, NULL, &bno055_data_##n, &bno055_config_##n,          \
-			      POST_KERNEL, CONFIG_SENSOR_INIT_PRIORITY, &bno055_driver_api);
+#define BNO055_POWER_MODE_MASK 0x03
+enum bno055_PowerMode {
+	BNO055_POWER_NORMAL = 0x00,
+	BNO055_POWER_LOW_POWER = 0x01,
+	BNO055_POWER_SUSPEND = 0x02,
+	BNO055_POWER_INVALID = 0x03
+};
 
-DT_INST_FOREACH_STATUS_OKAY(BNO055_INIT)
+#define BNO055_OPERATION_MODE_MASK 0x0F
+enum bno055_OperatingMode {
+	BNO055_MODE_CONFIG = 0x00,
+	BNO055_MODE_ACC_ONLY = 0x01,
+	BNO055_MODE_MAG_ONLY = 0x02,
+	BNO055_MODE_GYRO_ONLY = 0x03,
+	BNO055_MODE_ACC_MAG = 0x04,
+	BNO055_MODE_ACC_GYRO = 0x05,
+	BNO055_MODE_MAG_GYRO = 0x06,
+	BNO055_MODE_ACC_MAG_GYRO = 0x07,
+	BNO055_MODE_IMU =
+		0x08, // Relative orientation from ACC + GYR | Fast calculation (high rate output)
+	BNO055_MODE_COMPASS = 0x09,
+	BNO055_MODE_M4G = 0x0A, // Like IMU but replace GYR by MAG | much less power consumption
+	BNO055_MODE_NDOF_FMC_OFF = 0x0B,
+	BNO055_MODE_NDOF =
+		0x0C // Fast MAG calibration ON | slightly higher consumption than NDOF_FMC_OFF
+};
+
+/* Data structures */
+struct bno055_offset_data {
+	int16_t acc_x;
+	int16_t acc_y;
+	int16_t acc_z;
+	int16_t mag_x;
+	int16_t mag_y;
+	int16_t mag_z;
+	int16_t gyr_x;
+	int16_t gyr_y;
+	int16_t gyr_z;
+	int16_t acc_radius;
+	int16_t mag_radius;
+};
+
+struct bno055_vector3_data {
+	int16_t x;
+	int16_t y;
+	int16_t z;
+};
+
+struct bno055_vector4_data {
+	int16_t w;
+	int16_t x;
+	int16_t y;
+	int16_t z;
+};
+
+struct bno055_calib_data {
+	int16_t sys;
+	int16_t gyr;
+	int16_t acc;
+	int16_t mag;
+};
+
+#define BNO055_CALIBRATION_FULL 0x03
+#define BNO055_CALIBRATION_NONE 0x00
+
+/* BNO055 Triggers */
+#define BNO055_IRQ_ACC_BSX_DRDY     0
+#define BNO055_IRQ_MAG_DRDY         1
+#define BNO055_IRQ_GYR_MOTION_ANY   2
+#define BNO055_IRQ_GYR_HIGH_RATE    3
+#define BNO055_IRQ_GYR_DRDY         4
+#define BNO055_IRQ_ACC_HIGH_G       5
+#define BNO055_IRQ_ACC_MOTION_ANY   6
+#define BNO055_IRQ_ACC_MOTION_NO    7
+#define BNO055_IRQ_ACC_MOTION_ANYNO BNO055_IRQ_ACC_MOTION_ANY
+
+#define BNO055_IRQ_MASK_ACC_BSX_DRDY   (0x01 << BNO055_IRQ_ACC_BSX_DRDY)
+#define BNO055_IRQ_MASK_MAG_DRDY       (0x01 << BNO055_IRQ_MAG_DRDY)
+#define BNO055_IRQ_MASK_GYR_MOTION_ANY (0x01 << BNO055_IRQ_GYR_MOTION_ANY)
+#define BNO055_IRQ_MASK_GYR_HIGH_RATE  (0x01 << BNO055_IRQ_GYR_HIGH_RATE)
+#define BNO055_IRQ_MASK_GYR_DRDY       (0x01 << BNO055_IRQ_GYR_DRDY)
+#define BNO055_IRQ_MASK_ACC_HIGH_G     (0x01 << BNO055_IRQ_ACC_HIGH_G)
+#define BNO055_IRQ_MASK_ACC_MOTION_ANY (0x01 << BNO055_IRQ_ACC_MOTION_ANY)
+#define BNO055_IRQ_MASK_ACC_MOTION_NO  (0x01 << BNO055_IRQ_ACC_MOTION_NO)
+
+#define BNO055_IRQ_SIZE    7
+#define BNO055_IRQ_DISABLE 0x00
+#define BNO055_IRQ_ENABLE  0xFF
+
+/* ACC Settings FLAGS */
+#define BNO055_IRQ_ACC_NO_SHIFT                0
+#define BNO055_IRQ_ACC_SHIFT_MOTION_ANY        BNO055_IRQ_ACC_NO_SHIFT
+#define BNO055_IRQ_ACC_SHIFT_DUR_MOTION_SLOWNO 1
+
+#define BNO055_IRQ_ACC_SETTINGS_DUR_MOTION_ANY (0x03 << BNO055_IRQ_ACC_SHIFT_MOTION_ANY)
+#define BNO055_IRQ_ACC_SETTINGS_X_MOTION_ANYNO (0x01 << 2)
+#define BNO055_IRQ_ACC_SETTINGS_Y_MOTION_ANYNO (0x01 << 3)
+#define BNO055_IRQ_ACC_SETTINGS_Z_MOTION_ANYNO (0x01 << 4)
+#define BNO055_IRQ_ACC_SETTINGS_X_HIGH_G       (0x01 << 5)
+#define BNO055_IRQ_ACC_SETTINGS_Y_HIGH_G       (0x01 << 6)
+#define BNO055_IRQ_ACC_SETTINGS_Z_HIGH_G       (0x01 << 7)
+
+#define BNO055_IRQ_ACC_MASK_THRESHOLD      0xFF
+#define BNO055_IRQ_ACC_MASK_DUR_MOTION_ANY BNO055_IRQ_ACC_SETTINGS_DUR_MOTION_ANY
+#define BNO055_IRQ_ACC_MASK_AXIS_MOTION_ANYNO                                                      \
+	(BNO055_IRQ_ACC_SETTINGS_X_MOTION_ANYNO | BNO055_IRQ_ACC_SETTINGS_Y_MOTION_ANYNO |         \
+	 BNO055_IRQ_ACC_SETTINGS_Z_MOTION_ANYNO)
+
+#define BNO055_IRQ_ACC_MASK_THRESHOLD_MOTION_SLOWNO 0xFF
+#define BNO055_IRQ_ACC_MASK_DUR_MOTION_SLOWNO       (0x3F << BNO055_IRQ_ACC_SHIFT_DUR_MOTION_SLOWNO)
+#define BNO055_IRQ_ACC_MASK_DUR_MOTION_SLOW         (0x03 << BNO055_IRQ_ACC_SHIFT_DUR_MOTION_SLOWNO)
+#define BNO055_IRQ_ACC_MASK_SET_MOTION_SLOWNO       0x01
+
+#define BNO055_IRQ_ACC_MASK_DUR_HIGH_G       0xFF
+#define BNO055_IRQ_ACC_MASK_THRESHOLD_HIGH_G 0xFF
+#define BNO055_IRQ_ACC_MASK_AXIS_HIGH_G                                                            \
+	(BNO055_IRQ_ACC_SETTINGS_X_HIGH_G | BNO055_IRQ_ACC_SETTINGS_Y_HIGH_G |                     \
+	 BNO055_IRQ_ACC_SETTINGS_Z_HIGH_G)
+
+enum bno055_acc_threshold_type {
+	BNO055_ACC_THRESHOLD_MOTION_ANY = 0x00,
+	BNO055_ACC_THRESHOLD_MOTION_NO = 0x01,
+	BNO055_ACC_THRESHOLD_HIGH_G = 0x02,
+};
+
+enum bno055_acc_duration_type {
+	BNO055_ACC_DURATION_MOTION_ANY = 0x00,
+	BNO055_ACC_DURATION_MOTION_NO = 0x01,
+	BNO055_ACC_DURATION_HIGH_G = 0x02,
+};
+
+#define BNO055_IRQ_ACC_SHIFT_MOTION_SLOWNO 31
+#define BNO055_IRQ_ACC_SET_MOTION_NO       (0x01 << BNO055_IRQ_ACC_SHIFT_MOTION_SLOWNO)
+#define BNO055_IRQ_ACC_SET_MOTION_SLOW     (0x00 << BNO055_IRQ_ACC_SHIFT_MOTION_SLOWNO)
+
+enum bno055_acc_sn_motion_duration {
+	BNO055_ACC_DURATION_MOTION_SLOWNO_1_SECONDS = 0x01,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_2_SECONDS = 0x02,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_3_SECONDS = 0x03,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_4_SECONDS = 0x04,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_5_SECONDS = 0x05,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_6_SECONDS = 0x06,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_7_SECONDS = 0x07,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_8_SECONDS = 0x08,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_9_SECONDS = 0x09,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_10_SECONDS = 0x0A,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_11_SECONDS = 0x0B,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_12_SECONDS = 0x0C,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_13_SECONDS = 0x0D,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_14_SECONDS = 0x0E,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_15_SECONDS = 0x0F,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_16_SECONDS = 0x10,
+
+	BNO055_ACC_DURATION_MOTION_SLOWNO_20_SECONDS = 0x14,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_24_SECONDS = 0x18,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_28_SECONDS = 0x1C,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_32_SECONDS = 0x20,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_36_SECONDS = 0x24,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_40_SECONDS = 0x28,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_44_SECONDS = 0x2C,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_48_SECONDS = 0x30,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_52_SECONDS = 0x34,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_56_SECONDS = 0x38,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_60_SECONDS = 0x3C,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_64_SECONDS = 0x40,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_68_SECONDS = 0x44,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_72_SECONDS = 0x48,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_76_SECONDS = 0x4C,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_80_SECONDS = 0x50,
+
+	BNO055_ACC_DURATION_MOTION_SLOWNO_88_SECONDS = 0x58,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_96_SECONDS = 0x60,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_104_SECONDS = 0x68,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_112_SECONDS = 0x70,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_120_SECONDS = 0x78,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_128_SECONDS = 0x80,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_136_SECONDS = 0x88,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_144_SECONDS = 0x90,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_152_SECONDS = 0x98,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_160_SECONDS = 0xA0,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_168_SECONDS = 0xA8,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_176_SECONDS = 0xB0,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_184_SECONDS = 0xB8,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_192_SECONDS = 0xC0,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_200_SECONDS = 0xC8,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_208_SECONDS = 0xD0,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_216_SECONDS = 0xD8,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_224_SECONDS = 0xE0,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_232_SECONDS = 0xE8,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_240_SECONDS = 0xF0,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_248_SECONDS = 0xF8,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_256_SECONDS = 0x100,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_264_SECONDS = 0x108,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_272_SECONDS = 0x110,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_280_SECONDS = 0x118,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_288_SECONDS = 0x120,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_296_SECONDS = 0x128,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_304_SECONDS = 0x130,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_312_SECONDS = 0x138,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_320_SECONDS = 0x140,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_328_SECONDS = 0x148,
+	BNO055_ACC_DURATION_MOTION_SLOWNO_336_SECONDS = 0x150,
+};
+
+#define BNO055_IS_ACCEL_CHANNEL(val)                                                               \
+	((val == SENSOR_CHAN_ACCEL_XYZ) || (val == SENSOR_CHAN_ACCEL_X) ||                         \
+	 (val == SENSOR_CHAN_ACCEL_Y) || (val == SENSOR_CHAN_ACCEL_Z))
+
+/* GYR Settings FLAGS */
+#define BNO055_IRQ_GYR_NO_SHIFT                        0
+#define BNO055_IRQ_GYR_SHIFT_FILT_HIGH_RATE            7
+#define BNO055_IRQ_GYR_SHIFT_FILT_MOTION_ANY           6
+#define BNO055_IRQ_GYR_SHIFT_THRESHOLD_MOTION_ANY      0
+#define BNO055_IRQ_GYR_SHIFT_AWAKE_DURATION_MOTION_ANY 2
+#define BNO055_IRQ_GYR_SHIFT_SAMPLES_MOTION_ANY        0
+#define BNO055_IRQ_GYR_SHIFT_HYSTERESIS_HIGH_RATE      5
+
+#define BNO055_IRQ_GYR_SETTINGS_X_MOTION_ANYNO  (0x01 << 0)
+#define BNO055_IRQ_GYR_SETTINGS_Y_MOTION_ANYNO  (0x01 << 1)
+#define BNO055_IRQ_GYR_SETTINGS_Z_MOTION_ANYNO  (0x01 << 2)
+#define BNO055_IRQ_GYR_SETTINGS_X_HIGH_RATE     (0x01 << 3)
+#define BNO055_IRQ_GYR_SETTINGS_Y_HIGH_RATE     (0x01 << 4)
+#define BNO055_IRQ_GYR_SETTINGS_Z_HIGH_RATE     (0x01 << 5)
+#define BNO055_IRQ_GYR_SETTINGS_FILT_MOTION_ANY (0x01 << BNO055_IRQ_GYR_SHIFT_FILT_MOTION_ANY)
+#define BNO055_IRQ_GYR_SETTINGS_FILT_HIGH_RATE  (0x01 << BNO055_IRQ_GYR_SHIFT_FILT_HIGH_RATE)
+
+#define BNO055_IRQ_GYR_MASK_THRESHOLD_MOTION_ANY      0x7F
+#define BNO055_IRQ_GYR_MASK_AWAKE_DURATION_MOTION_ANY 0x7F
+#define BNO055_IRQ_GYR_MASK_SAMPLES_MOTION_ANY        0x7F
+#define BNO055_IRQ_GYR_MASK_AXIS_MOTION_ANYNO                                                      \
+	(BNO055_IRQ_GYR_SETTINGS_X_MOTION_ANYNO | BNO055_IRQ_GYR_SETTINGS_Y_MOTION_ANYNO |         \
+	 BNO055_IRQ_GYR_SETTINGS_Z_MOTION_ANYNO)
+
+enum bno055_gyr_filter {
+	BNO055_GYR_FILTER_ON = 0x00,
+	BNO055_GYR_FILTER_OFF = 0x01,
+};
+
+enum bno055_gyr_am_awake {
+	BNO055_GYR_AWAKE_DURATION_MOTION_ANY_8_SAMPLES = 0x00,
+	BNO055_GYR_AWAKE_DURATION_MOTION_ANY_16_SAMPLES = 0x01,
+	BNO055_GYR_AWAKE_DURATION_MOTION_ANY_32_SAMPLES = 0x02,
+	BNO055_GYR_AWAKE_DURATION_MOTION_ANY_64_SAMPLES = 0x03,
+};
+
+#define BNO055_IRQ_GYR_MASK_THRESHOLD_HIGH_RATE  (0x1F << BNO055_IRQ_ACC_NO_SHIFT)
+#define BNO055_IRQ_GYR_MASK_HYSTERESIS_HIGH_RATE (0x03 << BNO055_IRQ_GYR_SHIFT_HYSTERESIS_HIGH_RATE)
+#define BNO055_IRQ_GYR_MASK_DURATION_HIGH_RATE   0xFF
+#define BNO055_IRQ_GYR_MASK_AXIS_HIGH_RATE                                                         \
+	(BNO055_IRQ_GYR_SETTINGS_X_HIGH_RATE | BNO055_IRQ_GYR_SETTINGS_Y_HIGH_RATE |               \
+	 BNO055_IRQ_GYR_SETTINGS_Z_HIGH_RATE)
+
+#define BNO055_IS_GYRO_CHANNEL(val)                                                                \
+	((val == SENSOR_CHAN_GYRO_XYZ) || (val == SENSOR_CHAN_GYRO_X) ||                           \
+	 (val == SENSOR_CHAN_GYRO_Y) || (val == SENSOR_CHAN_GYRO_Z))
+
+enum bno055_sensor_trigger_type {
+	BNO055_SENSOR_TRIG_HIGH_RATE = SENSOR_TRIG_PRIV_START + 0,
+	BNO055_SENSOR_TRIG_HIGH_G = SENSOR_TRIG_PRIV_START + 1
+};
+
+#if defined(CONFIG_BNO055_TRIGGER) && DT_ANY_INST_HAS_PROP_STATUS_OKAY(irq_gpios)
+#define BNO055_USE_IRQ 1
+#endif
+
+#endif /* ZEPHYR_DRIVERS_SENSOR_BNO055_H_ */

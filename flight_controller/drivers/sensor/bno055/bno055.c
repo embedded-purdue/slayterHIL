@@ -215,50 +215,50 @@ static int bno055_set_config(const struct device *dev, enum bno055_OperatingMode
 
 static int bno055_set_power(const struct device *dev, enum bno055_PowerMode power)
 {
-	const struct bno055_config *config = dev->config;
-	struct bno055_data *data = dev->data;
-	uint8_t reg;
-	int err;
+	    const struct bno055_config *config = dev->config;
+    struct bno055_data *data = dev->data;
+    uint8_t reg;
+    int err;
 
-	LOG_DBG("FUNC POWER[%d]", power);
+    LOG_DBG("FUNC POWER[%d]", power);
 
-	enum bno055_OperatingMode mode = data->mode;
-	err = bno055_set_config(dev, BNO055_MODE_CONFIG, false);
-	if (err < 0) {
-		return err;
-	}
+    enum bno055_OperatingMode mode = data->mode;
+    err = bno055_set_config(dev, BNO055_MODE_CONFIG, false);
+    if (err < 0) {
+        return err;
+    }
 
-	err = i2c_reg_read_byte_dt(&config->i2c_bus, BNO055_REGISTER_POWER_MODE, &reg);
-	if (err < 0) {
-		return err;
-	}
+    err = i2c_reg_read_byte_dt(&config->i2c_bus, BNO055_REGISTER_POWER_MODE, &reg);
+    if (err < 0) {
+        return err;
+    }
 
-	if (data->power != (reg & BNO055_POWER_MODE_MASK)) {
-		LOG_WRN("Update power mode from I2C power register [%d]<-[%d]!!", data->power,
-			reg & BNO055_POWER_MODE_MASK);
-		data->power = reg & BNO055_POWER_MODE_MASK;
-	}
+    if (data->power != (reg & BNO055_POWER_MODE_MASK)) {
+        LOG_WRN("Update power mode from I2C power register [%d]<-[%d]!!", data->power,
+            reg & BNO055_POWER_MODE_MASK);
+        data->power = reg & BNO055_POWER_MODE_MASK;
+    }
 
-	if ((reg & BNO055_POWER_MODE_MASK) == power) {
-		LOG_DBG("I2C power register already good!!");
-	} else {
-		err = i2c_reg_write_byte_dt(&config->i2c_bus, BNO055_REGISTER_POWER_MODE, power);
-		if (err < 0) {
-			return err;
-		}
+    if ((reg & BNO055_POWER_MODE_MASK) == power) {
+        LOG_DBG("I2C power register already good!!");
+    } else {
+        err = i2c_reg_write_byte_dt(&config->i2c_bus, BNO055_REGISTER_POWER_MODE, power);
+        if (err < 0) {
+            return err;
+        }
 
-		err = i2c_reg_read_byte_dt(&config->i2c_bus, BNO055_REGISTER_POWER_MODE, &power);
-		if (err < 0) {
-			return err;
-		}
+        err = i2c_reg_read_byte_dt(&config->i2c_bus, BNO055_REGISTER_POWER_MODE, &reg);
+        if (err < 0) {
+            return err;
+        }
 
-		if ((reg & BNO055_POWER_MODE_MASK) != mode) {
-			LOG_ERR("I2C communication compromised [%d]!=[%d]!!", mode,
-				reg & BNO055_POWER_MODE_MASK);
-			return -ECANCELED;
-		}
-		data->power = reg & BNO055_POWER_MODE_MASK;
-	}
+        if ((reg & BNO055_POWER_MODE_MASK) != power) {
+            LOG_ERR("I2C communication compromised [%d]!=[%d]!!", power,
+                reg & BNO055_POWER_MODE_MASK);
+            return -ECANCELED;
+        }
+        data->power = reg & BNO055_POWER_MODE_MASK;
+    }
 
 	err = bno055_set_config(dev, mode, mode < BNO055_MODE_IMU ? false : true);
 	if (err < 0) {
@@ -1843,6 +1843,7 @@ static int bno055_init(const struct device *dev)
 	/* Switch to Page 0 */
 	err = bno055_set_page(dev, BNO055_PAGE_ZERO);
 	if (err < 0) {
+		LOG_ERR("I2C set_page failed (err=%d). Check: wiring, I2C addr 0x28 vs 0x29, startup delay", err);
 		return err;
 	}
 
@@ -1941,6 +1942,9 @@ static int bno055_init(const struct device *dev)
 	return 0;
 }
 
+
+
+
 static const struct sensor_driver_api bno055_driver_api = {
 	.attr_set = bno055_attr_set,
 	.sample_fetch = bno055_sample_fetch,
@@ -1951,16 +1955,16 @@ static const struct sensor_driver_api bno055_driver_api = {
 };
 
 #define BNO055_INIT(n)                                                                             \
-	static struct bno055_config bno055_config_##n = {                                          \
-		.i2c_bus = I2C_DT_SPEC_INST_GET(n),                                                \
-		.use_xtal = DT_INST_PROP(n, use_xtal),                                             \
-		IF_ENABLED(BNO055_USE_IRQ,                                                         \
-			   (.irq_gpio = GPIO_DT_SPEC_INST_GET_OR(n, irq_gpios, {0}))),             \
-		IF_ENABLED(DT_ANY_INST_HAS_PROP_STATUS_OKAY(zephyr_deferred_init),                 \
-			   (.deferred = DT_INST_PROP(n, zephyr_deferred_init))),                   \
-	};                                                                                         \
-	static struct bno055_data bno055_data_##n;                                                 \
-	DEVICE_DT_INST_DEFINE(n, bno055_init, NULL, &bno055_data_##n, &bno055_config_##n,          \
-			      POST_KERNEL, CONFIG_SENSOR_INIT_PRIORITY, &bno055_driver_api);
+    static struct bno055_config bno055_config_##n = {                                          \
+        .i2c_bus = I2C_DT_SPEC_INST_GET(n),                                                \
+        .use_xtal = DT_INST_PROP_OR(n, use_xtal, 0),                                       \
+        .deferred = DT_INST_PROP_OR(n, zephyr_deferred_init, 0),                           \
+        COND_CODE_1(BNO055_USE_IRQ,                                                        \
+            (.irq_gpio = GPIO_DT_SPEC_INST_GET_OR(n, irq_gpios, {}),), ())             \
+    };                                                                                         \
+    static struct bno055_data bno055_data_##n;                                                \
+    DEVICE_DT_INST_DEFINE(n, bno055_init, NULL, &bno055_data_##n,                             \
+                  &bno055_config_##n, POST_KERNEL,                                    \
+                  CONFIG_SENSOR_INIT_PRIORITY, &bno055_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(BNO055_INIT)
