@@ -39,14 +39,6 @@
         };
 
     };
-    i2c1_default: i2c1_default {
-        group1 {
-            pinmux = <I2C1_SDA_GPIO37>, <I2C1_SCL_GPIO38>;
-            bias-pull-up;
-            drive-open-drain;
-            output-high;
-        };
-    };
 
     i2c1_default: i2c1_default { 
         group1 { 
@@ -64,33 +56,16 @@
     };
 };
 
-&i2c1 { 
-    status ="okay"; 
-
-    mpu6050: mpu6050@68 {
-		compatible = "invensense,mpu6050";
-		reg = <0x68>;
-		status = "okay";
-		int-gpios = <&gpio0 11 GPIO_ACTIVE_HIGH>;
-		smplrt-div = <249>;
-	};
-    
-     clock-frequency = <I2C_BITRATE_STANDARD>;  
-    pinctrl-0 = <&i2c1_default>;
-    pinctrl-names = "default";
-};
-
 
 &i2c0 {
 	status = "okay";
-
-	
-    lidar: lidar@62 {
-        compatible = "grmn,lidar-lite-v4";
-        reg = <0x62>;
-        label = "LIDAR_LITE_V4";
-        status = "okay";
-    };    
+    bno: bno0550: bno055@28 { 
+        compatible = "bosch,bno055"; 
+        reg=<0x28>; 
+        irq-gpios = <&gpio0 12 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>; 
+        use_xtal; 
+        zephyr,deferred-init; 
+    }; 
     clock-frequency = <I2C_BITRATE_STANDARD>;  
     pinctrl-0 = <&i2c0_default>;
     pinctrl-names = "default";
@@ -101,13 +76,12 @@
     clock-frequency = <I2C_BITRATE_STANDARD>;
     pinctrl-0 = <&i2c1_default>;
     pinctrl-names = "default";
-    bno: bno0550: bno055@28 { 
-        compatible = "bosch,bno055"; 
-        reg=<0x28>; 
-        irq-gpios = <&gpio0 12 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>; 
-        use_xtal; 
-        zephyr,deferred-init; 
-    }; 
+    lidar: lidar@62 {
+        compatible = "grmn,lidar-lite-v4";
+        reg = <0x62>;
+        label = "LIDAR_LITE_V4";
+        status = "okay";
+    };    
 };
 
 &gpio0 {
