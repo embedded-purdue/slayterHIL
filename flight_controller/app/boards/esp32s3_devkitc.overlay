@@ -1,3 +1,4 @@
+#include <zephyr/dt-bindings/pwm/pwm.h>
 / {
     example_sensor: example_sensor_0 {
         compatible = "zephyr,example-sensor";
@@ -6,14 +7,37 @@
     };
 
     aliases {
-        led0 = &myled0;
-        
+        led0 = &pwm_led_0;
+        led1 = &pwm_led_1;
+        led2 = &pwm_led_2;
+        led3 = &pwm_led_3;
+        // led4 = &led_4;
         button0 = &button_0;
     };
 
+    my-pwm-leds { 
+        compatible = "pwm-leds"; 
+         pwm_led_0: pwm_led_0 {
+            pwms = <&ledc0 0 1000000 PWM_POLARITY_NORMAL>; /* channel 0 */
+            label = "LED_0";
+        };
+        pwm_led_1: pwm_led_1 {
+            pwms = <&ledc0 1 1000000 PWM_POLARITY_NORMAL>; /* channel 1 */
+            label = "LED_1";
+        };
+        pwm_led_2: pwm_led_2 {
+            pwms = <&ledc0 2 1000000 PWM_POLARITY_NORMAL>; /* channel 2 */
+            label = "LED_2";
+        };
+        pwm_led_3: pwm_led_3 {
+            pwms = <&ledc0 3 1000000 PWM_POLARITY_NORMAL>; /* channel 3 */
+            label = "LED_3";
+        };
+    }; 
+
     leds: leds {
         compatible = "gpio-leds";
-        myled0: led_0 {
+        myled0: led_4 {
             gpios = <&gpio0 17 GPIO_ACTIVE_HIGH>;
         };
     };
@@ -27,61 +51,115 @@
 
 };
 
-/* I2C controller and LIDAR device */
-/* I2C controller and LIDAR device */
+
+&ledc0 {
+    pinctrl-0 = <&ledc0_pins>;
+    pinctrl-names = "default";
+    status = "okay";
+    #address-cells=<1>; 
+    #size-cells=<0>; 
+    channel0@0 {
+        reg = <0>;
+        timer = <0>;
+    };
+
+    channel1@1 {
+        reg = <1>;
+        timer = <0>;
+    };
+
+    channel2@2 {
+        reg = <2>;
+        timer = <0>;
+    };
+
+    channel3@3 {
+        reg = <3>;
+        timer = <0>;
+    };
+};
 
 &pinctrl {
+    ledc0_pins: ledc0_pins {
+        group1 {
+            pinmux = <LEDC_CH0_GPIO6>;
+            output-enable;
+        };
+        group2 {
+            pinmux = <LEDC_CH1_GPIO7>;
+            output-enable;
+        };
+        group3 {
+            pinmux = <LEDC_CH2_GPIO1>;
+            output-enable;
+        };
+        group4 {
+            pinmux = <LEDC_CH3_GPIO2>;
+            output-enable;
+        };
+    };
+
     i2c0_default: i2c0_default {
         group1 {
-            pinmux = <I2C0_SDA_GPIO8>, <I2C0_SCL_GPIO9>;
+            pinmux=<I2C0_SDA_GPIO8>, <I2C0_SCL_GPIO9>;
             bias-pull-up;
             drive-open-drain;
             output-high;
         };
+
     };
 
     i2c1_default: i2c1_default { 
         group1 { 
-            pinmux = <I2C1_SDA_GPIO4>, <I2C1_SCL_GPIO5>;
+            pinmux=<I2C1_SDA_GPIO4>, <I2C1_SCL_GPIO5>;
             bias-pull-up;
             drive-open-drain;
             output-high;
         };
     };
-};
-
-&i2c1 { 
-    status ="okay"; 
-
-    mpu6050: mpu6050@68 {
-		compatible = "invensense,mpu6050";
-		reg = <0x68>;
-		status = "okay";
-		int-gpios = <&gpio0 11 GPIO_ACTIVE_HIGH>;
-		smplrt-div = <249>;
-	};
-    
-     clock-frequency = <I2C_BITRATE_STANDARD>;  
-    pinctrl-0 = <&i2c1_default>;
-    pinctrl-names = "default";
+    uart1_pins: uart1_pins {
+        group1 {
+            pinmux=<UART1_TX_GPIO45>, <UART1_RX_GPIO48>; 
+            output-high;
+        };
+    };
 };
 
 
 &i2c0 {
 	status = "okay";
+    bno: bno0550: bno055@28 { 
+        compatible = "bosch,bno055"; 
+        reg=<0x28>; 
+        irq-gpios = <&gpio0 12 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>; 
+        // use_xtal; 
+        // zephyr,deferred-init; 
+    }; 
+    clock-frequency = <I2C_BITRATE_STANDARD>;  
+    pinctrl-0 = <&i2c0_default>;
+    pinctrl-names = "default";
+};
 
-	
+&i2c1 { 
+    status ="okay"; 
+    clock-frequency = <I2C_BITRATE_STANDARD>;
+    pinctrl-0 = <&i2c1_default>;
+    pinctrl-names = "default";
     lidar: lidar@62 {
         compatible = "grmn,lidar-lite-v4";
         reg = <0x62>;
         label = "LIDAR_LITE_V4";
         status = "okay";
     };    
-    clock-frequency = <I2C_BITRATE_STANDARD>;  
-    pinctrl-0 = <&i2c0_default>;
-    pinctrl-names = "default";
 };
 
 &gpio0 {
     status = "okay";
+};
+
+&uart1 {
+    status = "okay";
+    pinctrl-0 = <&uart1_pins>;
+    pinctrl-names = "default";
+    current-speed = <115200>;
 };

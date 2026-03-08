@@ -2,6 +2,7 @@
     aliases {
         i2c-lidar = &i2c1;
         i2c-imu = &i2c2;
+        pwm-input = &timers3_pwm;
     };
 };
 
@@ -15,4 +16,15 @@
     status = "okay";
     pinctrl-0 = <&i2c2_scl_pf1 &i2c2_sda_pf0>;
     pinctrl-names = "default";
+};
+
+&timers3 {
+    status = "okay";
+    st,prescaler = <10000>; // may need to change later
+
+    timers3_pwm: pwm {
+        status = "okay";
+        pinctrl-0 = <&tim3_ch1_pb4>;
+        pinctrl-names = "default";
+    };
 };
