@@ -36,22 +36,25 @@ typedef struct {
     i2c_imu_triplet_t gyro;
 } imu_data_t;
 
+/* if a no-op, insert I for no-op */
+typedef struct {
+    char rc_vert;
+    char rc_horiz;
+} rc_data_t;
+
 // assert size matches expected size of 24 bytes
 _Static_assert(sizeof(imu_data_t) == 18, "imu_data_t size does not match expected size of 26 bytes");
 
-typedef struct {
-    uint8_t sensor_id;
-    union {
-        imu_data_t imu_data;
-<<<<<<< HEAD
-        uint16_t lidar_distance_mm;
-        char rc_command;     
-=======
-        uint16_t lidar_distance_cm;
-        char rc_command[MAX_RC_COMMAND_SIZE];
->>>>>>> Flightsim/FS/protobuf
-    };
+/*
+EXPECTED STRUCTURE FROM PROTOBUF
+
+typedef struct  {
+  uint32 timestamp;
+  imu_data_t imu_data;
+  uint16_t lidar_distance_nm;
+  rc_data_t rc_commands;
 } device_update_packet_t;
+*/
 
 #define SENSOR_UPDATE_QUEUE_PACKET_SIZE (sizeof(device_update_packet_t))
 #define SENSOR_UPDATE_QUEUE_LEN (10)
