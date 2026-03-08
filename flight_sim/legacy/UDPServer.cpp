@@ -1,4 +1,4 @@
-#include "spi_interface.h"
+#include "spi_interface.hpp"
 #include "sensor_data.pb.h"
 #include <iostream>
 #include <sys/socket.h>

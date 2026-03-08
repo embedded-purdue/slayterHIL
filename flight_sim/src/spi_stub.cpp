@@ -1,4 +1,4 @@
-#include "spi_interface.h"
+#include "spi_interface.hpp"
 #include <iostream>
 #include <fstream>
 #include <iomanip>
