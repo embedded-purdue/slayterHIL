@@ -63,6 +63,14 @@ build-stm32-spi-bitbang: _verify_workspace clean
     spi_bitbang_app \
     {{CMAKE_CACHE_ARGS}}
 
+build-stm32-spi-slave: _verify_workspace clean
+  west build \
+    -p always \
+    -b {{STM32_BOARD}} \
+    -d build \
+    spi_slave_app \
+    {{CMAKE_CACHE_ARGS}}
+
 flash-stm32:
   west flash --build-dir build --runner stm32cubeprogrammer
 
@@ -83,6 +91,10 @@ run-stm32-spi-example-pyocd: build-stm32-spi-example flash-stm32-pyocd monitor-s
 run-stm32-spi-bitbang: build-stm32-spi-bitbang flash-stm32 monitor-stm32
 
 run-stm32-spi-bitbang-pyocd: build-stm32-spi-bitbang flash-stm32-pyocd monitor-stm32
+
+run-stm32-spi-slave: build-stm32-spi-slave flash-stm32 monitor-stm32
+
+run-stm32-spi-slave-pyocd: build-stm32-spi-slave flash-stm32-pyocd monitor-stm32
 
 attach-wsl-usb-port:
   #!/usr/bin/env bash
