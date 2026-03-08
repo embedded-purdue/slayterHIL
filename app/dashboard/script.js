@@ -441,12 +441,21 @@ class TestAutomationDashboard {
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td>${idx + 1}</td>
-                <td>${wp.x}</td>
-                <td>${wp.y}</td>
-                <td>${wp.z}</td>
+                <td><input type="number" class="wp-coord-input" data-idx="${idx}" data-field="x" value="${wp.x}" step="0.5"></td>
+                <td><input type="number" class="wp-coord-input" data-idx="${idx}" data-field="y" value="${wp.y}" step="0.5"></td>
+                <td><input type="number" class="wp-coord-input" data-idx="${idx}" data-field="z" value="${wp.z}" step="0.5"></td>
                 <td><button class="remove-wp-btn" data-idx="${idx}">✕</button></td>
             `;
             tbody.appendChild(tr);
+        });
+
+        tbody.querySelectorAll('.wp-coord-input').forEach(input => {
+            input.addEventListener('change', () => {
+                const idx   = parseInt(input.dataset.idx);
+                const field = input.dataset.field;
+                this.waypoints[idx][field] = parseFloat(input.value) || 0;
+                this.viz.update(this.waypoints);
+            });
         });
 
         tbody.querySelectorAll('.remove-wp-btn').forEach(btn => {
