@@ -5,10 +5,7 @@
 #include <stdio.h>
 #include <../../drivers/sensor/bno055/bno055.h>
 
-#define BNO_MSGQ_SIZE 16
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
+
 
 static const struct device *bno_dev = NULL;
 const char *now_str(void) { 

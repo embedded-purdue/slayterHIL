@@ -63,8 +63,8 @@
         compatible = "bosch,bno055"; 
         reg=<0x28>; 
         irq-gpios = <&gpio0 12 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>; 
-        use_xtal; 
-        zephyr,deferred-init; 
+        // use_xtal; 
+        // zephyr,deferred-init; 
     }; 
     clock-frequency = <I2C_BITRATE_STANDARD>;  
     pinctrl-0 = <&i2c0_default>;

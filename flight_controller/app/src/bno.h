@@ -5,6 +5,7 @@
 #include <zephyr/device.h>
 #include <zephyr/drivers/sensor.h>
 #include <stdio.h>
+#include <../../drivers/sensor/bno055/bno055.h>
 
 typedef struct { 
     float roll; 
@@ -13,7 +14,7 @@ typedef struct {
 } euler_angles;
 
 
-typedef struct { 
+typedef struct bno_data { 
     uint32_t time;  
     euler_angles eul;
 } bno_data;
@@ -26,3 +27,5 @@ void bno_read_thread(void *arg1, void *arg2, void *arg3);
 
 extern struct k_msgq bno_msgq;
 extern struct k_sem bno_sem; 
+
+#endif /* BNO_H */

@@ -2,22 +2,21 @@
 #include <zephyr/sys/printk.h> 
 #include <zephyr/drivers/sensor.h>
 #include "state_machine.h"
-#include "imu.h"
+// #include "imu.h"
 #include "lidar.h"
 #include "bno.h"
 #include "uart.h"
 #include <stdio.h> 
 #include <stdalign.h>
-#include <bno055.h>
 
 
-static const struct device *bno055_dev = DEVICE_DT_GET(DT_NODELABEL(bno)); 
+// static const struct device *bno055_dev = DEVICE_DT_GET(DT_NODELABEL(bno)); 
 
 // define thread
 #define STACK_SIZE      2048
 #define COMMS_PRIORITY  1
-#define IMU_STACK_SIZE 1024
-#define IMU_PRIORITY   3
+#define BNO_STACK_SIZE 1024
+#define BNO_PRIORITY   3
 #define LIDAR_STACK_SIZE 1024
 #define LIDAR_PRIORITY 4
 #define MAX_BNO_MSGQ_LEN 16
@@ -28,6 +27,9 @@ static const struct device *bno055_dev = DEVICE_DT_GET(DT_NODELABEL(bno));
 #define UART_CONSUMER_STACK 1024
 #define UART_CONSUMER_PRIORITY 5
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 //lidar section
 K_SEM_DEFINE(lidar_sem, 0, 1);
@@ -41,15 +43,15 @@ static struct k_thread lidar_consumer_thread_data;
 K_THREAD_STACK_DEFINE(state_machine_stack, STACK_SIZE);
 static struct k_thread state_machine_thread_data;
 
-K_THREAD_STACK_DEFINE(BNO_consumer_stack, IMU_STACK_SIZE);
-static struct k_thread BNO_consumer_thread_data;
+K_THREAD_STACK_DEFINE(bno_consumer_stack, BNO_STACK_SIZE);
+static struct k_thread bno_consumer_thread_data;
 
 
-K_MSGQ_DEFINE(BNO_msgq, sizeof(struct BNO_data), MAX_BNO_MSGQ_LEN, alignof(int));
-K_SEM_DEFINE(BNO_sem, BNO_SEM_INIT_COUNT, BNO_SEM_MAX_COUNT);
+K_MSGQ_DEFINE(bno_msgq, sizeof(struct bno_data), MAX_BNO_MSGQ_LEN, alignof(int));
+K_SEM_DEFINE(bno_sem, BNO_SEM_INIT_COUNT, BNO_SEM_MAX_COUNT);
 
 
-K_THREAD_DEFINE(BNO_thread, IMU_STACK_SIZE, BNO_read_thread, NULL, NULL, NULL, BNO_THREAD_PRIORITY, 0, 0);
+K_THREAD_DEFINE(bno_thread, BNO_STACK_SIZE, bno_read_thread, NULL, NULL, NULL, BNO_THREAD_PRIORITY, 0, 0);
 K_THREAD_DEFINE(lidar_thread, LIDAR_STACK_SIZE, lidar_read_thread, NULL, NULL, NULL, LIDAR_PRIORITY, 0, 0);
 
 //uart section
@@ -58,22 +60,23 @@ static struct k_thread uart_consumer_thread_data;
 K_MSGQ_DEFINE(uart_rx_msgq, sizeof(struct uart_msg), 16, alignof(struct uart_msg));
 
 
-// Demo app for the IMU Consumer 
-static void BNO_consumer(void *arg1, void *arg2, void *arg3) {
-    struct BNO_data out; 
+// Demo app for the BNO Consumer 
+static void bno_consumer(void *arg1, void *arg2, void *arg3) {
+    struct bno_data out; 
     printk("BNO consumer thread started\n");
     
     while (1) {
-        int rc = BNO_get(&out, K_FOREVER);
+        int rc = bno_get(&out, K_FOREVER);
         if (rc == 0) {
-            printk("[%s] Temp: %.2f C, Accel: [%.2f, %.2f, %.2f] m/s², Gyro: [%.2f, %.2f, %.2f] dps\n",
-                   now_str(), out.temp,
-                   out.accel[0], out.accel[1], out.accel[2],
-                   out.gyro[0], out.gyro[1], out.gyro[2]);
+            printk("[%s] Roll: %.2f rad (%.1f deg), Pitch: %.2f rad (%.1f deg), Yaw: %.2f rad (%.1f deg)\n",
+                now_str(),
+                (double)out.eul.roll,  (double)(out.eul.roll  * 180.0f / M_PI),
+                (double)out.eul.pitch, (double)(out.eul.pitch * 180.0f / M_PI),
+                (double)out.eul.yaw,   (double)(out.eul.yaw   * 180.0f / M_PI));
         } else {
             printk("Failed to get BNO data: %d\n", rc);
         }
-        k_msleep(100); // Add small delay to prevent spam
+        k_msleep(100); // Add small delay to prevent spam,
     }
 }
 
@@ -137,13 +140,13 @@ int main(void)
     printk("I2C0 ready: %s\n", device_is_ready(i2c0_dev) ? "YES" : "NO");
     printk("I2C1 ready: %s\n", device_is_ready(i2c1_dev) ? "YES" : "NO");
     
-    printk("Starting LiDAR-Lite V4 and IMU test app...\n");
+    printk("Starting LiDAR-Lite V4 and BNO test app...\n");
 
-    //Initialize IMU 
-    const struct device *const mpu6050 = DEVICE_DT_GET(DT_NODELABEL(mpu6050));
-    int rc = imu_init(mpu6050);
+    //Initialize BNO
+    const struct device *const bno = DEVICE_DT_GET(DT_NODELABEL(bno));
+    int rc = bno_init(bno);
     if (rc != 0) {
-        printk("imu_init failed: %d\n", rc);
+        printk("bno_init failed: %d\n", rc);
         return rc;
     }
 
@@ -152,7 +155,7 @@ int main(void)
     rc = lidar_init(lidar_device); 
     if(rc != 0) { 
         printk("lidar_init failed: %d\n", rc);
-        return rc;
+        // return rc;
     }
 
     //Initialize UART
@@ -169,13 +172,13 @@ int main(void)
                     state_machine_thread, NULL, NULL, NULL,
                     COMMS_PRIORITY, 0, K_NO_WAIT);
 
-    // Start IMU consumer thread (the one that prints data)
-    k_thread_create(&imu_consumer_thread_data, 
-                    imu_consumer_stack, 
-                    IMU_STACK_SIZE, 
-                    imu_consumer, 
+    // Start BNO consumer thread (the one that prints data)
+    k_thread_create(&bno_consumer_thread_data, 
+                    bno_consumer_stack, 
+                    BNO_STACK_SIZE, 
+                    bno_consumer, 
                     NULL, NULL, NULL, 
-                    IMU_PRIORITY, 0, K_NO_WAIT);
+                    BNO_PRIORITY, 0, K_NO_WAIT);
      // Start LiDAR consumer thread (the one that prints data)
     k_thread_create(&lidar_consumer_thread_data, 
                     lidar_consumer_stack, 
