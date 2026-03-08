@@ -29,6 +29,7 @@ typedef struct {
 
 class ImuSimulator {
 public:
+    ImuSimulator();
     ImuSimulator(float mass, float moment_of_inertia);
     imu_data_t update(float fx, float fy, float fz,
                       float tx, float ty, float tz,

@@ -1,9 +1,11 @@
+#include "imu_generation.hpp"
+
 ImuSimulator::ImuSimulator () :
-  mass(0.0), moment_of_inertia(0.0)
+  m_(0.0), I_(0.0)
 {}
 
 ImuSimulator::ImuSimulator (float m, float moi) :
-  mass(m), moment_of_inertia(moi)
+  m_(m), I_(moi)
 {}
 
 i2c_imu_data_16_t ImuSimulator::pack_16(int16_t value) {
