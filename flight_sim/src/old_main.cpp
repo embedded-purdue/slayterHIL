@@ -3,11 +3,11 @@
 #include <thread>
 #include <iostream>
 #include <fstream>
-#include "physics/rigid_body.hpp"
-#include "physics/drone.hpp"
-#include "physics/PIDcalculator.hpp"
-#include "physics/positionController.hpp"
-#include "physics/velocityController.hpp"
+#include "rigid_body.hpp"
+#include "drone.hpp"
+#include "PIDcalculator.hpp"
+#include "positionController.hpp"
+#include "velocityController.hpp"
 
 void initializeLogging();
 void logData(double t, const Eigen::Vector3d& desiredPos, 
