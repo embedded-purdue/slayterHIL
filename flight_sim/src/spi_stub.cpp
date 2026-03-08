@@ -1,7 +1,4 @@
-#include "spi_interface.hpp"
-#include <iostream>
-#include <fstream>
-#include <iomanip>
+#include <flight_sim.hpp>
 
 //this is a stub implementation of the SPI interface for testing without actual hardware
 //switch to spi_linux.cpp after obtaining properly configured hardware (rpi)

@@ -1,4 +1,4 @@
-#include "rigid_body.hpp"
+#include <flight_sim.hpp>
 
 RigidBody::RigidBody()
   : PhysicsBody(
@@ -41,11 +41,11 @@ void RigidBody::applyTorque(const Eigen::Vector3d& torque) {
 }
 
 Eigen::Vector3d RigidBody::getPosition () const {
-	return position; 
+	return position;
 }
 
 Eigen::Vector3d RigidBody::getVelocity() const {
-	return velocity; 
+	return velocity;
 }
 
 void RigidBody::clearAccumulators() {
@@ -79,7 +79,7 @@ RigidBodyDerivative RigidBody::computeDerivative() const {
                                angularVelocity.x(),
                                angularVelocity.y(),
                                angularVelocity.z());
-    
+
     Eigen::Quaterniond qDot = orientation * omega_q;
     qDot.coeffs() *= 0.5;
     deriv.dOrientation = qDot;
@@ -141,7 +141,7 @@ void RigidBody::update(double dt) {
 
 // Collision Logic
 bool RigidBody::isColliding(RigidBody* col_body) {
-    
+
     // Implenting a quite crude solution right now
     // When rotations are involved, there needs to be a more elegant solution
     // Consider and oriented bounding box implementation using rotation matrices
@@ -158,7 +158,7 @@ bool RigidBody::isColliding(RigidBody* col_body) {
 
     // If the distance between the bodies' positions are less than or equal to the sum of their bounds, return true
     // Otherwise, return false
-    
+
     // DEBUG PRINT STATEMENTS
 
     /*std::cout << std::endl << std::endl;
@@ -166,15 +166,15 @@ bool RigidBody::isColliding(RigidBody* col_body) {
     std::cout << "Y Distance: " << this->position[1] - col_body->position[1] << "\nBound Sum " << bound_sum_y << std::endl;
     std::cout << "Z Distance: " << this->position[2] - col_body->position[2] << "\nBound Sum " << bound_sum_z << std::endl;
     std::cout << std::endl << std::endl;*/
-    
+
     // Collision check SHOULD have AND (&&)
     // 2 objects can have the same z value
     // BUT they can be leagues apart on the x-y plane
-    bool collision = 
+    bool collision =
         (x_dist <= bound_sum_x) &&
         (y_dist <= bound_sum_y) &&
         (z_dist <= bound_sum_z);
-    
+
     // Collision detected
     if(collision) std::cout << "Collision detected" << std::endl;
 
@@ -210,9 +210,9 @@ void RigidBody::goToXWall(RigidBody* body, RigidBody* x_wall) {
 
 void RigidBody::goToYWall(RigidBody* body, RigidBody* y_wall) {
     std::cout << body->getPosition() << std::endl << std::endl;
-    
+
     while ( !body->isColliding(y_wall) ) {
-        
+
         // TODO: Replace raw vector math with "addForce() + update()" and fix the X-Y wall methods
         // (collision detection itself works fine)
 

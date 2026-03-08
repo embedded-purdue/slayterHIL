@@ -6,11 +6,7 @@
 // F, B --> Forward, Backward
 // U, D --> Up, Down
 
-
-#include <iostream>
-#include <Eigen/Dense>
-#include <Eigen/Geometry>
-#include <vector>
+#include <flight_sim.hpp>
 
 // Main translate function
 // List of Unit Velocity Vectors

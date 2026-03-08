@@ -1,6 +1,6 @@
-#include "positionController.hpp" 
+#include <flight_sim.hpp>
 
-positionController::positionController () : 
+positionController::positionController () :
 	kp(0.0),
 	desiredPos(Eigen::Vector3d::Zero())
 {}
@@ -11,7 +11,7 @@ positionController::positionController (double p) :
 {}
 
 void positionController::setTarget (const Eigen::Vector3d& target) {
-	desiredPos = target; 
+	desiredPos = target;
 }
 
 Eigen::Vector3d positionController::getTarget() {

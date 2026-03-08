@@ -1,14 +1,14 @@
-#include "drone.hpp"
+#include <flight_sim.hpp>
 
 // So far I could only think of these 2 types of constructors as practical.
 // If there is another type of constructor needed with different parameters,
 // I'll be sure to implement it.
 
 Drone::Drone() : RigidBody::RigidBody() {
-    
-    // TO DO: Come up with reasonable positional offsets for the drone parts 
+
+    // TO DO: Come up with reasonable positional offsets for the drone parts
     // e.i. body at (0,0,0) or even (0,0,-3) or something, we decide
-    
+
     this->body = new RigidBody();
     this->m1 = new RigidBody();
     this->m2 = new RigidBody();
@@ -25,7 +25,7 @@ Drone::Drone (
         RigidBody* m3,
         RigidBody* m4
 )   {
-    
+
     // Set fields
     this->body = body;
     this->m1 = m1;
@@ -35,11 +35,11 @@ Drone::Drone (
 
     // Mass
     this->mass = calculateMass();
-    
+
     // Intertia Bodies (right now PARTICULAR to drone)
     this->inertiaBody = Eigen::Matrix3d::Identity();
     this->inertiaBodyInv = inertiaBody.inverse();
-    
+
     // Position, velocity, and acceleration (RELATIVE to the env)
     this->position.setZero();
     this->velocity.setZero();
@@ -50,7 +50,7 @@ Drone::Drone (
 
     // Torque
     this->total_torque_body = calculateNetTorque();
-    
+
     // Orientation (PARTICULAR to drone and RELATIVE to env)
     this->orientation = Eigen::Quaterniond::Identity();
 
@@ -70,10 +70,10 @@ void Drone::applyForce(const Eigen::Vector3d& force) {
 
 
 double Drone::calculateMass() {
-    return this->body->getMass() + 
-           this->m1->getMass() + 
-           this->m2->getMass() + 
-           this->m3->getMass() + 
+    return this->body->getMass() +
+           this->m1->getMass() +
+           this->m2->getMass() +
+           this->m3->getMass() +
            this->m4->getMass();
 }
 
@@ -82,7 +82,7 @@ Eigen::Vector3d Drone::getPosition() const {
 }
 
 Eigen::Vector3d Drone::getVelocity() const {
-	return this->body->getVelocity(); 
+	return this->body->getVelocity();
 }
 
 // Faith in Eigen's Vector Addition
@@ -114,7 +114,7 @@ Eigen::Vector3d Drone::calculateAngularVelocity() {
 // Update
 
 void Drone::update(double dt) {
-    
+
     // Calls parents update method this calls it on Drone class itself, which deosn't affect the actual rigidbodies inside drone
     //RigidBody::update(dt);
 	body->update(dt);
@@ -135,5 +135,5 @@ void Drone::update(double dt) {
 
     // Angular Velocity Vector
     this->angularVelocity = calculateAngularVelocity();
-    
+
 }

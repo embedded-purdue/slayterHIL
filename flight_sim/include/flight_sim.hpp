@@ -1,9 +1,17 @@
 #pragma once
 
-#include "PIDcalculator.hpp"
+#include <iomanip>
+#include <fstream>
+#include <cstring>
+#include <iostream>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/ioctl.h>
+#include <Eigen/Dense>
+#include <Eigen/Geometry>
+#include <PIDcalculator.hpp>
 #include <collection.hpp>
 #include <drone.hpp>
-#include <flight_sim.hpp>
 #include <imu_generation.hpp>
 #include <joint.hpp>
 #include <json.hpp>
@@ -14,3 +22,4 @@
 #include <spi_interface.hpp>
 #include <spi_new_test.hpp>
 #include <velocityController.hpp>
+#include <linux/spi/spidev.h>

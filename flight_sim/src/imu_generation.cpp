@@ -1,4 +1,4 @@
-#include "imu_generation.hpp"
+#include <flight_sim.hpp>
 
 ImuSimulator::ImuSimulator () :
   m_(0.0), I_(0.0)
@@ -17,7 +17,7 @@ i2c_imu_data_16_t ImuSimulator::pack_16(int16_t value) {
 
 imu_data_t ImuSimulator::update (float fx, float fy, float fz,
                                  float tx, float ty, float tz,
-                                 float dt) 
+                                 float dt)
 {
   float accel_x = fx / m_;
   float accel_y = fy / m_;
@@ -36,7 +36,7 @@ imu_data_t ImuSimulator::update (float fx, float fy, float fz,
 
   imu_data_t data;
 
-  
+
   data.euler_angles.x = pack_16((int16_t)(roll  * EULER_SCALE));
   data.euler_angles.y = pack_16((int16_t)(pitch * EULER_SCALE));
   data.euler_angles.z = pack_16((int16_t)(yaw   * EULER_SCALE));
