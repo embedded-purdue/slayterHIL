@@ -1,4 +1,4 @@
-#include "spi_interface.h"
+#include "spi_interface.hpp"
 #include <fcntl.h>
 #include <unistd.h>
 #include <linux/spi/spidev.h>
