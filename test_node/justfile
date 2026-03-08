@@ -64,16 +64,25 @@ build-stm32-spi-bitbang: _verify_workspace clean
     {{CMAKE_CACHE_ARGS}}
 
 flash-stm32:
-  west flash --build-dir build
+  west flash --build-dir build --runner stm32cubeprogrammer
+
+flash-stm32-pyocd:
+  west flash --build-dir build --runner pyocd
 
 monitor-stm32:
   python -m serial.tools.miniterm "{{STM32_PORT}}" 115200
 
 run-stm32: build-stm32 flash-stm32 monitor-stm32
 
+run-stm32-pyocd: build-stm32 flash-stm32-pyocd monitor-stm32
+
 run-stm32-spi-example: build-stm32-spi-example flash-stm32 monitor-stm32
 
+run-stm32-spi-example-pyocd: build-stm32-spi-example flash-stm32-pyocd monitor-stm32
+
 run-stm32-spi-bitbang: build-stm32-spi-bitbang flash-stm32 monitor-stm32
+
+run-stm32-spi-bitbang-pyocd: build-stm32-spi-bitbang flash-stm32-pyocd monitor-stm32
 
 attach-wsl-usb-port:
   #!/usr/bin/env bash
@@ -106,7 +115,7 @@ attach-wsl-usb-port:
 #     app \
 #     {{CMAKE_CACHE_ARGS}} \
 #     -DEXTRA_DTC_OVERLAY_FILE="{{justfile_directory()}}/app/boards/esp32s3_devkitc.overlay"
-#
+
 # build-esp32-spi-example: _verify_workspace clean
 #   west build \
 #     -p always \
@@ -115,7 +124,7 @@ attach-wsl-usb-port:
 #     spi_example_app \
 #     {{CMAKE_CACHE_ARGS}} \
 #     -DEXTRA_DTC_OVERLAY_FILE="{{justfile_directory()}}/spi_example_app/boards/spi_esp32s3_devkitc.overlay"
-#
+
 # build-esp32-spi-bitbang: _verify_workspace clean
 #   west build \
 #     -p always \
@@ -124,13 +133,13 @@ attach-wsl-usb-port:
 #     spi_bitbang_app \
 #     {{CMAKE_CACHE_ARGS}} \
 #     -DEXTRA_DTC_OVERLAY_FILE="{{justfile_directory()}}/spi_bitbang_app/boards/spi_esp32s3_devkitc.overlay"
-#
+
 # flash-esp32:
 #   west flash --build-dir build
-#
+
 # monitor-esp32:
 #   python -m serial.tools.miniterm "/dev/ttyUSB0" 115200
-#
+
 # run-esp32: build-esp32 flash-esp32 monitor-esp32
 # run-esp32-spi-example: build-esp32-spi-example flash-esp32 monitor-esp32
 # run-esp32-spi-bitbang: build-esp32-spi-bitbang flash-esp32 monitor-esp32
