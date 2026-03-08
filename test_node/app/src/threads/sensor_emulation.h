@@ -43,13 +43,8 @@ typedef struct {
     uint8_t sensor_id;
     union {
         imu_data_t imu_data;
-<<<<<<< HEAD
         uint16_t lidar_distance_mm;
-        char rc_command;     
-=======
-        uint16_t lidar_distance_cm;
-        char rc_command[MAX_RC_COMMAND_SIZE];
->>>>>>> Flightsim/FS/protobuf
+        char rc_command;
     };
 } device_update_packet_t;
 
