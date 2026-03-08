@@ -15,7 +15,7 @@ void pwm_thread(void*, void*, void*) {
     uint64_t pwm_period;
     uint64_t pwm_pulse;
     while(1) {
-        if(pwm_capture_usec(pwm_input_dev, 1, PWM_CAPTURE_TYPE_BOTH, &pwm_period, &pwm_pulse, K_FOREVER) == 0) {
+        if(pwm_capture_usec(pwm_input_dev, PWM_CAPTURE_CHANNEL, PWM_CAPTURE_FLAGS, &pwm_period, &pwm_pulse, PWM_CAPTURE_TIMEOUT) == 0) {
             // dummy printing for sanity
             LOG_INF("PWM captured: period = %llu us, pulse = %llu us", pwm_period, pwm_pulse);
 
