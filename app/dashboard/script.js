@@ -85,6 +85,28 @@ class Visualizer3D {
 
         this.container.innerHTML = '';
 
+        // Tooltip for waypoint hover
+        this._tooltip = document.createElement('div');
+        this._tooltip.style.cssText = `
+            position: absolute;
+            background: rgba(10,10,10,0.92);
+            color: #e0e0e0;
+            font-size: 11px;
+            font-family: 'Segoe UI', monospace, sans-serif;
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.15);
+            pointer-events: none;
+            display: none;
+            white-space: nowrap;
+            z-index: 10;
+        `;
+        this.container.appendChild(this._tooltip);
+
+        this._raycaster = new THREE.Raycaster();
+        this._mouse = new THREE.Vector2();
+        this._waypointMeshes = [];
+
         const w = this.container.clientWidth;
         const h = this.container.clientHeight;
         const aspect = w / h;
@@ -124,6 +146,13 @@ class Visualizer3D {
         this.controls.enableDamping = true;
         this.controls.dampingFactor = 0.08;
         this.controls.enableZoom = false;
+
+        // Hover → show waypoint tooltip
+        this.renderer.domElement.addEventListener('mousemove', (e) => this._onHover(e));
+        this.renderer.domElement.addEventListener('mouseleave', () => {
+            this._tooltip.style.display = 'none';
+            this.renderer.domElement.style.cursor = '';
+        });
 
         // Scroll → adjust frustum size (scale) and rebuild tick labels
         this.renderer.domElement.addEventListener('wheel', (e) => {
@@ -239,6 +268,31 @@ class Visualizer3D {
         }
     }
 
+    _onHover(e) {
+        if (!this._waypointMeshes || !this._waypointMeshes.length) return;
+
+        const rect = this.renderer.domElement.getBoundingClientRect();
+        this._mouse.x =  ((e.clientX - rect.left) / rect.width)  * 2 - 1;
+        this._mouse.y = -((e.clientY - rect.top)  / rect.height) * 2 + 1;
+
+        this._raycaster.setFromCamera(this._mouse, this.camera);
+        const hits = this._raycaster.intersectObjects(this._waypointMeshes);
+
+        if (hits.length) {
+            const { stepIndex, waypoint: wp } = hits[0].object.userData;
+            const fmt = v => Number.isFinite(v) ? parseFloat(v.toFixed(3)) : v;
+            this._tooltip.textContent =
+                `Step ${stepIndex + 1}  |  X: ${fmt(wp.x)}  Y: ${fmt(wp.y)}  Z: ${fmt(wp.z)}`;
+            this._tooltip.style.left    = (e.offsetX + 14) + 'px';
+            this._tooltip.style.top     = (e.offsetY - 10) + 'px';
+            this._tooltip.style.display = 'block';
+            this.renderer.domElement.style.cursor = 'pointer';
+        } else {
+            this._tooltip.style.display = 'none';
+            this.renderer.domElement.style.cursor = '';
+        }
+    }
+
     _toThree(wp) {
         return new THREE.Vector3(wp.x, wp.z, -wp.y);
     }
@@ -251,27 +305,33 @@ class Visualizer3D {
 
         this._init();
         this.pathGroup.clear();
+        this._waypointMeshes = [];
 
         const pts = waypoints.map(wp => this._toThree(wp));
 
         const lineGeo = new THREE.BufferGeometry().setFromPoints(pts);
         this.pathGroup.add(new THREE.Line(lineGeo, new THREE.LineBasicMaterial({ color: 0x14b8a6 })));
 
-        const sphereGeo = new THREE.SphereGeometry(2, 14, 14);
+        // Auto-fit: compute span first so we can scale spheres relative to it
+        const box    = new THREE.Box3().setFromPoints(pts);
+        const center = box.getCenter(new THREE.Vector3());
+        const size   = box.getSize(new THREE.Vector3());
+        const span   = Math.max(size.x, size.y, size.z, 20);
+
+        // Sphere radius scales with waypoint spread (never too large or too tiny)
+        const radius    = Math.max(span * 0.025, 0.5);
+        const sphereGeo = new THREE.SphereGeometry(radius, 14, 14);
+
         pts.forEach((pt, i) => {
             const color = i === 0              ? 0x14b8a6
                         : i === pts.length - 1 ? 0xd97706
                         :                        0x4a7bc0;
             const mesh = new THREE.Mesh(sphereGeo, new THREE.MeshPhongMaterial({ color }));
             mesh.position.copy(pt);
+            mesh.userData = { stepIndex: i, waypoint: waypoints[i] };
             this.pathGroup.add(mesh);
+            this._waypointMeshes.push(mesh);
         });
-
-        // Auto-fit: adjust frustum scale to frame all waypoints
-        const box    = new THREE.Box3().setFromPoints(pts);
-        const center = box.getCenter(new THREE.Vector3());
-        const size   = box.getSize(new THREE.Vector3());
-        const span   = Math.max(size.x, size.y, size.z, 20);
 
         this._scale = span * 1.6;
         this._updateFrustum();
