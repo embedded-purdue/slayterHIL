@@ -54,7 +54,6 @@ target_link_libraries(${PROJECT_NAME}
   PRIVATE
     proto_lib
     Eigen3::Eigen
-    nlohmann_json::nlohmann_json
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE

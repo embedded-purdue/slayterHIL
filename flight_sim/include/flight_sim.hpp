@@ -1,9 +1,8 @@
 #pragma once
 
-#include <iomanip>
-#include <fstream>
+#include <cstdlib>
+#include <assert.h>
 #include <cstring>
-#include <iostream>
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
@@ -20,6 +19,7 @@
 #include <rigid_body.hpp>
 #include <simulation.hpp>
 #include <spi_interface.hpp>
+#include <rc_parser.hpp>
 #include <spi_new_test.hpp>
 #include <velocityController.hpp>
 #include <linux/spi/spidev.h>

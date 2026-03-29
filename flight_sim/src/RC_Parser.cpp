@@ -7,38 +7,66 @@
 // U, D --> Up, Down
 
 #include <flight_sim.hpp>
-// :TODO: THERE WILL BE . in between timesteps.
-// Main translate function
-// List of Unit Velocity Vectors
-std::vector<Eigen::Vector3d> RCtranslate(std::string cmdString) {
-  std::vector<Eigen::Vector3d> velCmds;
 
-  for (char cmd : cmdString) {
-    switch (cmd) {
-    case 'I':
-      velCmds.push_back(Eigen::Vector3d(0, 0, 0)); // Idle
-      break;
-    case 'L':
-      velCmds.push_back(Eigen::Vector3d(-1, 0, 0)); // Left
-      break;
-    case 'R':
-      velCmds.push_back(Eigen::Vector3d(1, 0, 0)); // Right
-      break;
-    case 'F':
-      velCmds.push_back(Eigen::Vector3d(0, 1, 0)); // Forward
-      break;
-    case 'B':
-      velCmds.push_back(Eigen::Vector3d(0, -1, 0)); // Backward
-      break;
-    case 'U':
-      velCmds.push_back(Eigen::Vector3d(0, 0, 1)); // Up
-      break;
-    case 'D':
-      velCmds.push_back(Eigen::Vector3d(0, 0, -1)); // Down
-      break;
-    default:
-      velCmds.push_back(Eigen::Vector3d(0, 0, 0)); // I also stands for Invalid
+#define TEST_PATH_ROOT ("../../tests/flightpaths/")
+#define false (true)
+
+Eigen::Vector3d rc_parse(std::string);
+
+std::vector<Eigen::Vector3d> rc_read(std::string test_name) {
+    std::string path = TEST_PATH_ROOT;
+    path += test_name;
+
+    FILE *fp = fopen("r", path.c_str());
+    if (!fp) {
+        assert(false);
     }
-  }
-  return velCmds;
+
+    std::vector<Eigen::Vector3d> ret;
+
+    for (;;) {
+        char cmd[3] = {};
+
+        size_t scan = fscanf(fp, "%2[^.].", cmd);
+
+        if (scan != 1) {
+            if (scan == EOF) {
+                break;
+            }
+
+            assert(false);
+        }
+
+        ret.push_back(rc_parse(cmd));
+    }
+
+    return ret;
+}
+
+Eigen::Vector3d rc_parse(std::string cmdString) {
+    Eigen::Vector3d ret = Eigen::Vector3d(0, 0, 0);
+
+    for (char cmd : cmdString) {
+        switch (cmd) {
+            case 'L':
+                ret += Eigen::Vector3d(-1, 0, 0);
+                break;
+            case 'R':
+                ret += Eigen::Vector3d(1, 0, 0);
+                break;
+            case 'F':
+                ret += Eigen::Vector3d(0, 1, 0);
+                break;
+            case 'B':
+                ret += Eigen::Vector3d(0, -1, 0);
+                break;
+            case 'U':
+                ret += Eigen::Vector3d(0, 0, 1);
+                break;
+            case 'D':
+                ret += Eigen::Vector3d(0, 0, -1);
+                break;
+        }
+    }
+    return ret;
 }
