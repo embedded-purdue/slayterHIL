@@ -22,13 +22,13 @@ int main() {
   std::vector<Waypoint> path;
 
   std::vector<Eigen::Vector3d> rc_instructions;
+  rc_instructions = rc_read("example.txt");
   double time = 0.0;
   for (Eigen::Vector3d instruction : rc_instructions) {
     Waypoint temp = {time, instruction};
     path.push_back(temp);
     time += 0.5;
   }
-  rc_instructions = rc_read("example.txt");
   int currentWaypointIndex = 0;
   Drone *drone = new Drone(
       new RigidBody(1.0, Eigen::Matrix3d::Identity(),
