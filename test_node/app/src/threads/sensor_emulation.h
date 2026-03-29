@@ -14,7 +14,7 @@
 
 /*
     i2c_imu_data_16_t represents each individual data value in the IMU. they are signed 16 bit values with consecutive registers representing LSB/MSB
-    example: QUA_DATA_Y_LSB is at 0x24 and QUA_DATA_Y_MSB is at 0x25. 
+    example: QUA_DATA_Y_LSB is at 0x24 and QUA_DATA_Y_MSB is at 0x25.
 */
 typedef struct {
     int8_t lsb;
@@ -36,17 +36,25 @@ typedef struct {
     i2c_imu_triplet_t gyro;
 } imu_data_t;
 
+/* if a no-op, insert I for no-op */
+typedef struct {
+    char rc_vert;
+    char rc_horiz;
+} rc_data_t;
+
 // assert size matches expected size of 24 bytes
 _Static_assert(sizeof(imu_data_t) == 18, "imu_data_t size does not match expected size of 26 bytes");
 
-typedef struct {
-    uint8_t sensor_id;
-    union {
-        imu_data_t imu_data;
-        uint16_t lidar_distance_mm;
-        char rc_command;     
-    };
+/*
+EXPECTED STRUCTURE FROM PROTOBUF
+
+typedef struct  {
+  uint32 timestamp;
+  imu_data_t imu_data;
+  uint16_t lidar_distance_nm;
+  rc_data_t rc_commands;
 } device_update_packet_t;
+*/
 
 #define SENSOR_UPDATE_QUEUE_PACKET_SIZE (sizeof(device_update_packet_t))
 #define SENSOR_UPDATE_QUEUE_LEN (10)

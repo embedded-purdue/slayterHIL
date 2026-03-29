@@ -25,9 +25,15 @@ zephyr_syscall_include_directories(include)
 
 
 zephyr_include_directories(include)
+
+
 # --- Add custom LiDAR driver ---
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/drivers/sensor/lidar_lite_v4)
-add_subdirectory(drivers)
+# add_subdirectory(drivers)
+
+#-- Add custom BNO055 driver ---
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/drivers/sensor/bno055)
+
 
 set(APP_MAIN ${CMAKE_CURRENT_SOURCE_DIR}/app/src/main.c)
 if(EXISTS ${APP_MAIN})

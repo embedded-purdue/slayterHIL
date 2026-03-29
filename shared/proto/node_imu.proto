@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+// Matches i2c_imu_triplet_t (x,y,z), each axis is LSB/MSB bytes.
+message ImuTriplet {
+  ImuData16 x = 1;
+  ImuData16 y = 2;
+  ImuData16 z = 3;
+}
+
+// Matches i2c_imu_quaternion_t (w,x,y,z), each component is LSB/MSB bytes.
+message ImuQuaternion {
+  ImuData16 w = 1;
+  ImuData16 x = 2;
+  ImuData16 y = 3;
+  ImuData16 z = 4;
+}
+
+// Matches imu_data_t layout: quaternion + linear_acceleration + gyro
+message ImuPayload {
+  ImuQuaternion quaternion = 1;
+  ImuTriplet linear_acceleration = 2;
+  ImuTriplet gyro = 3;
+}
+
+// Matches device_update_packet_t:
+// uint8_t sensor_id;
+// union { imu_data_t imu_data; uint16_t lidar_distance_cm; char rc_command[20]; }
+message DeviceUpdatePacket {
+  uint32 timestamp = 1;
+  uint32 lidar = 2;
+  ImuPayload imu = 3;
+  uint32 command = 4;
+}

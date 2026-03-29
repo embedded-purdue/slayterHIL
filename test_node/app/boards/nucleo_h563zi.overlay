@@ -3,6 +3,7 @@
         i2c-lidar = &i2c1;
         i2c-imu = &i2c2;
         uart-rc = &uart4;
+        pwm-input = &timers3_pwm;
     };
 };
 
@@ -21,5 +22,16 @@
 &uart4 {
     status = "okay";
     pinctrl-0 = <&uart4_tx_pa0 &uart4_rx_pd11>;
-    princtrl-names = "default";
+    pinctrl-names = "default";
+};
+
+&timers3 {
+    status = "okay";
+    st,prescaler = <10000>; // may need to change later
+
+    timers3_pwm: pwm {
+        status = "okay";
+        pinctrl-0 = <&tim3_ch1_pb4>;
+        pinctrl-names = "default";
+    };
 };
