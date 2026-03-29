@@ -13,14 +13,23 @@ void closeLogging();
 
 std::ofstream logFile;
 
+struct Waypoint {
+  double time;
+  Eigen::Vector3d position;
+};
+
 int main() {
+  std::vector<Waypoint> path;
 
-  // I pointer-ized everything from Sebastian's code
-
-  // What unit is our mass measured in? Let it be grams for now lol
-  // RigidBody* drone = new RigidBody(5.0, Eigen::Matrix3d::Identity(),
-  // Eigen::Vector3d(0,0,200));
-
+  std::vector<Eigen::Vector3d> rc_instructions;
+  double time = 0.0;
+  for (Eigen::Vector3d instruction : rc_instructions) {
+    Waypoint temp = {time, instruction};
+    path.push_back(temp);
+    time += 0.5;
+  }
+  rc_instructions = rc_read("example.txt");
+  int currentWaypointIndex = 0;
   Drone *drone = new Drone(
       new RigidBody(1.0, Eigen::Matrix3d::Identity(),
                     Eigen::Vector3d(0, 0, 0)), // body
@@ -32,7 +41,6 @@ int main() {
       new RigidBody(0.5, Eigen::Matrix3d::Identity(),
                     Eigen::Vector3d(0, -1, 0)));
 
-  // (happy birthday to the) Ground
   RigidBody *ground = new RigidBody();
   ground->setBounds(
       50, 50,
@@ -41,33 +49,21 @@ int main() {
   using clock = std::chrono::high_resolution_clock;
   using duration = std::chrono::duration<double>;
 
-  // Is the time update necessarily in terms of a minute? Or does it work this
-  // way with chrono? its in seconds.
+  // Time is in seconds.
   const double DELTATIME = 1.0 / 60.0;
-  const double SIM_TIME = 200.0;
+  const double SIM_TIME = 30.0;
   double elapsedTime = 0.0;
   auto previousTime = std::chrono::high_resolution_clock::now();
 
-  //	PIDcalculator* control = new PIDcalculator (0.002, 0.0, 0.0);
-  //	Eigen::Vector3d Target(100.0, 100.0, 100.0);
-  //	control -> setTarget (Target);
-  //	std::cout << control -> getTarget() << std::endl <<
-  // drone->getPosition();
-  positionController *positionControl = new positionController(0.1);
-  velocityController *velocityControl = new velocityController(0.1, 0, 0);
-  Eigen::Vector3d Target(100.0, 100.0, 100.0);
-  positionControl->setTarget(Target);
+  Eigen::Vector3d posGains(0.5, 0.5, 2.0);
+  positionController *positionControl = new positionController(posGains);
+  Eigen::Vector3d vKp(1.0, 1.0, 3.0);
+  Eigen::Vector3d vKi(0.1, 0.1, 0.5);
+  Eigen::Vector3d vKd(0.05, 0.05, 0.2);
+  velocityController *velocityControl =
+      new velocityController(vKp, vKi, vKd, 20);
+  positionControl->setTarget(path[0].position);
 
-  // Commented out thread for now
-  // ( was creating a "terminate called without an active exception error" )
-
-  // bool exit = false;
-  /*std::thread inputThread([&exit](){
-              std::cin.get();
-              exit = true;
-      });*/
-
-  // update loop
   // Current condition set to break when the drone collides with the ground
   //	while( !drone->isColliding(ground) ){ got rid of collisions for now
   initializeLogging();
@@ -77,6 +73,15 @@ int main() {
 
     if (dt.count() >= DELTATIME) {
       // TODO: logic and the actual physics
+      if (currentWaypointIndex < path.size() - 1) {
+        if (elapsedTime >= path[currentWaypointIndex + 1].time) {
+          currentWaypointIndex++;
+          positionControl->setTarget(path[currentWaypointIndex].position);
+          std::cout << "--- SWITCHING TO WAYPOINT" << currentWaypointIndex
+                    << " ---" << std::endl
+                    << std::endl;
+        }
+      }
       drone->applyForce(Eigen::Vector3d(0, 0, -9.81 * drone->getMass()));
       // Eigen::Vector3d force = control->compute(drone->getPosition(),
       // DELTATIME);
@@ -101,16 +106,12 @@ int main() {
 
       std::cout << "\ttimestep: " << elapsedTime << std::endl;
 
+      Eigen::Vector3d posError =
+          positionControl->getTarget() - drone->getPosition();
       logData(elapsedTime, positionControl->getTarget(), drone->getPosition(),
-              targetVelocity / 0.1, force);
+              posError, force);
       previousTime = currentTime;
       elapsedTime += DELTATIME;
-      /* std::cout << "\tcollision: " << drone->isColliding(ground); // Might
-         print collision detected twice oops lol
-
-                   std::cout << std::endl;
-
-                   previousTime = currentTime; */
     }
 
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
@@ -126,15 +127,18 @@ int main() {
   return 0;
 }
 
-void initializeLogging() { logFile.open("pid_tuning.csv"); }
+void initializeLogging() {
+  logFile.open("pid_tuning.csv");
+  logFile << "Time, X, Y, Z, errorZ, \n";
+}
 
 void logData(double t, const Eigen::Vector3d &desiredPos,
              const Eigen::Vector3d &currentPos, const Eigen::Vector3d &error,
              const Eigen::Vector3d &controlOutput) {
-  logFile << t << "," << desiredPos.x() << "," << currentPos.x() << ","
-          << error.x() << "," << controlOutput.x() << "\n";
+  logFile << t << "," << currentPos.x() << "," << currentPos.y() << ","
+          << currentPos.z() << "," << error.z() << "," << controlOutput.z()
+          << "\n";
 }
-
 void closeLogging() { logFile.close(); }
 
 // Old Collision detection test code
