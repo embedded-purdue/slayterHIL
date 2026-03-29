@@ -35,55 +35,6 @@
                 </ul>
             </div>
             
-            <div class="sidebar-section">
-                <div class="test-item">
-                    <div class="test-header">
-                        <span class="test-name">Login Test</span>
-                        <span class="test-tag">Smoke</span>
-                    </div>
-                    <div class="test-status">
-                        <span class="test-category">UI Tests</span>
-                        <span class="status-badge failed">FAILED</span>
-                    </div>
-                </div>
-                
-                <div class="test-item">
-                    <div class="test-header">
-                        <span class="test-name">Checkout Test</span>
-                        <span class="test-tag">Stress</span>
-                    </div>
-                    <div class="test-status">
-                        <span class="test-category">UI Tests</span>
-                        <span class="status-badge passed">PASSED</span>
-                    </div>
-                </div>
-                
-                <div class="test-item">
-                    <span class="test-name">Purchase Test</span>
-                </div>
-                
-                <div class="test-item">
-                    <div class="test-header">
-                        <span class="test-name">Search Test</span>
-                        <span class="test-duration">5m 47s</span>
-                    </div>
-                </div>
-                
-                <div class="test-item">
-                    <div class="test-header">
-                        <span class="test-name">User Registration Test</span>
-                        <span class="test-duration">9m 02s</span>
-                    </div>
-                </div>
-                
-                <div class="test-item">
-                    <div class="test-header">
-                        <span class="test-name">Payment Test</span>
-                        <span class="test-duration">5m 19s</span>
-                    </div>
-                </div>
-            </div>
-            
             <div class="sidebar-tabs">
                 <button class="tab-btn active">Steps</button>
                 <button class="tab-btn">Artifacts</button>
@@ -232,7 +183,10 @@
                     <h3>RC Command Output</h3>
                     <div class="rc-result" id="rcResult"></div>
                     <div class="rc-meta" id="rcMeta"></div>
-                    <button class="run-btn" id="sendToServerBtn">Send to Test Node</button>
+                    <div class="rc-actions">
+                        <button class="run-btn" id="sendToServerBtn">Send to Test Node</button>
+                        <button class="save-run-btn" id="saveRunBtn">Save Run</button>
+                    </div>
                 </div>
 
                 <!-- 3D Visualizer -->
@@ -257,12 +211,25 @@
                 </div>
             </section>
 
+            <!-- Flight Path History Section -->
+            <section class="history-section">
+                <div class="history-header">
+                    <div class="history-title-row">
+                        <h2>Flight Path History</h2>
+                    </div>
+                    <button class="clear-btn" id="clearHistoryBtn">Clear All</button>
+                </div>
+                <div id="historyList" class="history-list">
+                    <p class="history-empty">No runs saved</p>
+                </div>
+            </section>
+
             <!-- Logs Section -->
             <section class="logs-section">
                 <h2>Logs</h2>
                 <div class="logs-controls">
                     <div class="search-box">
-                        <input type="text" placeholder="🔍 Search">
+                        <input type="text" placeholder="Search">
                     </div>
                     <select class="log-filter">
                         <option>INFO</option>
@@ -321,6 +288,6 @@
         </main>
     </div>
     
-    <script src="script.js?v=6"></script>
+    <script src="script.js?v=7"></script>
 </body>
 </html>

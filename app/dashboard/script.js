@@ -368,6 +368,8 @@ class TestAutomationDashboard {
         this.logTableBody = document.getElementById('logTableBody');
         this.testItems = document.querySelectorAll('.test-item');
         this.waypoints = [];
+        this.flightHistory = [];
+        this._historyCounter = 0;
 
         this.viz = new Visualizer3D('viz3d');
 
@@ -412,8 +414,10 @@ class TestAutomationDashboard {
         // Raw data
         document.getElementById('convertRawBtn').addEventListener('click', () => this.convertRawToRc());
 
-        // Send to server
+        // Send to server / save run
         document.getElementById('sendToServerBtn').addEventListener('click', () => this.sendRcToServer());
+        document.getElementById('saveRunBtn').addEventListener('click', () => this.saveCurrentRun());
+        document.getElementById('clearHistoryBtn').addEventListener('click', () => this.clearHistory());
     }
 
     addWaypoint() {
@@ -473,6 +477,7 @@ class TestAutomationDashboard {
             alert('Add at least 2 waypoints to generate commands.');
             return;
         }
+        this._lastSavedWaypoints = this.waypoints.map(wp => ({ ...wp }));
         const commands = waypointsToRcCommands(this.waypoints);
         this.showRcOutput(commands);
     }
@@ -494,6 +499,7 @@ class TestAutomationDashboard {
             } else {
                 waypoints = parseCsvWaypoints(text);
             }
+            this._lastSavedWaypoints = waypoints.map(wp => ({ ...wp }));
             const commands = waypointsToRcCommands(waypoints);
             this.showRcOutput(commands);
             this.viz.update(waypoints);
@@ -517,9 +523,104 @@ class TestAutomationDashboard {
             this.ws.send(JSON.stringify(payload));
             const ts = new Date().toLocaleTimeString('en-US', { hour12: false });
             this.addLogEntry(ts, 'info', 'user-input', `Sent ${this._lastRcCommands.length} RC commands to server`);
+            this.saveCurrentRun();
         } else {
             alert('Not connected to test server.');
         }
+    }
+
+    // -----------------------------------------------------------------------
+    // Flight Path History
+    // -----------------------------------------------------------------------
+
+    saveCurrentRun() {
+        if (!this._lastRcCommands || !this._lastRcCommands.length) return;
+
+        this._historyCounter++;
+        const activeTab = document.querySelector('.input-tab-btn.active')?.dataset.tab || 'waypoints';
+        const now = new Date();
+        const timestamp = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+            + '  ' + now.toLocaleTimeString('en-US', { hour12: false });
+
+        const entry = {
+            id: Date.now(),
+            name: `Run #${this._historyCounter}`,
+            timestamp,
+            source: activeTab,
+            waypoints: this._lastSavedWaypoints ? [...this._lastSavedWaypoints] : [...this.waypoints],
+            commands: [...this._lastRcCommands],
+            rawData: activeTab === 'raw' ? document.getElementById('rawDataInput').value : '',
+            rawFormat: document.getElementById('rawFormatSelect').value,
+        };
+
+        this.flightHistory.unshift(entry);
+        this.renderHistory();
+
+        const btn = document.getElementById('saveRunBtn');
+        const orig = btn.textContent;
+        btn.textContent = 'Saved';
+        btn.disabled = true;
+        setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 1500);
+    }
+
+    clearHistory() {
+        if (!this.flightHistory.length) return;
+        this.flightHistory = [];
+        this._historyCounter = 0;
+        this.renderHistory();
+    }
+
+    deleteHistoryEntry(id) {
+        this.flightHistory = this.flightHistory.filter(e => e.id !== id);
+        this.renderHistory();
+    }
+
+    loadHistoryEntry(id) {
+        const entry = this.flightHistory.find(e => e.id === id);
+        if (!entry) return;
+
+        document.querySelectorAll('.input-tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.input-tab-content').forEach(c => c.classList.remove('active'));
+        document.querySelector('.input-tab-btn[data-tab="waypoints"]').classList.add('active');
+        document.getElementById('tab-waypoints').classList.add('active');
+
+        this.waypoints = entry.waypoints.map(wp => ({ ...wp }));
+        this.renderWaypointsTable();
+
+        this._lastRcCommands = [...entry.commands];
+        this._lastSavedWaypoints = [...entry.waypoints];
+        this.showRcOutput(entry.commands);
+
+        document.querySelector('.input-section').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    renderHistory() {
+        const list = document.getElementById('historyList');
+        if (!this.flightHistory.length) {
+            list.innerHTML = '<p class="history-empty">No runs saved yet. Convert waypoints and click "Save Run".</p>';
+            return;
+        }
+
+        list.innerHTML = this.flightHistory.map(entry => `
+            <div class="history-entry" data-id="${entry.id}">
+                <div class="history-entry-info">
+                    <span class="history-entry-name">${entry.name}</span>
+                    <span class="history-entry-meta">${entry.timestamp}</span>
+                    <span class="history-entry-meta">${entry.waypoints.length} waypoints &nbsp;·&nbsp; ${entry.commands.length} commands</span>
+                </div>
+                <div class="history-entry-actions">
+                    <button class="history-load-btn" data-id="${entry.id}">Load</button>
+                    <button class="history-delete-btn" data-id="${entry.id}">✕</button>
+                </div>
+            </div>
+        `).join('');
+
+        list.querySelectorAll('.history-load-btn').forEach(btn => {
+            btn.addEventListener('click', () => this.loadHistoryEntry(parseInt(btn.dataset.id)));
+        });
+        list.querySelectorAll('.history-delete-btn').forEach(btn => {
+            btn.addEventListener('click', () => this.deleteHistoryEntry(parseInt(btn.dataset.id)));
+        });
     }
 
     setupWebSocket() {
