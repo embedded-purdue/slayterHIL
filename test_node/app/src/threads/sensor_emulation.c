@@ -15,10 +15,6 @@ LOG_MODULE_REGISTER(sensor_thread, LOG_LEVEL_INF);
 
 // Initialize and start thread
 void sensor_emulation_init() {
-    // dummy printing for sanity
-    lidar_emulator_init(i2c_lidar);
-
-
     // Any initialization
     lidar_emulation_init(i2c_lidar);
     imu_emulator_init(i2c_imu);
