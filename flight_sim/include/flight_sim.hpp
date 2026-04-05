@@ -22,4 +22,6 @@
 #include <rc_parser.hpp>
 #include <spi_new_test.hpp>
 #include <velocityController.hpp>
+#ifdef __linux__
 #include <linux/spi/spidev.h>
+#endif

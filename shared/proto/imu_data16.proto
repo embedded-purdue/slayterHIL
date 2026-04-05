@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+// Represents a 16-bit signed integer split into LSB and MSB bytes.
+// Matches i2c 2-byte raw sensor values.
+message ImuData16 {
+  uint32 lsb = 1;
+  uint32 msb = 2;
+}

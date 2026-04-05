@@ -8,7 +8,15 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 find_package(Eigen3 REQUIRED NO_MODULE)
 find_package(Protobuf REQUIRED) # provides protobuf::libprotobuf and (often) protobuf::protoc
-find_package(nlohmann_json REQUIRED) # <-- add this (apt: nlohmann-json3-dev)
+# absl is a required dep of protobuf 6.x; add its include path globally
+foreach(_prefix /opt/homebrew /usr/local)
+  if(EXISTS "${_prefix}/include/absl")
+    include_directories(SYSTEM "${_prefix}/include")
+    message(STATUS "absl headers added from ${_prefix}/include")
+    break()
+  endif()
+endforeach()
+# nlohmann_json vendored as include/json.hpp (single-header amalgamation)
 
 
 # # DEBUG
@@ -29,7 +37,7 @@ protobuf_generate(
   TARGET proto_lib
   LANGUAGE cpp
   PROTOS ${PROTO_FILES}
-  IMPORT_DIRS ${CMAKE_SOURCE_DIR}/../
+  IMPORT_DIRS ${CMAKE_SOURCE_DIR}/../ ${PROTO_DIR}
   PROTOC_OUT_DIR ${GEN_PROTO_DIR}
   APPEND_PATH OFF
 )
@@ -47,6 +55,11 @@ target_include_directories(proto_lib PUBLIC
 # ---- Executables ------------------------------------------------------------
 
 file(GLOB SRC_FILES "${CMAKE_SOURCE_DIR}/src/*.cpp")
+# SPI files use Linux kernel headers — exclude on non-Linux platforms
+if(NOT CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  list(FILTER SRC_FILES EXCLUDE REGEX ".*/spi_linux\\.cpp$")
+  list(FILTER SRC_FILES EXCLUDE REGEX ".*/spi_new_test\\.cpp$")
+endif()
 
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 

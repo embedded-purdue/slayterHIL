@@ -4,41 +4,44 @@
 
 #include <iostream>
 #include "rigid_body.hpp"
-#include "joint.hpp"
 #include <vector>
 #include <Eigen/Dense>
 #include <Eigen/Geometry>
 
-class Drone : RigidBody {
+class Drone : public RigidBody {
+public:
+    Drone();
+    Drone(
+        RigidBody* body,
+        RigidBody* m1,
+        RigidBody* m2,
+        RigidBody* m3,
+        RigidBody* m4
+    );
 
-    private:
+    ~Drone() {
+        delete body;
+        delete m1;
+        delete m2;
+        delete m3;
+        delete m4;
+    }
 
-        // Fields (mx = motor x)
-        RigidBody* body;
-        RigidBody* m1;
-        RigidBody* m2;
-        RigidBody* m3;
-        RigidBody* m4;
+    void applyForce(const Eigen::Vector3d& force) override;
+    void update(double dt) override;
 
-        // Joints (for each motor to body)
-        Joint* j1;
-        Joint* j2;
-        Joint* j3;
-        Joint* j4;
+    Eigen::Vector3d getPosition() const;
+    Eigen::Vector3d getVelocity() const;
 
-    public:
-        // Constructors
-        Drone() {
-            m1 = new RigidBody();
-            m2 = new RigidBody();
-            m3 = new RigidBody();
-            m4 = new RigidBody();
-            body = new RigidBody();
+private:
+    RigidBody* body;
+    RigidBody* m1;
+    RigidBody* m2;
+    RigidBody* m3;
+    RigidBody* m4;
 
-            j1 = new Joint(body, m1);
-            j2 = new Joint(body, m2);
-            j3 = new Joint(body, m3);
-            j4 = new Joint(body, m4);
-        }
-
+    double calculateMass();
+    Eigen::Vector3d calculateNetForce();
+    Eigen::Vector3d calculateNetTorque();
+    Eigen::Vector3d calculateAngularVelocity();
 };

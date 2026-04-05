@@ -8,6 +8,7 @@
 #define GYRO_SCALE   16.0f
 
 #include <stdint.h>
+#include <Eigen/Dense>
 
 // --- IMU hardware struct definitions ---
 typedef struct {
@@ -33,6 +34,9 @@ public:
     ImuSimulator(float mass, float moment_of_inertia);
     imu_data_t update(float fx, float fy, float fz,
                       float tx, float ty, float tz,
+                      float dt);
+    imu_data_t update(const Eigen::Vector3f& force,
+                      const Eigen::Vector3f& torque,
                       float dt);
 
 private:

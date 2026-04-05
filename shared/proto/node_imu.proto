@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "imu_data16.proto";
+
 // Matches i2c_imu_triplet_t (x,y,z), each axis is LSB/MSB bytes.
 message ImuTriplet {
   ImuData16 x = 1;
