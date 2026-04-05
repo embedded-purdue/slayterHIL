@@ -67,60 +67,53 @@ K_MSGQ_DEFINE(uart_rx_msgq, sizeof(struct uart_msg), 16, alignof(struct uart_msg
 
 // Demo app for the BNO Consumer 
 static void bno_consumer(void *arg1, void *arg2, void *arg3) {
-    struct bno_data out; 
+   struct bno_data out;
     printk("BNO consumer thread started - Motor Emulation Mode\n");
-    
+
     while (1) {
         int rc = bno_get(&out, K_MSEC(100));
         if (rc != 0) {
-            // No BNO data available, set LEDs to idle
             for (int i = 0; i < 4; i++) {
-                set_led_intensity(i, 10);  // Dim idle state
+                set_led_intensity(i, 10);
             }
             k_msleep(50);
             continue;
         }
 
-        // Convert radians to degrees for easier tuning
-        float pitch_deg = out.eul.pitch * 180.0f / M_PI;
-        float roll_deg = out.eul.roll * 180.0f / M_PI;
+        // Invert signs to match physical frame orientation of the rig.
+        float pitch = -out.eul.pitch;
+        float roll  = -out.eul.roll;
 
-        // Base throttle (0-100)
         int base = 50;
-        
-        // Gains control how much tilt affects motor differential
-        float pitch_gain = 0.8f;
-        float roll_gain = 0.8f;
 
-        // Quadcopter motor mixing:
-        // Pitch+ → nose down → front motors up, rear down
-        // Roll+ → right tilt → right motors up, left down
-        int front_left  = base + (int)(pitch_gain * pitch_deg) + (int)(roll_gain * roll_deg);
-        int front_right = base + (int)(pitch_gain * pitch_deg) - (int)(roll_gain * roll_deg);
-        int back_left   = base - (int)(pitch_gain * pitch_deg) + (int)(roll_gain * roll_deg);
-        int back_right  = base - (int)(pitch_gain * pitch_deg) - (int)(roll_gain * roll_deg);
+        // Gains tuned to observed ranges: pitch ±3.5 -> ±25, roll ±1.5 -> ±25
+        float pitch_gain = 25.1f;
+        float roll_gain  = 32.7f;
 
-        // Clamp to 0-100 range
-        if (front_left < 0) front_left = 0; else if (front_left > 100) front_left = 100;
+        int front_left  = base + (int)(pitch_gain * pitch) + (int)(roll_gain * roll);
+        int front_right = base - (int)(pitch_gain * pitch) + (int)(roll_gain * roll);
+        int back_left   = base + (int)(pitch_gain * pitch) - (int)(roll_gain * roll);
+        int back_right  = base - (int)(pitch_gain * pitch) - (int)(roll_gain * roll);
+
+        if (front_left  < 0) front_left  = 0; else if (front_left  > 100) front_left  = 100;
         if (front_right < 0) front_right = 0; else if (front_right > 100) front_right = 100;
-        if (back_left < 0) back_left = 0; else if (back_left > 100) back_left = 100;
-        if (back_right < 0) back_right = 0; else if (back_right > 100) back_right = 100;
+        if (back_left   < 0) back_left   = 0; else if (back_left   > 100) back_left   = 100;
+        if (back_right  < 0) back_right  = 0; else if (back_right  > 100) back_right  = 100;
 
-        // Map to your LED position defines
-        set_led_intensity(TOP_LEFT, front_left);      // 1
-        set_led_intensity(TOP_RIGHT, front_right);    // 2
-        set_led_intensity(BOTTOM_LEFT, back_left);    // 0
-        set_led_intensity(BOTTOM_RIGHT, back_right);  // 3
+        set_led_intensity(TOP_LEFT,     front_left);
+        set_led_intensity(TOP_RIGHT,    front_right);
+        set_led_intensity(BOTTOM_LEFT,  back_left);
+        set_led_intensity(BOTTOM_RIGHT, back_right);
 
-        // Debug print every 10th iteration (~500ms)
-        static int print_counter = 0;
-        if (++print_counter >= 10) {
-            printk("[%s] P:%.1f R:%.1f Y:%.1f | Motors FL:%d FR:%d BL:%d BR:%d\n",
-                   now_str(),
-                   (double)pitch_deg, (double)roll_deg, (double)(out.eul.yaw * 180.0f / M_PI),
-                   front_left, front_right, back_left, back_right);
-            print_counter = 0;
-        }
+        // static int print_counter = 0;
+        // if (++print_counter >= 10) {
+        printk("[%s] P:%.2f R:%.2f Y:%.2f | Motors FL:%d FR:%d BL:%d BR:%d\n",
+                now_str(),
+                (double)pitch, (double)roll, (double)out.eul.yaw,
+                front_left, front_right, back_left, back_right);
+            // print_counter = 0;
+        // }
+        printk("BNO consumer thread heartbeat\n");
 
         k_msleep(50);  // 20 Hz control loop
     }
@@ -249,22 +242,22 @@ int main(void)
     k_timer_start(&lidar_timer, K_MSEC(30), K_MSEC(30));
     
     printk("LiDAR timer started, monitoring data...\n");
-    while(1) { 
-        for(int i = 0; i < 100; i++) { 
-            // set_led_intensity(TOP_LEFT, i); 
-            // set_led_intensity(TOP_RIGHT, i); 
-            // set_led_intensity(BOTTOM_LEFT, i); 
-            // set_led_intensity(BOTTOM_RIGHT, i); 
-            k_msleep(10);
-        }
-        k_msleep(1000); 
-        for(int i = 100; i>=0; i--) { 
-            // set_led_intensity(TOP_LEFT, i); 
-            // set_led_intensity(TOP_RIGHT, i); 
-            // set_led_intensity(BOTTOM_LEFT, i); 
-            // set_led_intensity(BOTTOM_RIGHT, i); 
-            k_msleep(10);
-        }
-    }
+    // while(1) { 
+    //     for(int i = 0; i < 100; i++) { 
+    //         set_led_intensity(TOP_LEFT, i); 
+    //         // set_led_intensity(TOP_RIGHT, i); 
+    //         set_led_intensity(BOTTOM_LEFT, i); 
+    //         // set_led_intensity(BOTTOM_RIGHT, i); 
+    //         k_msleep(10);
+    //     }
+    //     k_msleep(1000); 
+    //     for(int i = 100; i>=0; i--) { 
+    //         set_led_intensity(TOP_LEFT, i); 
+    //         // set_led_intensity(TOP_RIGHT, i); 
+    //         set_led_intensity(BOTTOM_LEFT, i); 
+    //         // set_led_intensity(BOTTOM_RIGHT, i); 
+    //         k_msleep(10);
+    //     }
+    // }
     return 0;
 }

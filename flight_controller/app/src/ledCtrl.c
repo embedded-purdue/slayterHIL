@@ -9,7 +9,7 @@
 
 
 
-static const struct pwm_dt_spec pwm_led0 = PWM_DT_SPEC_GET(DT_ALIAS(led0));
+// static const struct pwm_dt_spec pwm_led0 = PWM_DT_SPEC_GET(DT_ALIAS(led0));
 static const struct pwm_dt_spec leds[LED_COUNT] = {
     PWM_DT_SPEC_GET(DT_ALIAS(led0)),
     PWM_DT_SPEC_GET(DT_ALIAS(led1)),
