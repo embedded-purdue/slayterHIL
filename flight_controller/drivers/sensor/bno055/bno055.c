@@ -202,7 +202,7 @@ static int bno055_set_config(const struct device *dev, enum bno055_OperatingMode
 		return err;
 	}
 
-	if ((reg & BNO055_PAGE_ID_MASK) != mode) {
+	if ((reg & BNO055_OPERATION_MODE_MASK) != mode) {
 		LOG_ERR("I2C communication compromised [%d]!=[%d]!!", mode,
 			reg & BNO055_OPERATION_MODE_MASK);
 		return -ECANCELED;
