@@ -1,5 +1,6 @@
 #pragma once
 
+#include <serialize.hpp>
 #include <cstdlib>
 #include <assert.h>
 #include <cstring>
