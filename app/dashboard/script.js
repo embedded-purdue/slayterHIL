@@ -29,25 +29,41 @@ function deltasToCommands(dx, dy, dz) {
     const ySteps = Math.round(Math.abs(dy) / CONVERSION_FACTOR);
     const zSteps = Math.round(Math.abs(dz) / CONVERSION_FACTOR);
 
+    // No movement — idle state
+    if (xSteps === 0 && ySteps === 0 && zSteps === 0) {
+        return 'I.';
+    }
+
     const xCmd = dx >= 0 ? 'R' : 'L';
     const yCmd = dy >= 0 ? 'F' : 'B';
     const zCmd = dz >= 0 ? 'U' : 'D';
 
-    return interleaveCommands([[xCmd, xSteps], [yCmd, ySteps], [zCmd, zSteps]]);
+    const raw = interleaveCommands([[xCmd, xSteps], [yCmd, ySteps], [zCmd, zSteps]]);
+
+    // Horizontal commands get a '.' delimiter; vertical commands do not
+    let result = raw.map(cmd => 'RLFB'.includes(cmd) ? cmd + '.' : cmd).join('');
+
+    // Collapse consecutive vertical commands into one (e.g. UUU → U, DDD → D)
+    result = result.replace(/U+/g, 'U').replace(/D+/g, 'D');
+
+    // Ensure segment always ends with '.' (pure vertical edge case)
+    if (!result.endsWith('.')) result += '.';
+
+    return result;
 }
 
 function waypointsToRcCommands(waypoints) {
-    const commands = [];
+    let output = '';
     for (let i = 1; i < waypoints.length; i++) {
         const prev = waypoints[i - 1];
         const curr = waypoints[i];
-        commands.push(...deltasToCommands(
+        output += deltasToCommands(
             curr.x - prev.x,
             curr.y - prev.y,
             curr.z - prev.z
-        ));
+        );
     }
-    return commands;
+    return output;
 }
 
 function parseCsvWaypoints(csvText) {
@@ -509,9 +525,8 @@ class TestAutomationDashboard {
     }
 
     showRcOutput(commands) {
-        const output = commands.join('');
-        document.getElementById('rcResult').textContent = output || '(no movement)';
-        document.getElementById('rcMeta').textContent = `Total commands: ${commands.length}`;
+        document.getElementById('rcResult').textContent = commands || '(no movement)';
+        document.getElementById('rcMeta').textContent = `Total characters: ${commands.length}`;
         document.getElementById('rcOutput').style.display = 'block';
         this._lastRcCommands = commands;
     }
@@ -522,7 +537,7 @@ class TestAutomationDashboard {
         if (this.ws && this.ws.readyState === WebSocket.OPEN) {
             this.ws.send(JSON.stringify(payload));
             const ts = new Date().toLocaleTimeString('en-US', { hour12: false });
-            this.addLogEntry(ts, 'info', 'user-input', `Sent ${this._lastRcCommands.length} RC commands to server`);
+            this.addLogEntry(ts, 'info', 'user-input', `Sent RC commands to server: ${this._lastRcCommands}`);
             this.saveCurrentRun();
         } else {
             alert('Not connected to test server.');
@@ -548,7 +563,7 @@ class TestAutomationDashboard {
             timestamp,
             source: activeTab,
             waypoints: this._lastSavedWaypoints ? [...this._lastSavedWaypoints] : [...this.waypoints],
-            commands: [...this._lastRcCommands],
+            commands: this._lastRcCommands,
             rawData: activeTab === 'raw' ? document.getElementById('rawDataInput').value : '',
             rawFormat: document.getElementById('rawFormatSelect').value,
         };
@@ -587,7 +602,7 @@ class TestAutomationDashboard {
         this.waypoints = entry.waypoints.map(wp => ({ ...wp }));
         this.renderWaypointsTable();
 
-        this._lastRcCommands = [...entry.commands];
+        this._lastRcCommands = entry.commands;
         this._lastSavedWaypoints = [...entry.waypoints];
         this.showRcOutput(entry.commands);
 
@@ -606,7 +621,7 @@ class TestAutomationDashboard {
                 <div class="history-entry-info">
                     <span class="history-entry-name">${entry.name}</span>
                     <span class="history-entry-meta">${entry.timestamp}</span>
-                    <span class="history-entry-meta">${entry.waypoints.length} waypoints &nbsp;·&nbsp; ${entry.commands.length} commands</span>
+                    <span class="history-entry-meta">${entry.waypoints.length} waypoints &nbsp;·&nbsp; ${entry.commands.length} chars</span>
                 </div>
                 <div class="history-entry-actions">
                     <button class="history-load-btn" data-id="${entry.id}">Load</button>
