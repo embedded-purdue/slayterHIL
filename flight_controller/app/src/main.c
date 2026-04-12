@@ -2,27 +2,39 @@
 #include <zephyr/sys/printk.h> 
 #include <zephyr/drivers/sensor.h>
 #include "state_machine.h"
-#include "imu.h"
+// #include "imu.h"
 #include "lidar.h"
+#include "bno.h"
+#include "ledCtrl.h"
 #include "uart.h"
 #include <stdio.h> 
 #include <stdalign.h>
 
+
+// static const struct device *bno055_dev = DEVICE_DT_GET(DT_NODELABEL(bno)); 
+
 // define thread
 #define STACK_SIZE      2048
 #define COMMS_PRIORITY  1
-#define IMU_STACK_SIZE 1024
-#define IMU_PRIORITY   3
+#define BNO_STACK_SIZE 1024
+#define BNO_PRIORITY   3
 #define LIDAR_STACK_SIZE 1024
 #define LIDAR_PRIORITY 4
-#define MAX_IMU_MSGQ_LEN 16
+#define MAX_BNO_MSGQ_LEN 16
 #define MAX_LIDAR_MSGQ_LEN 8
-#define IMU_SEM_INIT_COUNT 0 
-#define IMU_SEM_MAX_COUNT 1
-#define IMU_THREAD_PRIORITY 2
-#define UART_CONSUMER_STACK 1024
+#define BNO_SEM_INIT_COUNT 0 
+#define BNO_SEM_MAX_COUNT 1
+#define BNO_THREAD_PRIORITY 2
+#define UART_CONSUMER_STACK_SIZE 1024
 #define UART_CONSUMER_PRIORITY 5
+#define TOP_LEFT  1
+#define TOP_RIGHT  2
+#define BOTTOM_LEFT  0
+#define BOTTOM_RIGHT  3
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 //lidar section
 K_SEM_DEFINE(lidar_sem, 0, 1);
@@ -36,39 +48,74 @@ static struct k_thread lidar_consumer_thread_data;
 K_THREAD_STACK_DEFINE(state_machine_stack, STACK_SIZE);
 static struct k_thread state_machine_thread_data;
 
-K_THREAD_STACK_DEFINE(imu_consumer_stack, IMU_STACK_SIZE);
-static struct k_thread imu_consumer_thread_data;
+K_THREAD_STACK_DEFINE(bno_consumer_stack, BNO_STACK_SIZE);
+static struct k_thread bno_consumer_thread_data;
 
 
-K_MSGQ_DEFINE(imu_msgq, sizeof(struct imu_data), MAX_IMU_MSGQ_LEN, alignof(int));
-K_SEM_DEFINE(imu_sem, IMU_SEM_INIT_COUNT, IMU_SEM_MAX_COUNT);
+K_MSGQ_DEFINE(bno_msgq, sizeof(struct bno_data), MAX_BNO_MSGQ_LEN, alignof(int));
+K_SEM_DEFINE(bno_sem, BNO_SEM_INIT_COUNT, BNO_SEM_MAX_COUNT);
 
 
-K_THREAD_DEFINE(imu_thread, IMU_STACK_SIZE, imu_read_thread, NULL, NULL, NULL, IMU_THREAD_PRIORITY, 0, 0);
+K_THREAD_DEFINE(bno_thread, BNO_STACK_SIZE, bno_read_thread, NULL, NULL, NULL, BNO_THREAD_PRIORITY, 0, 0);
 K_THREAD_DEFINE(lidar_thread, LIDAR_STACK_SIZE, lidar_read_thread, NULL, NULL, NULL, LIDAR_PRIORITY, 0, 0);
 
 //uart section
-K_THREAD_STACK_DEFINE(uart_consumer_stack, UART_CONSUMER_STACK);
+K_THREAD_STACK_DEFINE(uart_consumer_stack, UART_CONSUMER_STACK_SIZE);
 static struct k_thread uart_consumer_thread_data;
 K_MSGQ_DEFINE(uart_rx_msgq, sizeof(struct uart_msg), 16, alignof(struct uart_msg));
 
 
-// Demo app for the IMU Consumer 
-static void imu_consumer(void *arg1, void *arg2, void *arg3) {
-    struct imu_data out; 
-    printk("IMU consumer thread started\n");
-    
+// Demo app for the BNO Consumer 
+static void bno_consumer(void *arg1, void *arg2, void *arg3) {
+   struct bno_data out;
+    printk("BNO consumer thread started - Motor Emulation Mode\n");
+
     while (1) {
-        int rc = imu_get(&out, K_FOREVER);
-        if (rc == 0) {
-            printk("[%s] Temp: %.2f C, Accel: [%.2f, %.2f, %.2f] m/s², Gyro: [%.2f, %.2f, %.2f] dps\n",
-                   now_str(), out.temp,
-                   out.accel[0], out.accel[1], out.accel[2],
-                   out.gyro[0], out.gyro[1], out.gyro[2]);
-        } else {
-            printk("Failed to get IMU data: %d\n", rc);
+        int rc = bno_get(&out, K_MSEC(100));
+        if (rc != 0) {
+            for (int i = 0; i < 4; i++) {
+                set_led_intensity(i, 10);
+            }
+            k_msleep(50);
+            continue;
         }
-        k_msleep(100); // Add small delay to prevent spam
+
+        // Invert signs to match physical frame orientation of the rig.
+        float pitch = -out.eul.pitch;
+        float roll  = -out.eul.roll;
+
+        int base = 50;
+
+        // Gains tuned to observed ranges: pitch ±3.5 -> ±25, roll ±1.5 -> ±25
+        float pitch_gain = 25.1f;
+        float roll_gain  = 32.7f;
+
+        int front_left  = base + (int)(pitch_gain * pitch) + (int)(roll_gain * roll);
+        int front_right = base - (int)(pitch_gain * pitch) + (int)(roll_gain * roll);
+        int back_left   = base + (int)(pitch_gain * pitch) - (int)(roll_gain * roll);
+        int back_right  = base - (int)(pitch_gain * pitch) - (int)(roll_gain * roll);
+
+        if (front_left  < 0) front_left  = 0; else if (front_left  > 100) front_left  = 100;
+        if (front_right < 0) front_right = 0; else if (front_right > 100) front_right = 100;
+        if (back_left   < 0) back_left   = 0; else if (back_left   > 100) back_left   = 100;
+        if (back_right  < 0) back_right  = 0; else if (back_right  > 100) back_right  = 100;
+
+        set_led_intensity(TOP_LEFT,     front_left);
+        set_led_intensity(TOP_RIGHT,    front_right);
+        set_led_intensity(BOTTOM_LEFT,  back_left);
+        set_led_intensity(BOTTOM_RIGHT, back_right);
+
+        // static int print_counter = 0;
+        // if (++print_counter >= 10) {
+        // printk("[%s] P:%.2f R:%.2f Y:%.2f | Motors FL:%d FR:%d BL:%d BR:%d\n",
+        //         now_str(),
+        //         (double)pitch, (double)roll, (double)out.eul.yaw,
+        //         front_left, front_right, back_left, back_right);
+            // print_counter = 0;
+        // }
+        // printk("BNO consumer thread heartbeat\n");
+
+        k_msleep(50);  // 20 Hz control loop
     }
 }
 
@@ -128,17 +175,17 @@ int main(void)
     const struct device *i2c0_dev = DEVICE_DT_GET(DT_NODELABEL(i2c0));
     const struct device *i2c1_dev = DEVICE_DT_GET(DT_NODELABEL(i2c1));
 
-
+    
     printk("I2C0 ready: %s\n", device_is_ready(i2c0_dev) ? "YES" : "NO");
     printk("I2C1 ready: %s\n", device_is_ready(i2c1_dev) ? "YES" : "NO");
     
-    printk("Starting LiDAR-Lite V4 and IMU test app...\n");
+    printk("Starting LiDAR-Lite V4 and BNO test app...\n");
 
-    //Initialize IMU 
-    const struct device *const mpu6050 = DEVICE_DT_GET(DT_NODELABEL(mpu6050));
-    int rc = imu_init(mpu6050);
+    //Initialize BNO
+    const struct device *const bno = DEVICE_DT_GET(DT_NODELABEL(bno));
+    int rc = bno_init(bno);
     if (rc != 0) {
-        printk("imu_init failed: %d\n", rc);
+        printk("bno_init failed: %d\n", rc);
         return rc;
     }
 
@@ -147,7 +194,7 @@ int main(void)
     rc = lidar_init(lidar_device); 
     if(rc != 0) { 
         printk("lidar_init failed: %d\n", rc);
-        return rc;
+        // return rc;
     }
 
     //Initialize UART
@@ -156,6 +203,8 @@ int main(void)
     if(uc != 0){
         printk("uart_init failed: %d\n",uc);
     }
+    initialize_leds(); 
+    printk("Leds initialized\n");
 
 
 
@@ -164,13 +213,13 @@ int main(void)
                     state_machine_thread, NULL, NULL, NULL,
                     COMMS_PRIORITY, 0, K_NO_WAIT);
 
-    // Start IMU consumer thread (the one that prints data)
-    k_thread_create(&imu_consumer_thread_data, 
-                    imu_consumer_stack, 
-                    IMU_STACK_SIZE, 
-                    imu_consumer, 
+    // Start BNO consumer thread (the one that prints data)
+    k_thread_create(&bno_consumer_thread_data, 
+                    bno_consumer_stack, 
+                    BNO_STACK_SIZE, 
+                    bno_consumer, 
                     NULL, NULL, NULL, 
-                    IMU_PRIORITY, 0, K_NO_WAIT);
+                    BNO_PRIORITY, 0, K_NO_WAIT);
      // Start LiDAR consumer thread (the one that prints data)
     k_thread_create(&lidar_consumer_thread_data, 
                     lidar_consumer_stack, 
@@ -180,7 +229,12 @@ int main(void)
                     LIDAR_PRIORITY, 0, K_NO_WAIT);
 
     // Start UART consumer thread (the one that prints data)
-    k_thread_create(&uart_consumer_thread_data, uart_consumer_stack, UART_CONSUMER_STACK, uart_consumer, NULL, NULL, NULL,UART_CONSUMER_PRIORITY, 0, K_NO_WAIT);
+    k_thread_create(&uart_consumer_thread_data, 
+                    uart_consumer_stack, 
+                    UART_CONSUMER_STACK_SIZE, 
+                    uart_consumer, 
+                    NULL, NULL, NULL,
+                    UART_CONSUMER_PRIORITY, 0, K_NO_WAIT);
 
     printk("All threads started\n");
 
@@ -188,5 +242,22 @@ int main(void)
     k_timer_start(&lidar_timer, K_MSEC(30), K_MSEC(30));
     
     printk("LiDAR timer started, monitoring data...\n");
+    // while(1) { 
+    //     for(int i = 0; i < 100; i++) { 
+    //         set_led_intensity(TOP_LEFT, i); 
+    //         // set_led_intensity(TOP_RIGHT, i); 
+    //         set_led_intensity(BOTTOM_LEFT, i); 
+    //         // set_led_intensity(BOTTOM_RIGHT, i); 
+    //         k_msleep(10);
+    //     }
+    //     k_msleep(1000); 
+    //     for(int i = 100; i>=0; i--) { 
+    //         set_led_intensity(TOP_LEFT, i); 
+    //         // set_led_intensity(TOP_RIGHT, i); 
+    //         set_led_intensity(BOTTOM_LEFT, i); 
+    //         // set_led_intensity(BOTTOM_RIGHT, i); 
+    //         k_msleep(10);
+    //     }
+    // }
     return 0;
 }

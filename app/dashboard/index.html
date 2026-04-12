@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test Automation</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/renderers/CSS2DRenderer.js"></script>
 </head>
 <body>
     <!-- Top Navigation -->
@@ -13,10 +16,6 @@
             <button class="menu-btn">☰</button>
             <span class="nav-title">TEST AUTOMATION</span>
         </div>
-        <div class="nav-right">
-            <button class="icon-btn">🔍</button>
-            <button class="icon-btn">👤</button>
-        </div>
     </nav>
 
     <div class="layout">
@@ -24,213 +23,292 @@
         <aside class="sidebar">
             <div class="sidebar-section">
                 <h3>Tests</h3>
-                <ul class="test-list">
-                    <li class="active">All tests</li>
-                    <li>Recent</li>
-                    <li>Pinned</li>
-                    <li>Suites/Tags</li>
-                </ul>
-            </div>
-            
-            <div class="sidebar-section">
-                <div class="test-item">
-                    <div class="test-header">
-                        <span class="test-name">Login Test</span>
-                        <span class="test-tag">Smoke</span>
-                    </div>
-                    <div class="test-status">
-                        <span class="test-category">UI Tests</span>
-                        <span class="status-badge failed">FAILED</span>
-                    </div>
+                <div class="all-tests-group">
+                    <div class="all-tests-label">All tests</div>
+                    <ul class="all-tests-subnav">
+                        <li>
+                            <button type="button" class="nav-sub-link active" data-panel="custom">Custom Test Input</button>
+                        </li>
+                        <li>
+                            <button type="button" class="nav-sub-link" data-panel="preset-hover">Hover Test</button>
+                        </li>
+                        <li>
+                            <button type="button" class="nav-sub-link" data-panel="preset-circular">Circular Test</button>
+                        </li>
+                        <li>
+                            <button type="button" class="nav-sub-link" data-panel="preset-step">Step Test</button>
+                        </li>
+                        <li>
+                            <button type="button" class="nav-sub-link" data-panel="preset-trapezoidal">Trapezoidal Test</button>
+                        </li>
+                    </ul>
                 </div>
-                
-                <div class="test-item">
-                    <div class="test-header">
-                        <span class="test-name">Checkout Test</span>
-                        <span class="test-tag">Stress</span>
-                    </div>
-                    <div class="test-status">
-                        <span class="test-category">UI Tests</span>
-                        <span class="status-badge passed">PASSED</span>
-                    </div>
-                </div>
-                
-                <div class="test-item">
-                    <span class="test-name">Purchase Test</span>
-                </div>
-                
-                <div class="test-item">
-                    <div class="test-header">
-                        <span class="test-name">Search Test</span>
-                        <span class="test-duration">5m 47s</span>
-                    </div>
-                </div>
-                
-                <div class="test-item">
-                    <div class="test-header">
-                        <span class="test-name">User Registration Test</span>
-                        <span class="test-duration">9m 02s</span>
-                    </div>
-                </div>
-                
-                <div class="test-item">
-                    <div class="test-header">
-                        <span class="test-name">Payment Test</span>
-                        <span class="test-duration">5m 19s</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="sidebar-tabs">
-                <button class="tab-btn active">Steps</button>
-                <button class="tab-btn">Artifacts</button>
-                <button class="tab-btn">Metrics</button>
             </div>
         </aside>
+      
 
         <!-- Main Content -->
         <main class="main-content">
-            <!-- Search Section -->
-            <section class="search-section">
-                <div class="section-header">
-                    <h1>Search Test</h1>
-                    <span class="status-badge passed large">PASSED</span>
+            <!-- Custom Test Input Section -->
+            <section class="input-section">
+                <h2>Custom Test Input</h2>
+                <p class="section-subtitle">Enter waypoints manually or paste raw positional data (JSON/CSV) to generate an RC command sequence.</p>
+
+                <div class="input-tabs">
+                    <button class="input-tab-btn active" data-tab="waypoints">Waypoints</button>
+                    <button class="input-tab-btn" data-tab="raw">Raw Data (JSON/CSV)</button>
                 </div>
-                <p class="test-category">UI Tests</p>
-                
-                <div class="test-controls">
-                    <div class="control-group">
-                        <label>Environment</label>
-                        <select>
-                            <option>Development</option>
+
+                <!-- Waypoint entry -->
+                <div id="tab-waypoints" class="input-tab-content active">
+                    <div class="waypoint-controls">
+                        <div class="control-group">
+                            <label>X (m)</label>
+                            <input type="number" id="wp-x" step="0.5" placeholder="0">
+                        </div>
+                        <div class="control-group">
+                            <label>Y (m)</label>
+                            <input type="number" id="wp-y" step="0.5" placeholder="0">
+                        </div>
+                        <div class="control-group">
+                            <label>Z (m)</label>
+                            <input type="number" id="wp-z" step="0.5" placeholder="0">
+                        </div>
+                        <button class="add-btn" id="addWaypointBtn">+ Add Waypoint</button>
+                        <button class="clear-btn" id="clearWaypointsBtn">Clear</button>
+                    </div>
+
+                    <table class="waypoints-table" id="waypointsTable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>X (m)</th>
+                                <th>Y (m)</th>
+                                <th>Z (m)</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="waypointsBody"></tbody>
+                    </table>
+
+                    <button class="run-btn" id="convertWaypointsBtn" style="margin-top:12px">Convert to RC Commands</button>
+                </div>
+
+                <!-- Raw data paste -->
+                <div id="tab-raw" class="input-tab-content">
+                    <textarea id="rawDataInput" class="raw-input" placeholder='Paste JSON array or CSV with columns: x, y, z (and optionally timestamp, vx, vy, vz)'></textarea>
+                    <div class="raw-actions">
+                        <select id="rawFormatSelect" class="log-filter">
+                            <option value="json">JSON</option>
+                            <option value="csv">CSV</option>
                         </select>
+                        <button class="run-btn" id="convertRawBtn">Convert to RC Commands</button>
                     </div>
-                    <div class="control-group">
-                        <label>Retry on flake</label>
-                        <input type="checkbox">
-                    </div>
-                    <div class="control-group">
-                        <label>Seed</label>
-                        <input type="text" placeholder="e.g., 360" value="">
-                    </div>
-                    <div class="control-group">
-                        <label>Use seed</label>
-                        <input type="checkbox">
-                    </div>
-                    <div class="control-group">
-                        <label>Run as user</label>
-                        <input type="text" placeholder="email or username" value="">
-                    </div>
-                    <button class="run-btn">RUN</button>
                 </div>
-            </section>
 
-            <!-- Run Overview -->
-            <section class="overview-section">
-                <h2>Run Overview</h2>
-                <table class="overview-table">
-                    <thead>
-                        <tr>
-                            <th>Status</th>
-                            <th>Start Time</th>
-                            <th>Duration</th>
-                            <th>Triggered By</th>
-                            <th>Commit</th>
-                            <th>Agent</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><span class="status-badge passed">PASSED</span></td>
-                            <td>Apr 23, 2024</td>
-                            <td>00:03:21</td>
-                            <td>user2</td>
-                            <td>abc123</td>
-                            <td>node-03</td>
-                        </tr>
-                    </tbody>
-                </table>
-                
-                <div class="progress-phases">
-                    <div class="phase">
-                        <span>Setup</span>
-                        <div class="phase-bar setup"></div>
+                <!-- RC output -->
+                <div class="rc-output" id="rcOutput" style="display:none">
+                    <h3>RC Command Output</h3>
+                    <div class="rc-result" id="rcResult"></div>
+                    <div class="rc-meta" id="rcMeta"></div>
+                    <button class="run-btn" id="sendToServerBtn">Send to Test Node</button>
+                </div>
+
+                <!-- 3D Visualizer -->
+                <div class="viz3d-section">
+                    <div class="viz3d-header">
+                        <h3>3D Flight Path Visualizer</h3>
+                        <div class="viz3d-legend">
+                            <span class="legend-dot" style="background:#14b8a6"></span><span>Start</span>
+                            <span class="legend-dot" style="background:#4a7bc0"></span><span>Waypoint</span>
+                            <span class="legend-dot" style="background:#d97706"></span><span>End</span>
+                        </div>
                     </div>
-                    <div class="phase">
-                        <span>Execute</span>
-                        <div class="phase-bar execute"></div>
+                    <div id="viz3d" class="viz3d-canvas">
+                        <p class="viz3d-placeholder">Add waypoints to see the 3D flight path</p>
                     </div>
-                    <div class="phase">
-                        <span>Teardown</span>
-                        <div class="phase-bar"></div>
+                    <div class="viz3d-footer">
+                        <span class="axis-label" style="color:#ff5555">X (R/L)</span>
+                        <span class="axis-label" style="color:#55ff55">Z (Up/Down)</span>
+                        <span class="axis-label" style="color:#5599ff">Y (F/B)</span>
+                        <span class="viz3d-hint">Drag to rotate &nbsp;·&nbsp; Scroll to zoom &nbsp;·&nbsp; Right-drag to pan</span>
                     </div>
                 </div>
             </section>
+            </div>
 
-            <!-- Logs Section -->
-            <section class="logs-section">
-                <h2>Logs</h2>
-                <div class="logs-controls">
-                    <div class="search-box">
-                        <input type="text" placeholder="🔍 Search">
+            <div id="panel-preset-hover" class="workspace-panel" data-preset-key="hover">
+                <section class="input-section preset-test-section">
+                    <h2>Hover Test</h2>
+                    <p class="section-subtitle">Waypoint series from <code>/tests/generateTests/JSONtests/hover_test.json</code>. The output box below lists the RC string produced by stepping through each JSON sample pair.</p>
+                    <p class="preset-load-status" id="presetStatusHover" role="status"></p>
+                    <div class="preset-viz-rc-grid">
+                        <div class="preset-rc-col">
+                            <div class="rc-output">
+                                <h3>RC Command Output</h3>
+                                <div class="rc-result" id="rcResultHover"></div>
+                                <div class="rc-meta" id="rcMetaHover"></div>
+                                <button type="button" class="run-btn" data-send-preset="hover">Send to Test Node</button>
+                            </div>
+                        </div>
+                        <div class="preset-viz-col">
+                            <div class="viz3d-section">
+                                <div class="viz3d-header">
+                                    <h3>3D Flight Path Visualizer</h3>
+                                    <div class="viz3d-legend">
+                                        <span class="legend-dot" style="background:#14b8a6"></span><span>Start</span>
+                                        <span class="legend-dot" style="background:#4a7bc0"></span><span>Waypoint</span>
+                                        <span class="legend-dot" style="background:#d97706"></span><span>End</span>
+                                    </div>
+                                </div>
+                                <div id="viz-hover" class="viz3d-canvas">
+                                    <p class="viz3d-placeholder">Loading flight data</p>
+                                </div>
+                                <div class="viz3d-footer">
+                                    <span class="axis-label" style="color:#ff5555">X (R/L)</span>
+                                    <span class="axis-label" style="color:#55ff55">Z (Up/Down)</span>
+                                    <span class="axis-label" style="color:#5599ff">Y (F/B)</span>
+                                    <span class="viz3d-hint">Drag to rotate &nbsp;·&nbsp; Scroll to zoom &nbsp;·&nbsp; Right-drag to pan</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <select class="log-filter">
-                        <option>INFO</option>
-                    </select>
-                    <div class="log-actions">
-                        <span>Step</span>
-                        <span>Source</span>
-                        <button class="icon-btn">⬇</button>
-                        <button class="icon-btn">🔄</button>
+                </section>
+            </div>
+
+            <div id="panel-preset-circular" class="workspace-panel" data-preset-key="circular">
+                <section class="input-section preset-test-section">
+                    <h2>Circular Test</h2>
+                    <p class="section-subtitle">Waypoint series from <code>/tests/generateTests/JSONtests/circular_test.json</code>. The output box below lists the RC string produced by stepping through each JSON sample pair.</p>
+                    <p class="preset-load-status" id="presetStatusCircular" role="status"></p>
+                    <div class="preset-viz-rc-grid">
+                        <div class="preset-rc-col">
+                            <div class="rc-output">
+                                <h3>RC Command Output</h3>
+                                <div class="rc-result" id="rcResultCircular"></div>
+                                <div class="rc-meta" id="rcMetaCircular"></div>
+                                <button type="button" class="run-btn" data-send-preset="circular">Send to Test Node</button>
+                            </div>
+                        </div>
+                        <div class="preset-viz-col">
+                            <div class="viz3d-section">
+                                <div class="viz3d-header">
+                                    <h3>3D Flight Path Visualizer</h3>
+                                    <div class="viz3d-legend">
+                                        <span class="legend-dot" style="background:#14b8a6"></span><span>Start</span>
+                                        <span class="legend-dot" style="background:#4a7bc0"></span><span>Waypoint</span>
+                                        <span class="legend-dot" style="background:#d97706"></span><span>End</span>
+                                    </div>
+                                </div>
+                                <div id="viz-circular" class="viz3d-canvas">
+                                    <p class="viz3d-placeholder">Loading flight data</p>
+                                </div>
+                                <div class="viz3d-footer">
+                                    <span class="axis-label" style="color:#ff5555">X (R/L)</span>
+                                    <span class="axis-label" style="color:#55ff55">Z (Up/Down)</span>
+                                    <span class="axis-label" style="color:#5599ff">Y (F/B)</span>
+                                    <span class="viz3d-hint">Drag to rotate &nbsp;·&nbsp; Scroll to zoom &nbsp;·&nbsp; Right-drag to pan</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                </section>
+            </div>
+
+            <div id="panel-preset-step" class="workspace-panel" data-preset-key="step">
+                <section class="input-section preset-test-section">
+                    <h2>Step Test</h2>
+                    <p class="section-subtitle">Waypoint series from <code>/tests/generateTests/JSONtests/step_test.json</code>. The output box below lists the RC string produced by stepping through each JSON sample pair.</p>
+                    <p class="preset-load-status" id="presetStatusStep" role="status"></p>
+                    <div class="preset-viz-rc-grid">
+                        <div class="preset-rc-col">
+                            <div class="rc-output">
+                                <h3>RC Command Output</h3>
+                                <div class="rc-result" id="rcResultStep"></div>
+                                <div class="rc-meta" id="rcMetaStep"></div>
+                                <button type="button" class="run-btn" data-send-preset="step">Send to Test Node</button>
+                            </div>
+                        </div>
+                        <div class="preset-viz-col">
+                            <div class="viz3d-section">
+                                <div class="viz3d-header">
+                                    <h3>3D Flight Path Visualizer</h3>
+                                    <div class="viz3d-legend">
+                                        <span class="legend-dot" style="background:#14b8a6"></span><span>Start</span>
+                                        <span class="legend-dot" style="background:#4a7bc0"></span><span>Waypoint</span>
+                                        <span class="legend-dot" style="background:#d97706"></span><span>End</span>
+                                    </div>
+                                </div>
+                                <div id="viz-step" class="viz3d-canvas">
+                                    <p class="viz3d-placeholder">Loading flight data</p>
+                                </div>
+                                <div class="viz3d-footer">
+                                    <span class="axis-label" style="color:#ff5555">X (R/L)</span>
+                                    <span class="axis-label" style="color:#55ff55">Z (Up/Down)</span>
+                                    <span class="axis-label" style="color:#5599ff">Y (F/B)</span>
+                                    <span class="viz3d-hint">Drag to rotate &nbsp;·&nbsp; Scroll to zoom &nbsp;·&nbsp; Right-drag to pan</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <div id="panel-preset-trapezoidal" class="workspace-panel" data-preset-key="trapezoidal">
+                <section class="input-section preset-test-section">
+                    <h2>Trapezoidal Test</h2>
+                    <p class="section-subtitle">Waypoint series from <code>/tests/generateTests/JSONtests/trapezoidal_test.json</code>. The output box below lists the RC string produced by stepping through each JSON sample pair.</p>
+                    <p class="preset-load-status" id="presetStatusTrapezoidal" role="status"></p>
+                    <div class="preset-viz-rc-grid">
+                        <div class="preset-rc-col">
+                            <div class="rc-output">
+                                <h3>RC Command Output</h3>
+                                <div class="rc-result" id="rcResultTrapezoidal"></div>
+                                <div class="rc-meta" id="rcMetaTrapezoidal"></div>
+                                <button type="button" class="run-btn" data-send-preset="trapezoidal">Send to Test Node</button>
+                            </div>
+                        </div>
+                        <div class="preset-viz-col">
+                            <div class="viz3d-section">
+                                <div class="viz3d-header">
+                                    <h3>3D Flight Path Visualizer</h3>
+                                    <div class="viz3d-legend">
+                                        <span class="legend-dot" style="background:#14b8a6"></span><span>Start</span>
+                                        <span class="legend-dot" style="background:#4a7bc0"></span><span>Waypoint</span>
+                                        <span class="legend-dot" style="background:#d97706"></span><span>End</span>
+                                    </div>
+                                </div>
+                                <div id="viz-trapezoidal" class="viz3d-canvas">
+                                    <p class="viz3d-placeholder">Loading flight data</p>
+                                </div>
+                                <div class="viz3d-footer">
+                                    <span class="axis-label" style="color:#ff5555">X (R/L)</span>
+                                    <span class="axis-label" style="color:#55ff55">Z (Up/Down)</span>
+                                    <span class="axis-label" style="color:#5599ff">Y (F/B)</span>
+                                    <span class="viz3d-hint">Drag to rotate &nbsp;·&nbsp; Scroll to zoom &nbsp;·&nbsp; Right-drag to pan</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            </div>
+
+            <!-- Flight Path History Section -->
+            <section class="history-section">
+                <div class="history-header">
+                    <div class="history-title-row">
+                        <h2>Flight Path History</h2>
+                    </div>
+                    <button class="clear-btn" id="clearHistoryBtn">Clear All</button>
                 </div>
-                
-                <table class="logs-table">
-                    <thead>
-                        <tr>
-                            <th>Time</th>
-                            <th>Level</th>
-                            <th>Step</th>
-                            <th>Message</th>
-                        </tr>
-                    </thead>
-                    <tbody id="logTableBody">
-                        <tr>
-                            <td>01:15:48</td>
-                            <td><span class="log-level info">INFO</span></td>
-                            <td>setup</td>
-                            <td>Initializing browser</td>
-                        </tr>
-                        <tr>
-                            <td>01:15:47</td>
-                            <td><span class="log-level warn">WARN</span></td>
-                            <td>execute</td>
-                            <td>Intermittent network delay</td>
-                        </tr>
-                        <tr>
-                            <td>01:15:30</td>
-                            <td><span class="log-level warn">WARN</span></td>
-                            <td>browser</td>
-                            <td>Search for "gavids" — prequery</td>
-                        </tr>
-                        <tr>
-                            <td>01:16:33</td>
-                            <td><span class="log-level info">INFO</span></td>
-                            <td>browser</td>
-                            <td>Result value: pass</td>
-                        </tr>
-                        <tr>
-                            <td>01:16:36</td>
-                            <td><span class="log-level info">INFO</span></td>
-                            <td>setup</td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div id="historyList" class="history-list">
+                    <p class="history-empty">No runs saved</p>
+                </div>
             </section>
         </main>
     </div>
     
-    <script src="script.js"></script>
+    <script src="script.js?v=9"></script>
 </body>
 </html>

@@ -98,10 +98,13 @@ build-esp32-ipm-esp32: _verify_workspace clean
 flash-esp32:
   west flash --build-dir build
 
-monitor-stm32:
-  python -m serial.tools.miniterm "{{STM_PORT}}" 115200
+flash-nucleo:
+  west flash --build-dir build
 
 monitor-esp32:
+  python -m serial.tools.miniterm "{{ESP_PORT}}" 115200
+
+monitor-nucleo:
   python -m serial.tools.miniterm "{{ESP_PORT}}" 115200
 
 run-esp32: build-esp32 flash-esp32 monitor-esp32
@@ -111,6 +114,8 @@ run-esp32-spi-example: build-esp32-spi-example flash-esp32 monitor-esp32
 run-esp32-spi-bitbang: build-esp32-spi-bitbang flash-esp32 monitor-esp32
 
 run-esp32-ipm-esp32: build-esp32-ipm-esp32 flash-esp32 monitor-esp32
+
+run-nucleo: build-nucleo flash-nucleo monitor-nucleo
 
 attach-wsl-usb-port:
   #!/usr/bin/env bash

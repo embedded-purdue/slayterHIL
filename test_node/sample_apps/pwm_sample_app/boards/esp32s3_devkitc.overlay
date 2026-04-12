@@ -1,0 +1,38 @@
+/* Note that this config is meant to send PWM signals as will be done in the real system */
+
+#include <zephyr/dt-bindings/pwm/pwm.h>
+
+/ {
+    aliases {
+        pwm-output = &pwm_out_0;
+    };
+
+    pwm-outputs {
+        compatible = "pwm-leds";
+        pwm_out_0: pwm_out_0 {
+            pwms = <&ledc0 0 20000000 PWM_POLARITY_NORMAL>; /* 20ms period (50Hz) */
+            label = "PWM_OUT_0";
+        };
+    };
+};
+
+&ledc0 {
+    pinctrl-0 = <&ledc0_pins>;
+    pinctrl-names = "default";
+    status = "okay";
+    #address-cells = <1>;
+    #size-cells = <0>;
+    channel0@0 {
+        reg = <0>;
+        timer = <0>;
+    };
+};
+
+&pinctrl {
+    ledc0_pins: ledc0_pins {
+        group1 {
+            pinmux = <LEDC_CH0_GPIO6>;
+            output-enable;
+        };
+    };
+};

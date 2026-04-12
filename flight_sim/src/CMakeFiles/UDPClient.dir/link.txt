@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/UDPClient.dir/UDPClient.cpp.o -o UDPClient  libproto_lib.a /usr/lib/aarch64-linux-gnu/libprotobuf.so 

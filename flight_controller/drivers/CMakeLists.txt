@@ -7,6 +7,7 @@
 cmake_minimum_required(VERSION 3.20.0)
 project(drivers)
 
-if(CONFIG_LIDAR_LITE_V4)
-  add_subdirectory(sensor/lidar_lite_v4)
-endif()
+# add_subdirectory(sensor/lidar_lite_v4)
+# add_subdirectory(sensor/bno055)
+add_subdirectory(sensor)
+
