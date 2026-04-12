@@ -27,20 +27,29 @@
         <aside class="sidebar">
             <div class="sidebar-section">
                 <h3>Tests</h3>
-                <ul class="test-list">
-                    <li class="active">All tests</li>
-                    <li>Recent</li>
-                    <li>Pinned</li>
-                    <li>Suites/Tags</li>
-                </ul>
-            </div>
-            
-            <div class="sidebar-tabs">
-                <button class="tab-btn active">Steps</button>
-                <button class="tab-btn">Artifacts</button>
-                <button class="tab-btn">Metrics</button>
+                <div class="all-tests-group">
+                    <div class="all-tests-label">All tests</div>
+                    <ul class="all-tests-subnav">
+                        <li>
+                            <button type="button" class="nav-sub-link active" data-panel="custom">Custom Test Input</button>
+                        </li>
+                        <li>
+                            <button type="button" class="nav-sub-link" data-panel="preset-hover">Hover Test</button>
+                        </li>
+                        <li>
+                            <button type="button" class="nav-sub-link" data-panel="preset-circular">Circular Test</button>
+                        </li>
+                        <li>
+                            <button type="button" class="nav-sub-link" data-panel="preset-step">Step Test</button>
+                        </li>
+                        <li>
+                            <button type="button" class="nav-sub-link" data-panel="preset-trapezoidal">Trapezoidal Test</button>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </aside>
+      
 
         <!-- Main Content -->
         <main class="main-content">
@@ -121,6 +130,9 @@
                 </div>
             </section>
 
+            <!-- Workspace: custom input or preset JSON tests (only one visible) -->
+            <div id="workspace-panels">
+            <div id="panel-custom" class="workspace-panel active">
             <!-- Custom Test Input Section -->
             <section class="input-section">
                 <h2>Custom Test Input</h2>
@@ -183,10 +195,7 @@
                     <h3>RC Command Output</h3>
                     <div class="rc-result" id="rcResult"></div>
                     <div class="rc-meta" id="rcMeta"></div>
-                    <div class="rc-actions">
-                        <button class="run-btn" id="sendToServerBtn">Send to Test Node</button>
-                        <button class="save-run-btn" id="saveRunBtn">Save Run</button>
-                    </div>
+                    <button class="run-btn" id="sendToServerBtn">Send to Test Node</button>
                 </div>
 
                 <!-- 3D Visualizer -->
@@ -210,26 +219,171 @@
                     </div>
                 </div>
             </section>
+            </div>
 
-            <!-- Flight Path History Section -->
-            <section class="history-section">
-                <div class="history-header">
-                    <div class="history-title-row">
-                        <h2>Flight Path History</h2>
+            <div id="panel-preset-hover" class="workspace-panel" data-preset-key="hover">
+                <section class="input-section preset-test-section">
+                    <h2>Hover Test</h2>
+                    <p class="section-subtitle">Waypoint series from <code>/tests/generateTests/JSONtests/hover_test.json</code>. The output box below lists the RC string produced by stepping through each JSON sample pair.</p>
+                    <p class="preset-load-status" id="presetStatusHover" role="status"></p>
+                    <div class="preset-viz-rc-grid">
+                        <div class="preset-rc-col">
+                            <div class="rc-output">
+                                <h3>RC Command Output</h3>
+                                <div class="rc-result" id="rcResultHover"></div>
+                                <div class="rc-meta" id="rcMetaHover"></div>
+                                <button type="button" class="run-btn" data-send-preset="hover">Send to Test Node</button>
+                            </div>
+                        </div>
+                        <div class="preset-viz-col">
+                            <div class="viz3d-section">
+                                <div class="viz3d-header">
+                                    <h3>3D Flight Path Visualizer</h3>
+                                    <div class="viz3d-legend">
+                                        <span class="legend-dot" style="background:#14b8a6"></span><span>Start</span>
+                                        <span class="legend-dot" style="background:#4a7bc0"></span><span>Waypoint</span>
+                                        <span class="legend-dot" style="background:#d97706"></span><span>End</span>
+                                    </div>
+                                </div>
+                                <div id="viz-hover" class="viz3d-canvas">
+                                    <p class="viz3d-placeholder">Loading flight data</p>
+                                </div>
+                                <div class="viz3d-footer">
+                                    <span class="axis-label" style="color:#ff5555">X (R/L)</span>
+                                    <span class="axis-label" style="color:#55ff55">Z (Up/Down)</span>
+                                    <span class="axis-label" style="color:#5599ff">Y (F/B)</span>
+                                    <span class="viz3d-hint">Drag to rotate &nbsp;·&nbsp; Scroll to zoom &nbsp;·&nbsp; Right-drag to pan</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <button class="clear-btn" id="clearHistoryBtn">Clear All</button>
-                </div>
-                <div id="historyList" class="history-list">
-                    <p class="history-empty">No runs saved</p>
-                </div>
-            </section>
+                </section>
+            </div>
+
+            <div id="panel-preset-circular" class="workspace-panel" data-preset-key="circular">
+                <section class="input-section preset-test-section">
+                    <h2>Circular Test</h2>
+                    <p class="section-subtitle">Waypoint series from <code>/tests/generateTests/JSONtests/circular_test.json</code>. The output box below lists the RC string produced by stepping through each JSON sample pair.</p>
+                    <p class="preset-load-status" id="presetStatusCircular" role="status"></p>
+                    <div class="preset-viz-rc-grid">
+                        <div class="preset-rc-col">
+                            <div class="rc-output">
+                                <h3>RC Command Output</h3>
+                                <div class="rc-result" id="rcResultCircular"></div>
+                                <div class="rc-meta" id="rcMetaCircular"></div>
+                                <button type="button" class="run-btn" data-send-preset="circular">Send to Test Node</button>
+                            </div>
+                        </div>
+                        <div class="preset-viz-col">
+                            <div class="viz3d-section">
+                                <div class="viz3d-header">
+                                    <h3>3D Flight Path Visualizer</h3>
+                                    <div class="viz3d-legend">
+                                        <span class="legend-dot" style="background:#14b8a6"></span><span>Start</span>
+                                        <span class="legend-dot" style="background:#4a7bc0"></span><span>Waypoint</span>
+                                        <span class="legend-dot" style="background:#d97706"></span><span>End</span>
+                                    </div>
+                                </div>
+                                <div id="viz-circular" class="viz3d-canvas">
+                                    <p class="viz3d-placeholder">Loading flight data</p>
+                                </div>
+                                <div class="viz3d-footer">
+                                    <span class="axis-label" style="color:#ff5555">X (R/L)</span>
+                                    <span class="axis-label" style="color:#55ff55">Z (Up/Down)</span>
+                                    <span class="axis-label" style="color:#5599ff">Y (F/B)</span>
+                                    <span class="viz3d-hint">Drag to rotate &nbsp;·&nbsp; Scroll to zoom &nbsp;·&nbsp; Right-drag to pan</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <div id="panel-preset-step" class="workspace-panel" data-preset-key="step">
+                <section class="input-section preset-test-section">
+                    <h2>Step Test</h2>
+                    <p class="section-subtitle">Waypoint series from <code>/tests/generateTests/JSONtests/step_test.json</code>. The output box below lists the RC string produced by stepping through each JSON sample pair.</p>
+                    <p class="preset-load-status" id="presetStatusStep" role="status"></p>
+                    <div class="preset-viz-rc-grid">
+                        <div class="preset-rc-col">
+                            <div class="rc-output">
+                                <h3>RC Command Output</h3>
+                                <div class="rc-result" id="rcResultStep"></div>
+                                <div class="rc-meta" id="rcMetaStep"></div>
+                                <button type="button" class="run-btn" data-send-preset="step">Send to Test Node</button>
+                            </div>
+                        </div>
+                        <div class="preset-viz-col">
+                            <div class="viz3d-section">
+                                <div class="viz3d-header">
+                                    <h3>3D Flight Path Visualizer</h3>
+                                    <div class="viz3d-legend">
+                                        <span class="legend-dot" style="background:#14b8a6"></span><span>Start</span>
+                                        <span class="legend-dot" style="background:#4a7bc0"></span><span>Waypoint</span>
+                                        <span class="legend-dot" style="background:#d97706"></span><span>End</span>
+                                    </div>
+                                </div>
+                                <div id="viz-step" class="viz3d-canvas">
+                                    <p class="viz3d-placeholder">Loading flight data</p>
+                                </div>
+                                <div class="viz3d-footer">
+                                    <span class="axis-label" style="color:#ff5555">X (R/L)</span>
+                                    <span class="axis-label" style="color:#55ff55">Z (Up/Down)</span>
+                                    <span class="axis-label" style="color:#5599ff">Y (F/B)</span>
+                                    <span class="viz3d-hint">Drag to rotate &nbsp;·&nbsp; Scroll to zoom &nbsp;·&nbsp; Right-drag to pan</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <div id="panel-preset-trapezoidal" class="workspace-panel" data-preset-key="trapezoidal">
+                <section class="input-section preset-test-section">
+                    <h2>Trapezoidal Test</h2>
+                    <p class="section-subtitle">Waypoint series from <code>/tests/generateTests/JSONtests/trapezoidal_test.json</code>. The output box below lists the RC string produced by stepping through each JSON sample pair.</p>
+                    <p class="preset-load-status" id="presetStatusTrapezoidal" role="status"></p>
+                    <div class="preset-viz-rc-grid">
+                        <div class="preset-rc-col">
+                            <div class="rc-output">
+                                <h3>RC Command Output</h3>
+                                <div class="rc-result" id="rcResultTrapezoidal"></div>
+                                <div class="rc-meta" id="rcMetaTrapezoidal"></div>
+                                <button type="button" class="run-btn" data-send-preset="trapezoidal">Send to Test Node</button>
+                            </div>
+                        </div>
+                        <div class="preset-viz-col">
+                            <div class="viz3d-section">
+                                <div class="viz3d-header">
+                                    <h3>3D Flight Path Visualizer</h3>
+                                    <div class="viz3d-legend">
+                                        <span class="legend-dot" style="background:#14b8a6"></span><span>Start</span>
+                                        <span class="legend-dot" style="background:#4a7bc0"></span><span>Waypoint</span>
+                                        <span class="legend-dot" style="background:#d97706"></span><span>End</span>
+                                    </div>
+                                </div>
+                                <div id="viz-trapezoidal" class="viz3d-canvas">
+                                    <p class="viz3d-placeholder">Loading flight data</p>
+                                </div>
+                                <div class="viz3d-footer">
+                                    <span class="axis-label" style="color:#ff5555">X (R/L)</span>
+                                    <span class="axis-label" style="color:#55ff55">Z (Up/Down)</span>
+                                    <span class="axis-label" style="color:#5599ff">Y (F/B)</span>
+                                    <span class="viz3d-hint">Drag to rotate &nbsp;·&nbsp; Scroll to zoom &nbsp;·&nbsp; Right-drag to pan</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            </div>
 
             <!-- Logs Section -->
             <section class="logs-section">
                 <h2>Logs</h2>
                 <div class="logs-controls">
                     <div class="search-box">
-                        <input type="text" placeholder="Search">
+                        <input type="text" placeholder="🔍 Search">
                     </div>
                     <select class="log-filter">
                         <option>INFO</option>
@@ -268,7 +422,7 @@
                             <td>01:15:30</td>
                             <td><span class="log-level warn">WARN</span></td>
                             <td>browser</td>
-                            <td>Search for "gavids" — prequery</td>
+                            <td>Search for "gavids", prequery</td>
                         </tr>
                         <tr>
                             <td>01:16:33</td>
@@ -288,6 +442,6 @@
         </main>
     </div>
     
-    <script src="script.js?v=7"></script>
+    <script src="script.js?v=9"></script>
 </body>
 </html>
