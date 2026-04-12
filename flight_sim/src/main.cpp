@@ -22,9 +22,7 @@ int main() {
   std::vector<Waypoint> path;
 
   std::vector<Eigen::Vector3d> rc_instructions;
-  std::cout << "OUT\n";
   rc_instructions = rc_read("test.txt");
-  std::cout << "IN\n";
   double time = 0.0;
   for (Eigen::Vector3d instruction : rc_instructions) {
     Waypoint temp = {time, instruction};
