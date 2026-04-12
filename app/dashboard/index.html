@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test Automation</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/renderers/CSS2DRenderer.js"></script>
 </head>
 <body>
     <!-- Top Navigation -->
@@ -30,55 +33,6 @@
                     <li>Pinned</li>
                     <li>Suites/Tags</li>
                 </ul>
-            </div>
-            
-            <div class="sidebar-section">
-                <div class="test-item">
-                    <div class="test-header">
-                        <span class="test-name">Login Test</span>
-                        <span class="test-tag">Smoke</span>
-                    </div>
-                    <div class="test-status">
-                        <span class="test-category">UI Tests</span>
-                        <span class="status-badge failed">FAILED</span>
-                    </div>
-                </div>
-                
-                <div class="test-item">
-                    <div class="test-header">
-                        <span class="test-name">Checkout Test</span>
-                        <span class="test-tag">Stress</span>
-                    </div>
-                    <div class="test-status">
-                        <span class="test-category">UI Tests</span>
-                        <span class="status-badge passed">PASSED</span>
-                    </div>
-                </div>
-                
-                <div class="test-item">
-                    <span class="test-name">Purchase Test</span>
-                </div>
-                
-                <div class="test-item">
-                    <div class="test-header">
-                        <span class="test-name">Search Test</span>
-                        <span class="test-duration">5m 47s</span>
-                    </div>
-                </div>
-                
-                <div class="test-item">
-                    <div class="test-header">
-                        <span class="test-name">User Registration Test</span>
-                        <span class="test-duration">9m 02s</span>
-                    </div>
-                </div>
-                
-                <div class="test-item">
-                    <div class="test-header">
-                        <span class="test-name">Payment Test</span>
-                        <span class="test-duration">5m 19s</span>
-                    </div>
-                </div>
             </div>
             
             <div class="sidebar-tabs">
@@ -167,12 +121,115 @@
                 </div>
             </section>
 
+            <!-- Custom Test Input Section -->
+            <section class="input-section">
+                <h2>Custom Test Input</h2>
+                <p class="section-subtitle">Enter waypoints manually or paste raw positional data (JSON/CSV) to generate an RC command sequence.</p>
+
+                <div class="input-tabs">
+                    <button class="input-tab-btn active" data-tab="waypoints">Waypoints</button>
+                    <button class="input-tab-btn" data-tab="raw">Raw Data (JSON/CSV)</button>
+                </div>
+
+                <!-- Waypoint entry -->
+                <div id="tab-waypoints" class="input-tab-content active">
+                    <div class="waypoint-controls">
+                        <div class="control-group">
+                            <label>X (m)</label>
+                            <input type="number" id="wp-x" step="0.5" placeholder="0">
+                        </div>
+                        <div class="control-group">
+                            <label>Y (m)</label>
+                            <input type="number" id="wp-y" step="0.5" placeholder="0">
+                        </div>
+                        <div class="control-group">
+                            <label>Z (m)</label>
+                            <input type="number" id="wp-z" step="0.5" placeholder="0">
+                        </div>
+                        <button class="add-btn" id="addWaypointBtn">+ Add Waypoint</button>
+                        <button class="clear-btn" id="clearWaypointsBtn">Clear</button>
+                    </div>
+
+                    <table class="waypoints-table" id="waypointsTable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>X (m)</th>
+                                <th>Y (m)</th>
+                                <th>Z (m)</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="waypointsBody"></tbody>
+                    </table>
+
+                    <button class="run-btn" id="convertWaypointsBtn" style="margin-top:12px">Convert to RC Commands</button>
+                </div>
+
+                <!-- Raw data paste -->
+                <div id="tab-raw" class="input-tab-content">
+                    <textarea id="rawDataInput" class="raw-input" placeholder='Paste JSON array or CSV with columns: x, y, z (and optionally timestamp, vx, vy, vz)'></textarea>
+                    <div class="raw-actions">
+                        <select id="rawFormatSelect" class="log-filter">
+                            <option value="json">JSON</option>
+                            <option value="csv">CSV</option>
+                        </select>
+                        <button class="run-btn" id="convertRawBtn">Convert to RC Commands</button>
+                    </div>
+                </div>
+
+                <!-- RC output -->
+                <div class="rc-output" id="rcOutput" style="display:none">
+                    <h3>RC Command Output</h3>
+                    <div class="rc-result" id="rcResult"></div>
+                    <div class="rc-meta" id="rcMeta"></div>
+                    <div class="rc-actions">
+                        <button class="run-btn" id="sendToServerBtn">Send to Test Node</button>
+                        <button class="save-run-btn" id="saveRunBtn">Save Run</button>
+                    </div>
+                </div>
+
+                <!-- 3D Visualizer -->
+                <div class="viz3d-section">
+                    <div class="viz3d-header">
+                        <h3>3D Flight Path Visualizer</h3>
+                        <div class="viz3d-legend">
+                            <span class="legend-dot" style="background:#14b8a6"></span><span>Start</span>
+                            <span class="legend-dot" style="background:#4a7bc0"></span><span>Waypoint</span>
+                            <span class="legend-dot" style="background:#d97706"></span><span>End</span>
+                        </div>
+                    </div>
+                    <div id="viz3d" class="viz3d-canvas">
+                        <p class="viz3d-placeholder">Add waypoints to see the 3D flight path</p>
+                    </div>
+                    <div class="viz3d-footer">
+                        <span class="axis-label" style="color:#ff5555">X (R/L)</span>
+                        <span class="axis-label" style="color:#55ff55">Z (Up/Down)</span>
+                        <span class="axis-label" style="color:#5599ff">Y (F/B)</span>
+                        <span class="viz3d-hint">Drag to rotate &nbsp;·&nbsp; Scroll to zoom &nbsp;·&nbsp; Right-drag to pan</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Flight Path History Section -->
+            <section class="history-section">
+                <div class="history-header">
+                    <div class="history-title-row">
+                        <h2>Flight Path History</h2>
+                    </div>
+                    <button class="clear-btn" id="clearHistoryBtn">Clear All</button>
+                </div>
+                <div id="historyList" class="history-list">
+                    <p class="history-empty">No runs saved</p>
+                </div>
+            </section>
+
             <!-- Logs Section -->
             <section class="logs-section">
                 <h2>Logs</h2>
                 <div class="logs-controls">
                     <div class="search-box">
-                        <input type="text" placeholder="🔍 Search">
+                        <input type="text" placeholder="Search">
                     </div>
                     <select class="log-filter">
                         <option>INFO</option>
@@ -231,6 +288,6 @@
         </main>
     </div>
     
-    <script src="script.js"></script>
+    <script src="script.js?v=7"></script>
 </body>
 </html>

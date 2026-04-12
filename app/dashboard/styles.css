@@ -181,6 +181,11 @@ body {
     color: #fff;
 }
 
+.status-badge.pending {
+    background-color: #3a3a3a;
+    color: var(--text-secondary);
+}
+
 .status-badge.large {
     padding: 6px 16px;
     font-size: 13px;
@@ -454,6 +459,416 @@ body {
 .log-level.error {
     background-color: rgba(209, 67, 67, 0.2);
     color: var(--accent-red);
+}
+
+/* Custom Test Input Section */
+.input-section {
+    background-color: var(--bg-dark);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+}
+
+.input-section h2 {
+    font-size: 18px;
+    margin-bottom: 6px;
+}
+
+.section-subtitle {
+    color: var(--text-secondary);
+    font-size: 13px;
+    margin-bottom: 16px;
+}
+
+.input-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.input-tab-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 13px;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+}
+
+.input-tab-btn.active {
+    color: var(--text-primary);
+    border-bottom-color: var(--accent-blue);
+}
+
+.input-tab-content {
+    display: none;
+}
+
+.input-tab-content.active {
+    display: block;
+}
+
+.waypoint-controls {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.add-btn {
+    background-color: var(--accent-teal);
+    color: #000;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.add-btn:hover {
+    opacity: 0.85;
+}
+
+.clear-btn {
+    background-color: var(--bg-card);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.clear-btn:hover {
+    color: var(--text-primary);
+}
+
+.waypoints-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 8px;
+}
+
+.waypoints-table th {
+    text-align: left;
+    padding: 8px 10px;
+    color: var(--text-secondary);
+    font-size: 12px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.waypoints-table td {
+    padding: 8px 10px;
+    color: var(--text-primary);
+    font-size: 13px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.wp-coord-input {
+    width: 72px;
+    background: var(--bg-darker);
+    border: 1px solid transparent;
+    border-radius: 4px;
+    color: var(--text-primary);
+    font-size: 13px;
+    padding: 2px 6px;
+    text-align: right;
+    transition: border-color 0.15s;
+}
+
+.wp-coord-input:hover {
+    border-color: var(--border-color);
+}
+
+.wp-coord-input:focus {
+    outline: none;
+    border-color: var(--accent-teal, #14b8a6);
+}
+
+.remove-wp-btn {
+    background: none;
+    border: none;
+    color: var(--accent-red);
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.raw-input {
+    width: 100%;
+    height: 140px;
+    background-color: var(--bg-darker);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 10px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 13px;
+    resize: vertical;
+    margin-bottom: 10px;
+}
+
+.raw-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.rc-output {
+    margin-top: 20px;
+    padding: 16px;
+    background-color: var(--bg-darker);
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+}
+
+.rc-output h3 {
+    font-size: 15px;
+    margin-bottom: 10px;
+    color: var(--text-primary);
+}
+
+.rc-result {
+    font-family: monospace;
+    font-size: 14px;
+    color: var(--accent-teal);
+    word-break: break-all;
+    margin-bottom: 8px;
+    padding: 10px;
+    background-color: var(--bg-card);
+    border-radius: 4px;
+    max-height: 120px;
+    overflow-y: auto;
+}
+
+.rc-meta {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+}
+
+/* 3D Visualizer */
+.viz3d-section {
+    margin-top: 24px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.viz3d-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    background-color: var(--bg-card);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.viz3d-header h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.viz3d-legend {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.legend-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 3px;
+}
+
+.viz3d-canvas {
+    width: 100%;
+    height: 380px;
+    background-color: #0a0a0a;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.viz3d-canvas canvas {
+    display: block;
+}
+
+.viz3d-placeholder {
+    color: var(--text-muted);
+    font-size: 13px;
+    text-align: center;
+    pointer-events: none;
+}
+
+.viz3d-footer {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    padding: 8px 14px;
+    background-color: var(--bg-card);
+    border-top: 1px solid var(--border-color);
+}
+
+.axis-label {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.viz3d-hint {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+/* RC Actions row */
+.rc-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.save-run-btn {
+    background-color: var(--accent-teal);
+    color: #000;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.save-run-btn:hover {
+    opacity: 0.85;
+}
+
+.save-run-btn:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+
+/* Flight Path History Section */
+.history-section {
+    background-color: var(--bg-dark);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+}
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.history-title-row {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+}
+
+.history-title-row h2 {
+    font-size: 18px;
+}
+
+.history-subtitle {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.history-empty {
+    color: var(--text-muted);
+    font-size: 13px;
+    padding: 12px 0;
+}
+
+.history-entry {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    transition: border-color 0.15s;
+}
+
+.history-entry:hover {
+    border-color: var(--accent-blue);
+}
+
+.history-entry-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.history-entry-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    min-width: 60px;
+}
+
+.history-entry-meta {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.history-entry-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.history-load-btn {
+    background-color: var(--accent-blue);
+    color: #fff;
+    border: none;
+    padding: 5px 14px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.history-load-btn:hover {
+    background-color: #5a8bd0;
+}
+
+.history-delete-btn {
+    background: none;
+    border: none;
+    color: var(--accent-red);
+    cursor: pointer;
+    font-size: 15px;
+    padding: 4px 6px;
+    border-radius: 4px;
+    line-height: 1;
+}
+
+.history-delete-btn:hover {
+    background-color: rgba(209, 67, 67, 0.15);
 }
 
 /* Scrollbar */
