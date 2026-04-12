@@ -1,5 +1,23 @@
 import json
 
+
+def compute_direction(x_vel, y_vel, z_vel):
+    dirs = []
+    if x_vel > 0:
+        dirs.append("R")
+    elif x_vel < 0:
+        dirs.append("L")
+    if y_vel > 0:
+        dirs.append("F")
+    elif y_vel < 0:
+        dirs.append("B")
+    if z_vel > 0:
+        dirs.append("U")
+    elif z_vel < 0:
+        dirs.append("D")
+    return "".join(dirs) if dirs else "HOVER"
+
+
 def generate_hover_test():
     data = []
     message_id = 1
@@ -8,7 +26,7 @@ def generate_hover_test():
 
     # Parameters
     phase_time = 5.0   # seconds per phase
-    Z_max = 7.5        # meters
+    Z_max = 75        # meters
 
     # Velocities (linear)
     Z_velocity_up = Z_max / phase_time      # +1.5 m/s
@@ -27,7 +45,8 @@ def generate_hover_test():
             "Z_pos": round(Z_velocity_up * t, 2),
             "X_vel_ext": 0,
             "Y_vel_ext": 0,
-            "Z_vel_ext": Z_velocity_up
+            "Z_vel_ext": Z_velocity_up,
+            "Direction": compute_direction(0, 0, Z_velocity_up)
         }
         data.append(entry)
         t += dt
@@ -47,7 +66,8 @@ def generate_hover_test():
             "Z_pos": Z_max,
             "X_vel_ext": 0,
             "Y_vel_ext": 0,
-            "Z_vel_ext": 0
+            "Z_vel_ext": 0,
+            "Direction": "HOVER"
         }
         data.append(entry)
         t += dt
@@ -67,7 +87,8 @@ def generate_hover_test():
             "Z_pos": round(Z_max + Z_velocity_down * t, 2),
             "X_vel_ext": 0,
             "Y_vel_ext": 0,
-            "Z_vel_ext": Z_velocity_down
+            "Z_vel_ext": Z_velocity_down,
+            "Direction": compute_direction(0, 0, Z_velocity_down)
         }
         data.append(entry)
         t += dt
@@ -75,7 +96,7 @@ def generate_hover_test():
         message_id += 1
 
     # Write JSON
-    with open("hover_test.json", "w") as f:
+    with open(r"JSONTests\hover_test.json", "w") as f:
         json.dump(data, f, indent=4)
 
     print(f"Generated {len(data)} points → hover_test.json")

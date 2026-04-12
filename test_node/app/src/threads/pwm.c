@@ -8,7 +8,7 @@ LOG_MODULE_REGISTER(pwm_thread, LOG_LEVEL_INF);
 const struct device *pwm_input_dev = DEVICE_DT_GET(DT_ALIAS(pwm_input));
 const struct device *pwm_output_dev = NULL; // TODO: assign correct device
 
-// shared voltage updated by pwm_thread, read by spi_fs thread
+//shared voltage updated by pwm_thread, read by spi_fs thread
 static float latest_voltage;
 static struct k_mutex voltage_mutex;
 
@@ -34,7 +34,7 @@ void pwm_thread(void*, void*, void*) {
             double duty_cycle = (double)pwm_pulse / (double)pwm_period;
             double avg_voltage = duty_cycle * VOLTAGE_HIGH;
 
-            // update shared voltage for SPI thread to send to flight simulator
+            //update shared voltage for SPI thread to send to FS
             k_mutex_lock(&voltage_mutex, K_FOREVER);
             latest_voltage = (float)avg_voltage;
             k_mutex_unlock(&voltage_mutex);

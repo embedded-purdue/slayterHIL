@@ -19,6 +19,103 @@
     box-sizing: border-box;
 }
 
+.test-item {
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.test-item:hover {
+    background-color: var(--bg-card);
+}
+.test-item.selected {
+    border-left: 4px solid var(--accent-blue);
+    background-color: var(--bg-card);
+}
+
+.all-tests-group {
+    margin-top: 4px;
+}
+
+.all-tests-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+}
+
+.all-tests-subnav {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.all-tests-subnav li {
+    margin-bottom: 4px;
+}
+
+.nav-sub-link {
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 12px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.nav-sub-link:hover {
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+}
+
+.nav-sub-link.active {
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+    border-left: 3px solid var(--accent-blue);
+    padding-left: 9px;
+}
+
+.workspace-panel {
+    display: none;
+}
+
+.workspace-panel.active {
+    display: block;
+}
+
+.preset-viz-rc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: start;
+    margin-top: 8px;
+}
+
+@media (max-width: 1100px) {
+    .preset-viz-rc-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.preset-rc-col .rc-output {
+    margin-top: 0;
+}
+
+.preset-load-status {
+    font-size: 12px;
+    color: var(--text-secondary);
+    min-height: 1.2em;
+    margin-bottom: 8px;
+}
+
+.preset-load-status.preset-error {
+    color: var(--accent-red);
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
     background-color: var(--bg-darker);
@@ -454,6 +551,255 @@ body {
 .log-level.error {
     background-color: rgba(209, 67, 67, 0.2);
     color: var(--accent-red);
+}
+
+/* Custom Test Input Section */
+.input-section {
+    background-color: var(--bg-dark);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+}
+
+.input-section h2 {
+    font-size: 18px;
+    margin-bottom: 6px;
+}
+
+.section-subtitle {
+    color: var(--text-secondary);
+    font-size: 13px;
+    margin-bottom: 16px;
+}
+
+.input-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.input-tab-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 13px;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+}
+
+.input-tab-btn.active {
+    color: var(--text-primary);
+    border-bottom-color: var(--accent-blue);
+}
+
+.input-tab-content {
+    display: none;
+}
+
+.input-tab-content.active {
+    display: block;
+}
+
+.waypoint-controls {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.add-btn {
+    background-color: var(--accent-teal);
+    color: #000;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.add-btn:hover {
+    opacity: 0.85;
+}
+
+.clear-btn {
+    background-color: var(--bg-card);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.clear-btn:hover {
+    color: var(--text-primary);
+}
+
+.waypoints-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 8px;
+}
+
+.waypoints-table th {
+    text-align: left;
+    padding: 8px 10px;
+    color: var(--text-secondary);
+    font-size: 12px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.waypoints-table td {
+    padding: 8px 10px;
+    color: var(--text-primary);
+    font-size: 13px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.remove-wp-btn {
+    background: none;
+    border: none;
+    color: var(--accent-red);
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.raw-input {
+    width: 100%;
+    height: 140px;
+    background-color: var(--bg-darker);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 10px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 13px;
+    resize: vertical;
+    margin-bottom: 10px;
+}
+
+.raw-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.rc-output {
+    margin-top: 20px;
+    padding: 16px;
+    background-color: var(--bg-darker);
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+}
+
+.rc-output h3 {
+    font-size: 15px;
+    margin-bottom: 10px;
+    color: var(--text-primary);
+}
+
+.rc-result {
+    font-family: monospace;
+    font-size: 14px;
+    color: var(--accent-teal);
+    word-break: break-all;
+    margin-bottom: 8px;
+    padding: 10px;
+    background-color: var(--bg-card);
+    border-radius: 4px;
+    max-height: 120px;
+    overflow-y: auto;
+}
+
+.rc-meta {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+}
+
+/* 3D Visualizer */
+.viz3d-section {
+    margin-top: 24px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.viz3d-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    background-color: var(--bg-card);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.viz3d-header h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.viz3d-legend {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.legend-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 3px;
+}
+
+.viz3d-canvas {
+    width: 100%;
+    height: 380px;
+    background-color: #0a0a0a;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.viz3d-canvas canvas {
+    display: block;
+}
+
+.viz3d-placeholder {
+    color: var(--text-muted);
+    font-size: 13px;
+    text-align: center;
+    pointer-events: none;
+}
+
+.viz3d-footer {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    padding: 8px 14px;
+    background-color: var(--bg-card);
+    border-top: 1px solid var(--border-color);
+}
+
+.axis-label {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.viz3d-hint {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--text-muted);
 }
 
 /* Scrollbar */
