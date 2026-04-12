@@ -16,7 +16,9 @@
 *
 */
 
+#define NUM_MOTORS 4
+
 void pwm_init();
-float pwm_get_latest_voltage(void);
+void pwm_get_latest_voltages(float *out, int count);
 
 #endif

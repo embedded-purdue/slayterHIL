@@ -2,8 +2,12 @@
     aliases {
         i2c-lidar = &i2c1;
         i2c-imu = &i2c2;
+
+        pwm-input1 = &timers1_pwm;
+        pwm-input2 = &timers2_pwm;
+        pwm-input3 = &timers3_pwm;
+        pwm-input4 = &timers4_pwm;
         uart-rc = &uart4;
-        pwm-input = &timers3_pwm;
         spi-fs = &spi1;
     };
 };
@@ -29,6 +33,27 @@
     pinctrl-names = "default";
 };
 
+&timers1 {
+    status = "okay";
+    st,prescaler = <250>; // may need to change later
+
+    timers1_pwm: pwm {
+        status = "okay";
+        pinctrl-0 = <&tim1_ch1_pa8>;
+        pinctrl-names = "default";
+    };
+};
+
+&timers2 {
+    status = "okay";
+    st,prescaler = <250>; // may need to change later
+
+    timers2_pwm: pwm {
+        status = "okay";
+        pinctrl-0 = <&tim2_ch1_pa0>;
+        pinctrl-names = "default";
+    };
+};
 &uart4 {
     status = "okay";
     pinctrl-0 = <&uart4_tx_pa0 &uart4_rx_pd11>;
@@ -37,11 +62,22 @@
 
 &timers3 {
     status = "okay";
-    st,prescaler = <10000>; // may need to change later
+    st,prescaler = <250>; // may need to change later
 
     timers3_pwm: pwm {
         status = "okay";
         pinctrl-0 = <&tim3_ch1_pb4>;
+        pinctrl-names = "default";
+    };
+};
+
+&timers4 {
+    status = "okay";
+    st,prescaler = <250>; // may need to change later
+
+    timers4_pwm: pwm {
+        status = "okay";
+        pinctrl-0 = <&tim4_ch1_pd12>;
         pinctrl-names = "default";
     };
 };

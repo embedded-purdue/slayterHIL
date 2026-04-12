@@ -23,22 +23,23 @@ struct k_thread spi_fs_thread_data;
 
 void spi_fs_thread(void*, void*, void*) {
     while (1) {
-        //get latest voltage from PWM thread
-        float voltage = pwm_get_latest_voltage();
+        // get the latest voltages from the PWM thread (4 motors)
+        float voltages[NUM_MOTORS];
+        pwm_get_latest_voltages(voltages, NUM_MOTORS);
 
-        //pack into byte buffer for SPI transfer
-        uint8_t tx_buf[sizeof(float)];
-        memcpy(tx_buf, &voltage, sizeof(float));
+        // pack all 4 floats into a byte buffer for SPI transfer
+        uint8_t tx_buf[sizeof(float) * NUM_MOTORS];
+        memcpy(tx_buf, voltages, sizeof(tx_buf));
 
         struct spi_buf spi_tx = {.buf = tx_buf, .len = sizeof(tx_buf)};
         const struct spi_buf_set tx_set = {.buffers = &spi_tx, .count = 1};
 
-        //blocks until FS master clocks the data out
+        // blocks until the FS master clocks the data out
         int rc = spi_write_dt(&spi_fs_dev, &tx_set);
         if (rc < 0) {
             LOG_ERR("SPI write to FS failed: %d", rc);
         } else {
-            LOG_INF("Sent voltage to FS: %.3f V", (double)voltage);
+            LOG_INF("Sent 4 motor voltages to FS");
         }
     }
 }
