@@ -22,7 +22,7 @@ bool rc_command_received(rc_data_t command) {
 
     uart_poll_out(uart_dev, command.rc_vert);
 
-    if(command.rc_horiz == 'L' || command.rc_horiz == 'R') {
+    if(command.rc_horiz == 'F' || command.rc_horiz == 'B') {
         uart_poll_out(uart_dev, 'I');
         uart_poll_out(uart_dev, command.rc_horiz);
     } else {
