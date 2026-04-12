@@ -1,3 +1,4 @@
+#include "imu_generation.hpp"
 #include <chrono>
 #include <flight_sim.hpp>
 #include <fstream>
@@ -22,7 +23,13 @@ int main() {
   std::vector<Waypoint> path;
 
   std::vector<Eigen::Vector3d> rc_instructions;
+
+  ImuSimulator *sim = new ImuSimulator(5, 5);
+
   rc_instructions = rc_read("test.txt");
+  for (Eigen::Vector3d a : rc_instructions) {
+    std::cout << "vector: \n" << a << std::endl;
+  }
   double time = 0.0;
   for (Eigen::Vector3d instruction : rc_instructions) {
     Waypoint temp = {time, instruction};
@@ -92,7 +99,12 @@ int main() {
       force *= drone->getMass();
       force.z() += drone->getMass() * 9.81;
       drone->applyForce(force);
+      // sim->update(force, )
       drone->update(DELTATIME);
+      Eigen::Vector3f imuForce = force.cast<float>();
+      Eigen::Vector3f imuTorque = drone->calculateNetTorque().cast<float>();
+      imu_data_t imuData = sim->update(imuForce, imuTorque, DELTATIME);
+
 
       std::cout << "pos: (" << drone->getPosition().transpose() << ")";
 

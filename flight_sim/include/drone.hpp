@@ -32,6 +32,7 @@ public:
 
     Eigen::Vector3d getPosition() const;
     Eigen::Vector3d getVelocity() const;
+    Eigen::Vector3d calculateNetTorque();
 
 private:
     RigidBody* body;
@@ -42,6 +43,5 @@ private:
 
     double calculateMass();
     Eigen::Vector3d calculateNetForce();
-    Eigen::Vector3d calculateNetTorque();
     Eigen::Vector3d calculateAngularVelocity();
 };
