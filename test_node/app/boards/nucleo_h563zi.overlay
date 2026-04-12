@@ -2,6 +2,7 @@
     aliases {
         i2c-lidar = &i2c1;
         i2c-imu = &i2c2;
+        i2c-pwm = &i2c4;
         pwm-input1 = &timers1_pwm;
         pwm-input2 = &timers2_pwm;
         pwm-input3 = &timers3_pwm;
