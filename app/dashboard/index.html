@@ -294,66 +294,17 @@
             </div>
             </div>
 
-            <!-- Logs Section -->
-            <section class="logs-section">
-                <h2>Logs</h2>
-                <div class="logs-controls">
-                    <div class="search-box">
-                        <input type="text" placeholder="🔍 Search">
+            <!-- Flight Path History Section -->
+            <section class="history-section">
+                <div class="history-header">
+                    <div class="history-title-row">
+                        <h2>Flight Path History</h2>
                     </div>
-                    <select class="log-filter">
-                        <option>INFO</option>
-                    </select>
-                    <div class="log-actions">
-                        <span>Step</span>
-                        <span>Source</span>
-                        <button class="icon-btn">⬇</button>
-                        <button class="icon-btn">🔄</button>
-                    </div>
+                    <button class="clear-btn" id="clearHistoryBtn">Clear All</button>
                 </div>
-                
-                <table class="logs-table">
-                    <thead>
-                        <tr>
-                            <th>Time</th>
-                            <th>Level</th>
-                            <th>Step</th>
-                            <th>Message</th>
-                        </tr>
-                    </thead>
-                    <tbody id="logTableBody">
-                        <tr>
-                            <td>01:15:48</td>
-                            <td><span class="log-level info">INFO</span></td>
-                            <td>setup</td>
-                            <td>Initializing browser</td>
-                        </tr>
-                        <tr>
-                            <td>01:15:47</td>
-                            <td><span class="log-level warn">WARN</span></td>
-                            <td>execute</td>
-                            <td>Intermittent network delay</td>
-                        </tr>
-                        <tr>
-                            <td>01:15:30</td>
-                            <td><span class="log-level warn">WARN</span></td>
-                            <td>browser</td>
-                            <td>Search for "gavids", prequery</td>
-                        </tr>
-                        <tr>
-                            <td>01:16:33</td>
-                            <td><span class="log-level info">INFO</span></td>
-                            <td>browser</td>
-                            <td>Result value: pass</td>
-                        </tr>
-                        <tr>
-                            <td>01:16:36</td>
-                            <td><span class="log-level info">INFO</span></td>
-                            <td>setup</td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div id="historyList" class="history-list">
+                    <p class="history-empty">No runs saved</p>
+                </div>
             </section>
         </main>
     </div>
