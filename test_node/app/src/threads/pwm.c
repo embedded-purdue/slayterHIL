@@ -8,6 +8,18 @@ LOG_MODULE_REGISTER(pwm_thread, LOG_LEVEL_INF);
 const struct device *pwm_input_dev = DEVICE_DT_GET(DT_ALIAS(pwm_input));
 const struct device *pwm_output_dev = NULL; // TODO: assign correct device
 
+// shared voltage updated by pwm_thread, read by spi_fs thread
+static float latest_voltage;
+static struct k_mutex voltage_mutex;
+
+float pwm_get_latest_voltage(void) {
+    float v;
+    k_mutex_lock(&voltage_mutex, K_FOREVER);
+    v = latest_voltage;
+    k_mutex_unlock(&voltage_mutex);
+    return v;
+}
+
 K_THREAD_STACK_DEFINE(pwm_stack, PWM_STACK_SIZE);
 struct k_thread pwm_thread_data;
 
@@ -21,9 +33,11 @@ void pwm_thread(void*, void*, void*) {
 
             double duty_cycle = (double)pwm_pulse / (double)pwm_period;
             double avg_voltage = duty_cycle * VOLTAGE_HIGH;
-            
-            // eventually, we will send the output on the output device, but we don't
-            // have the output device set up yet
+
+            // update shared voltage for SPI thread to send to flight simulator
+            k_mutex_lock(&voltage_mutex, K_FOREVER);
+            latest_voltage = (float)avg_voltage;
+            k_mutex_unlock(&voltage_mutex);
         } else {
             LOG_ERR("Failed to capture PWM signal");
         }
@@ -31,6 +45,8 @@ void pwm_thread(void*, void*, void*) {
 }
 
 void pwm_init() {
+    k_mutex_init(&voltage_mutex);
+
     if (!device_is_ready(pwm_input_dev)) {
         LOG_ERR("PWM input device is not ready");
         return;

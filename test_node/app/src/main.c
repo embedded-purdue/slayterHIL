@@ -5,6 +5,7 @@
 #include "threads/sensor_emulation.h"
 #include "threads/dut_interface.h"
 #include "threads/pwm.h"
+#include "threads/spi_fs.h"
 
 int main(void)
 {
@@ -15,6 +16,7 @@ int main(void)
     sensor_emulation_init();
     dut_interface_init();
     pwm_init();
+    spi_fs_init();
 
 	return 0;
 }

@@ -17,5 +17,6 @@
 */
 
 void pwm_init();
+float pwm_get_latest_voltage(void);
 
 #endif
