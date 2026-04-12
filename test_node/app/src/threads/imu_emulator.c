@@ -6,9 +6,6 @@
 // register logging module
 LOG_MODULE_REGISTER(imu_emulator, LOG_LEVEL_INF);
 
-// define mutexes for sensor data
-K_MUTEX_DEFINE(imu_data_mutext);
-
 // latest sensor data variables
 static imu_data_t latest_imu_data;
 
@@ -17,8 +14,6 @@ static uint8_t current_imu_read_reg = REG_DEFAULT;
 
 // helper function to get IMU field
 static uint8_t get_imu_data_field(uint8_t reg) {
-    k_mutex_lock(&imu_data_mutext, K_FOREVER);
-
     uint8_t field_value = 0;
     uint8_t offset = 0;
 
@@ -59,7 +54,6 @@ static uint8_t get_imu_data_field(uint8_t reg) {
             break;
     }
 
-    k_mutex_unlock(&imu_data_mutext);
     return field_value;
 }
 
@@ -125,7 +119,5 @@ void imu_emulator_init(const struct device* i2c_dev) {
 }
 
 void imu_emulator_update_data(imu_data_t new_data){
-    k_mutex_lock(&imu_data_mutext, K_FOREVER);
     latest_imu_data = new_data;
-    k_mutex_unlock(&imu_data_mutext);
 }
