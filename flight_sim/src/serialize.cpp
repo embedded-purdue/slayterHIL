@@ -1,6 +1,6 @@
 #include <flight_sim.hpp>
 
-uint8_t* Serialize::serialize(const imu_data_t& data, uint8_t *buffer) {
+uint8_t* serialize(const imu_data_t& data, uint8_t *buffer) {
     
     // 288 bytes
     // Needs to be in NanoPB decodable format
