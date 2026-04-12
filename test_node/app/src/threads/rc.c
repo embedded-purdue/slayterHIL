@@ -42,6 +42,8 @@ int rc_init(const struct device* dev) {
 
     // send an initial UP command to DUT to start in hover state
     uart_poll_out(dev, 'U');
+    uart_poll_out(dev, 'I');
+    uart_poll_out(dev, 'I');
 
     uart_dev = dev;
     return 0;
