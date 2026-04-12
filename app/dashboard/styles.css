@@ -19,6 +19,103 @@
     box-sizing: border-box;
 }
 
+.test-item {
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.test-item:hover {
+    background-color: var(--bg-card);
+}
+.test-item.selected {
+    border-left: 4px solid var(--accent-blue);
+    background-color: var(--bg-card);
+}
+
+.all-tests-group {
+    margin-top: 4px;
+}
+
+.all-tests-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+}
+
+.all-tests-subnav {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.all-tests-subnav li {
+    margin-bottom: 4px;
+}
+
+.nav-sub-link {
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 12px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.nav-sub-link:hover {
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+}
+
+.nav-sub-link.active {
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+    border-left: 3px solid var(--accent-blue);
+    padding-left: 9px;
+}
+
+.workspace-panel {
+    display: none;
+}
+
+.workspace-panel.active {
+    display: block;
+}
+
+.preset-viz-rc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: start;
+    margin-top: 8px;
+}
+
+@media (max-width: 1100px) {
+    .preset-viz-rc-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.preset-rc-col .rc-output {
+    margin-top: 0;
+}
+
+.preset-load-status {
+    font-size: 12px;
+    color: var(--text-secondary);
+    min-height: 1.2em;
+    margin-bottom: 8px;
+}
+
+.preset-load-status.preset-error {
+    color: var(--accent-red);
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
     background-color: var(--bg-darker);
@@ -179,11 +276,6 @@ body {
 .status-badge.failed {
     background-color: var(--accent-red);
     color: #fff;
-}
-
-.status-badge.pending {
-    background-color: #3a3a3a;
-    color: var(--text-secondary);
 }
 
 .status-badge.large {
@@ -569,27 +661,6 @@ body {
     border-bottom: 1px solid var(--border-color);
 }
 
-.wp-coord-input {
-    width: 72px;
-    background: var(--bg-darker);
-    border: 1px solid transparent;
-    border-radius: 4px;
-    color: var(--text-primary);
-    font-size: 13px;
-    padding: 2px 6px;
-    text-align: right;
-    transition: border-color 0.15s;
-}
-
-.wp-coord-input:hover {
-    border-color: var(--border-color);
-}
-
-.wp-coord-input:focus {
-    outline: none;
-    border-color: var(--accent-teal, #14b8a6);
-}
-
 .remove-wp-btn {
     background: none;
     border: none;
@@ -729,146 +800,6 @@ body {
     margin-left: auto;
     font-size: 11px;
     color: var(--text-muted);
-}
-
-/* RC Actions row */
-.rc-actions {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-}
-
-.save-run-btn {
-    background-color: var(--accent-teal);
-    color: #000;
-    border: none;
-    padding: 8px 20px;
-    border-radius: 4px;
-    font-weight: 600;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.save-run-btn:hover {
-    opacity: 0.85;
-}
-
-.save-run-btn:disabled {
-    opacity: 0.6;
-    cursor: default;
-}
-
-/* Flight Path History Section */
-.history-section {
-    background-color: var(--bg-dark);
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 30px;
-}
-
-.history-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 14px;
-}
-
-.history-title-row {
-    display: flex;
-    align-items: baseline;
-    gap: 12px;
-}
-
-.history-title-row h2 {
-    font-size: 18px;
-}
-
-.history-subtitle {
-    font-size: 12px;
-    color: var(--text-muted);
-}
-
-.history-list {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.history-empty {
-    color: var(--text-muted);
-    font-size: 13px;
-    padding: 12px 0;
-}
-
-.history-entry {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 14px;
-    background-color: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    transition: border-color 0.15s;
-}
-
-.history-entry:hover {
-    border-color: var(--accent-blue);
-}
-
-.history-entry-info {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    flex-wrap: wrap;
-}
-
-.history-entry-name {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-primary);
-    min-width: 60px;
-}
-
-.history-entry-meta {
-    font-size: 12px;
-    color: var(--text-muted);
-}
-
-.history-entry-actions {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    flex-shrink: 0;
-}
-
-.history-load-btn {
-    background-color: var(--accent-blue);
-    color: #fff;
-    border: none;
-    padding: 5px 14px;
-    border-radius: 4px;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-}
-
-.history-load-btn:hover {
-    background-color: #5a8bd0;
-}
-
-.history-delete-btn {
-    background: none;
-    border: none;
-    color: var(--accent-red);
-    cursor: pointer;
-    font-size: 15px;
-    padding: 4px 6px;
-    border-radius: 4px;
-    line-height: 1;
-}
-
-.history-delete-btn:hover {
-    background-color: rgba(209, 67, 67, 0.15);
 }
 
 /* Scrollbar */
