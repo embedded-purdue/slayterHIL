@@ -197,8 +197,8 @@ function deltasToCommands(dx, dy, dz) {
     const ySteps = Math.round(Math.abs(dy) / CONVERSION_FACTOR);
     const zSteps = Math.round(Math.abs(dz) / CONVERSION_FACTOR);
 
-    const xCmd = dx >= 0 ? 'R' : 'L';
-    const yCmd = dy >= 0 ? 'F' : 'B';
+    const xCmd = dx >= 0 ? 'R.' : 'L.';
+    const yCmd = dy >= 0 ? 'F.' : 'B.';
     const zCmd = dz >= 0 ? 'U' : 'D';
 
     return interleaveCommands([
