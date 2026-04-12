@@ -7,7 +7,7 @@
 
 LOG_MODULE_REGISTER(spi_fs_thread, LOG_LEVEL_INF);
 
-// SPI slave config for flight simulator communication
+//SPI slave config for FS communication
 static const spi_operation_t spi_op_flags = (
     SPI_OP_MODE_SLAVE |
     SPI_TRANSFER_MSB |
@@ -23,17 +23,17 @@ struct k_thread spi_fs_thread_data;
 
 void spi_fs_thread(void*, void*, void*) {
     while (1) {
-        // get the latest voltage from the PWM thread
+        //get latest voltage from PWM thread
         float voltage = pwm_get_latest_voltage();
 
-        // pack into a byte buffer for SPI transfer
+        //pack into byte buffer for SPI transfer
         uint8_t tx_buf[sizeof(float)];
         memcpy(tx_buf, &voltage, sizeof(float));
 
         struct spi_buf spi_tx = {.buf = tx_buf, .len = sizeof(tx_buf)};
         const struct spi_buf_set tx_set = {.buffers = &spi_tx, .count = 1};
 
-        // blocks until the FS master clocks the data out
+        //blocks until FS master clocks the data out
         int rc = spi_write_dt(&spi_fs_dev, &tx_set);
         if (rc < 0) {
             LOG_ERR("SPI write to FS failed: %d", rc);
