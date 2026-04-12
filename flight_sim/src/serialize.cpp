@@ -2,7 +2,7 @@
 
 uint8_t* Serialize::serialize(const imu_data_t& data, uint8_t *buffer) {
     
-    // 144 bytes
+    // 288 bytes
     // Needs to be in NanoPB decodable format
     // Thus I am applying keys ( key = (field_num << 3 | wire_type = 0) for wire_type = varint)
     // This is just key = counting by 0x08 for each field
