@@ -2,7 +2,7 @@
     aliases {
         i2c-lidar = &i2c1;
         i2c-imu = &i2c2;
-        i2c-pwm = &i2c4;
+
         pwm-input1 = &timers1_pwm;
         pwm-input2 = &timers2_pwm;
         pwm-input3 = &timers3_pwm;
@@ -19,12 +19,6 @@
 &i2c2 {
     status = "okay";
     pinctrl-0 = <&i2c2_scl_pf1 &i2c2_sda_pf0>;
-    pinctrl-names = "default";
-};
-
-&i2c4 {
-    status = "okay";
-    pinctrl-0 = <&i2c4_scl_pd12 &i2c4_sda_pd13>;
     pinctrl-names = "default";
 };
 
