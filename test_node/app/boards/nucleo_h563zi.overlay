@@ -1,14 +1,18 @@
 / {
     aliases {
-        i2c-lidar = &i2c1;
-        i2c-imu = &i2c2;
-        pwm-input = &timers3_pwm;
+        spi-orchestrator = &spi4;   /* PE2/PE4/PE5/PE6 — WROOM  */
+        i2c-lidar        = &i2c2;   /* PF1/PF0         — LiDAR  */
+        i2c-imu          = &i2c4;   /* PD12/PD13       — IMU    */
+        pwm-input        = &timers3_pwm;
     };
 };
 
-&i2c1 {
+&spi4 {
     status = "okay";
-    pinctrl-0 = <&i2c1_scl_pb8 &i2c1_sda_pb9>;
+    pinctrl-0 = <&spi4_sck_pe2
+                 &spi4_nss_pe4
+                 &spi4_miso_pe5
+                 &spi4_mosi_pe6>;
     pinctrl-names = "default";
 };
 
@@ -16,15 +20,35 @@
     status = "okay";
     pinctrl-0 = <&i2c2_scl_pf1 &i2c2_sda_pf0>;
     pinctrl-names = "default";
+    clock-frequency = <I2C_BITRATE_FAST>;
+};
+
+&i2c4 {
+    status = "okay";
+    pinctrl-0 = <&i2c4_scl_pd12 &i2c4_sda_pd13>;
+    pinctrl-names = "default";
+    clock-frequency = <I2C_BITRATE_FAST>;
 };
 
 &timers3 {
     status = "okay";
-    st,prescaler = <10000>; // may need to change later
-
+    st,prescaler = <10000>;
     timers3_pwm: pwm {
         status = "okay";
         pinctrl-0 = <&tim3_ch1_pb4>;
         pinctrl-names = "default";
     };
+};
+
+&pinctrl {
+    spi4_sck_pe2:  spi4_sck_pe2  { pinmux = <STM32_PINMUX('E', 2, AF5)>; slew-rate = "very-high-speed"; };
+    spi4_nss_pe4:  spi4_nss_pe4  { pinmux = <STM32_PINMUX('E', 4, AF5)>; bias-pull-up; };
+    spi4_miso_pe5: spi4_miso_pe5 { pinmux = <STM32_PINMUX('E', 5, AF5)>; slew-rate = "very-high-speed"; };
+    spi4_mosi_pe6: spi4_mosi_pe6 { pinmux = <STM32_PINMUX('E', 6, AF5)>; bias-disable; };
+
+    i2c2_scl_pf1:  i2c2_scl_pf1  { pinmux = <STM32_PINMUX('F', 1, AF4)>; bias-pull-up; drive-open-drain; };
+    i2c2_sda_pf0:  i2c2_sda_pf0  { pinmux = <STM32_PINMUX('F', 0, AF4)>; bias-pull-up; drive-open-drain; };
+
+    i2c4_scl_pd12: i2c4_scl_pd12 { pinmux = <STM32_PINMUX('D', 12, AF4)>; bias-pull-up; drive-open-drain; };
+    i2c4_sda_pd13: i2c4_sda_pd13 { pinmux = <STM32_PINMUX('D', 13, AF4)>; bias-pull-up; drive-open-drain; };
 };

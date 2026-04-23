@@ -105,7 +105,7 @@ monitor-esp32:
   python -m serial.tools.miniterm "{{ESP_PORT}}" 115200
 
 monitor-nucleo:
-  python -m serial.tools.miniterm "{{ESP_PORT}}" 115200
+  python -m serial.tools.miniterm "{{STM_PORT}}" 115200
 
 run-esp32: build-esp32 flash-esp32 monitor-esp32
 
