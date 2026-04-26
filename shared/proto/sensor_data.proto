@@ -1,41 +1,44 @@
+// sensor_data.proto
+//
+// Single combined packet — Pi sends IMU + LiDAR + RC in every frame.
+// Wire framing (transport layer, not protobuf):
+//   [LEN_LOW][LEN_HIGH][protobuf payload...][zero-pad to 256]
+//
+// Generate C (nanopb):
+//   protoc --nanopb_out=include/ proto/sensor_data.proto
+// Generate Python:
+//   protoc --python_out=pi_test/ proto/sensor_data.proto
+//
+// Units (BNO055 register format):
+//   euler/gyro:  1 LSB = 1/16 degree  or  1/16 dps
+//   lin_acc:     1 LSB = 1/100 m/s²
+//   lidar:       millimetres
+//   rc:          raw signed byte per axis (-127..+127, 0 = no-op)
+
 syntax = "proto3";
 
-// Reusable vector message for any 3-axis data
-message Vector3D {
-  float x = 1;
-  float y = 2;
-  float z = 3;
+message ImuPayload {
+    sint32 gyro_x    = 1;
+    sint32 gyro_y    = 2;
+    sint32 gyro_z    = 3;
+    sint32 euler_x   = 4;
+    sint32 euler_y   = 5;
+    sint32 euler_z   = 6;
+    sint32 lin_acc_x = 7;
+    sint32 lin_acc_y = 8;
+    sint32 lin_acc_z = 9;
 }
 
-// Data from the simulated LSM6DSO IMU
-message ImuData {
-  // Linear acceleration in meters per second squared (m/s^2)
-  Vector3D acceleration = 1;
-
-  // Angular velocity in radians per second (rad/s)
-  Vector3D angular_velocity = 2;
+message RcPayload {
+    sint32 vertical   = 1;   // rc_vert:  -127..+127, 0 = no-op
+    sint32 horizontal = 2;   // rc_horiz: -127..+127, 0 = no-op
 }
 
-// Data from simulated MPL3115A2 Barometric Altimeter
-message AltimeterData {
-  // Pressure in 2 Pa units.
-  float pressure = 1;
-
-  // Altitude above sea level in meters (m)
-  float altitude = 2;
-
-  // Ambient temperature in degrees Celsius (°C)
-  float temperature = 3;
-
-}
-
+// Every frame contains all sensors.  Fields are always present;
+// zero-values mean "no update" for RC (both axes = 0 → no-op).
 message SensorPacket {
-  // The exact time the data was captured
-  uint32 timestamp = 1;
-
-  // Message containing all IMU data
-  ImuData imu_data = 2;
-
-  // Message containing all altimeter data
-  AltimeterData altimeter_data = 3;
+    uint32     timestamp_us = 1;
+    uint32     lidar_mm     = 2;
+    ImuPayload imu          = 3;
+    RcPayload  rc           = 4;
 }

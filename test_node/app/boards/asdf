@@ -1,0 +1,46 @@
+/ {
+    aliases {
+        spi-orchestrator = &spi1;
+        i2c-lidar = &i2c1;
+        i2c-imu = &i2c2;
+        pwm-input = &timers3_pwm;
+    };
+};
+
+&spi1 {
+    status = "okay";
+    pinctrl-0 = <&spi1_sck_pa5 &spi1_miso_pa6 &spi1_mosi_pa7 &spi1_nss_pa4>;
+    pinctrl-names = "default";
+};
+
+&pinctrl {
+    /* STM32H563: SPI1 = AF5 on PA4/5/6/7 — confirm in RM0481 Table 14 */
+    spi1_sck_pa5:  spi1_sck_pa5  { pinmux = <STM32_PINMUX('A', 5, AF5)>; slew-rate = "very-high-speed"; };
+    spi1_miso_pa6: spi1_miso_pa6 { pinmux = <STM32_PINMUX('A', 6, AF5)>; slew-rate = "very-high-speed"; };
+    spi1_mosi_pa7: spi1_mosi_pa7 { pinmux = <STM32_PINMUX('A', 7, AF5)>; bias-disable; };
+    spi1_nss_pa4:  spi1_nss_pa4  { pinmux = <STM32_PINMUX('A', 4, AF5)>; bias-pull-up; };
+};
+
+
+&i2c1 {
+    status = "okay";
+    pinctrl-0 = <&i2c1_scl_pb8 &i2c1_sda_pb9>;
+    pinctrl-names = "default";
+};
+
+&i2c2 {
+    status = "okay";
+    pinctrl-0 = <&i2c2_scl_pf1 &i2c2_sda_pf0>;
+    pinctrl-names = "default";
+};
+
+&timers3 {
+    status = "okay";
+    st,prescaler = <10000>; // may need to change later
+
+    timers3_pwm: pwm {
+        status = "okay";
+        pinctrl-0 = <&tim3_ch1_pb4>;
+        pinctrl-names = "default";
+    };
+};
