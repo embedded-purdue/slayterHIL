@@ -147,15 +147,16 @@ function genericConvertToCommandList(data) {
     return commands;
 }
 
-/** Display string: dots after R, L, F, B; I.; U and D unchanged. */
+/** Display string: dots after R, L, F, B; I.; appends I. if last command is U or D. */
 function formatGenericRcDisplay(commandList) {
-    return commandList
-        .map((c) => {
-            if (c === 'R' || c === 'L' || c === 'F' || c === 'B') return `${c}.`;
-            if (c === 'I') return 'I.';
-            return c;
-        })
-        .join('');
+    const mapped = commandList.map((c) => {
+        if (c === 'R' || c === 'L' || c === 'F' || c === 'B') return `${c}.`;
+        if (c === 'I') return 'I.';
+        return c;
+    });
+    const last = commandList[commandList.length - 1];
+    if (last === 'U' || last === 'D') mapped.push('I.');
+    return mapped.join('');
 }
 
 function jsonRecordsToWaypoints(data) {
@@ -843,7 +844,9 @@ class TestAutomationDashboard {
     }
 
     showRcOutput(commands) {
-        const output = commands.join('');
+        const last = commands[commands.length - 1];
+        const suffix = (last === 'U' || last === 'D') ? 'I.' : '';
+        const output = commands.join('') + suffix;
         document.getElementById('rcResult').textContent = output || '(no movement)';
         document.getElementById('rcMeta').textContent = `Total commands: ${commands.length}`;
         document.getElementById('rcOutput').style.display = 'block';
