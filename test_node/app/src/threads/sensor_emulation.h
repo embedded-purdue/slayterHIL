@@ -5,8 +5,6 @@
 
 #include <stdint.h>
 
-#define SENSOR_EMULATION_STACK_SIZE (10 * 1024)
-#define SENSOR_EMULATION_PRIORITY 5
 #define LIDAR_ADDRESS 0x62
 #define IMU_ADDRESS 0x29
 
@@ -36,21 +34,22 @@ typedef struct {
     i2c_imu_triplet_t gyro;
 } imu_data_t;
 
-// assert size matches expected size of 24 bytes
-_Static_assert(sizeof(imu_data_t) == 18, "imu_data_t size does not match expected size of 26 bytes");
-
+/* if a no-op, insert I for no-op */
 typedef struct {
-    uint8_t sensor_id;
-    union {
-        imu_data_t imu_data;
-        uint16_t lidar_distance_mm;
-        char rc_command;
-    };
-} device_update_packet_t;
+    char rc_vert;
+    char rc_horiz;
+} rc_data_t;
 
-#define SENSOR_UPDATE_QUEUE_PACKET_SIZE (sizeof(device_update_packet_t))
-#define SENSOR_UPDATE_QUEUE_LEN (10)
-extern struct k_msgq sensor_update_q;
+/*
+EXPECTED STRUCTURE FROM PROTOBUF
+
+typedef struct  {
+  uint32 timestamp;
+  imu_data_t imu_data;
+  uint16_t lidar_distance_nm;
+  rc_data_t rc_commands;
+} device_update_packet_t;
+*/
 
 // Init function
 void sensor_emulation_init();

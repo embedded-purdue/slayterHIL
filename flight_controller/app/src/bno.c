@@ -57,9 +57,9 @@ static int process_bno055(const struct device *dev, struct bno_data *out) {
 
     out->time = k_uptime_get_32();
     // DO thsi when need precision just working on simple values rn 
-    out->eul.yaw = (float)eul[1].val1 + (float)eul[1].val2 / 1000000.0f;
-    out->eul.roll  = (float)eul[2].val1 + (float)eul[2].val2 / 1000000.0f;  
-    out->eul.pitch = (float)eul[0].val1 + (float)eul[0].val2 / 1000000.0f;
+    out->eul.yaw = (float)eul[0].val1 + (float)eul[0].val2 / 1000000.0f;
+    out->eul.roll  = (float)eul[1].val1 + (float)eul[1].val2 / 1000000.0f;
+    out->eul.pitch = (float)eul[2].val1 + (float)eul[2].val2 / 1000000.0f;
     // out->eul.yaw = (float)eul[1].val1;
     // out->eul.roll  = (float)eul[0].val1;
     // out->eul.pitch = (float)eul[2].val1;

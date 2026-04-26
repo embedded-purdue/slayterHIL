@@ -1,0 +1,18 @@
+/* This file is meant for using the nucleo as PWM input (as it will be in the system) */
+
+/ {
+    aliases {
+        pwm-input = &timers3_pwm;
+    };
+};
+
+&timers3 {
+    status = "okay";
+    st,prescaler = <10000>; // may need to change later
+
+    timers3_pwm: pwm {
+        status = "okay";
+        pinctrl-0 = <&tim3_ch1_pb4>;
+        pinctrl-names = "default";
+    };
+};
