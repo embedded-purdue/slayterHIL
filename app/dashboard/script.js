@@ -40,6 +40,10 @@ function genericConvertToCommandList(data) {
         }
 
         if (changes > 0 && changes < 2) {
+            if (dz !== 0) {
+                const steps = Math.trunc(Math.abs(dz) / GENERIC_CONVERSION_FACTOR);
+                for (let k = 0; k < steps; k++) commands.push(dz > 0 ? 'U' : 'D');
+            }
             if (dx !== 0) {
                 const steps = Math.trunc(Math.abs(dx) / GENERIC_CONVERSION_FACTOR);
                 for (let k = 0; k < steps; k++) commands.push(dx > 0 ? 'R' : 'L');
@@ -48,10 +52,6 @@ function genericConvertToCommandList(data) {
                 const steps = Math.trunc(Math.abs(dy) / GENERIC_CONVERSION_FACTOR);
                 for (let k = 0; k < steps; k++) commands.push(dy > 0 ? 'F' : 'B');
             }
-            if (dz !== 0) {
-                const steps = Math.trunc(Math.abs(dz) / GENERIC_CONVERSION_FACTOR);
-                for (let k = 0; k < steps; k++) commands.push(dz > 0 ? 'U' : 'D');
-            }
         }
 
         if (changes === 2) {
@@ -59,19 +59,36 @@ function genericConvertToCommandList(data) {
             const ysteps = Math.round(Math.abs(dy) / GENERIC_CONVERSION_FACTOR);
             const zsteps = Math.round(Math.abs(dz) / GENERIC_CONVERSION_FACTOR);
 
-            if (dx !== 0 && dz !== 0) {
-                const factor = gcd(xsteps, zsteps);
-                const r1 = Math.trunc(xsteps / factor);
-                const r2 = Math.trunc(zsteps / factor);
+            if (dz !== 0 && dx !== 0) {
+                const factor = gcd(zsteps, xsteps);
+                const r1 = Math.trunc(zsteps / factor);
+                const r2 = Math.trunc(xsteps / factor);
                 let total1steps = 0;
                 let total2steps = 0;
-                while (total1steps < xsteps || total2steps < zsteps) {
+                while (total1steps < zsteps || total2steps < xsteps) {
                     for (let j = 0; j < r1; j++) {
-                        commands.push(dx > 0 ? 'R' : 'L');
+                        commands.push(dz > 0 ? 'U' : 'D');
                         total1steps += 1;
                     }
                     for (let j = 0; j < r2; j++) {
+                        commands.push(dx > 0 ? 'R' : 'L');
+                        total2steps += 1;
+                    }
+                }
+            }
+            if (dz !== 0 && dy !== 0) {
+                const factor = gcd(zsteps, ysteps);
+                const r1 = Math.trunc(zsteps / factor);
+                const r2 = Math.trunc(ysteps / factor);
+                let total1steps = 0;
+                let total2steps = 0;
+                while (total1steps < zsteps || total2steps < ysteps) {
+                    for (let j = 0; j < r1; j++) {
                         commands.push(dz > 0 ? 'U' : 'D');
+                        total1steps += 1;
+                    }
+                    for (let j = 0; j < r2; j++) {
+                        commands.push(dy > 0 ? 'F' : 'B');
                         total2steps += 1;
                     }
                 }
@@ -93,23 +110,6 @@ function genericConvertToCommandList(data) {
                     }
                 }
             }
-            if (dy !== 0 && dz !== 0) {
-                const factor = gcd(ysteps, zsteps);
-                const r1 = Math.trunc(ysteps / factor);
-                const r2 = Math.trunc(zsteps / factor);
-                let total1steps = 0;
-                let total2steps = 0;
-                while (total1steps < ysteps || total2steps < zsteps) {
-                    for (let j = 0; j < r1; j++) {
-                        commands.push(dy > 0 ? 'F' : 'B');
-                        total1steps += 1;
-                    }
-                    for (let j = 0; j < r2; j++) {
-                        commands.push(dz > 0 ? 'U' : 'D');
-                        total2steps += 1;
-                    }
-                }
-            }
         }
 
         if (changes === 3) {
@@ -125,6 +125,11 @@ function genericConvertToCommandList(data) {
             let totalysteps = 0;
             let totalzsteps = 0;
             while (totalxsteps < xsteps || totalysteps < ysteps || totalzsteps < zsteps) {
+                for (let j = 0; j < r3; j++) {
+                    if (dz > 0) commands.push('U');
+                    else commands.push('D');
+                    totalzsteps += 1;
+                }
                 for (let j = 0; j < r1; j++) {
                     if (dz > 0) commands.push('R');
                     else commands.push('L');
@@ -134,11 +139,6 @@ function genericConvertToCommandList(data) {
                     if (dy > 0) commands.push('F');
                     else commands.push('B');
                     totalysteps += 1;
-                }
-                for (let j = 0; j < r3; j++) {
-                    if (dz > 0) commands.push('U');
-                    else commands.push('D');
-                    totalzsteps += 1;
                 }
             }
         }
@@ -202,9 +202,9 @@ function deltasToCommands(dx, dy, dz) {
     const zCmd = dz >= 0 ? 'U' : 'D';
 
     return interleaveCommands([
+        [zCmd, zSteps],
         [xCmd, xSteps],
         [yCmd, ySteps],
-        [zCmd, zSteps],
     ]);
 }
 
