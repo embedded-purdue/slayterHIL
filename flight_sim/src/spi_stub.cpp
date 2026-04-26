@@ -1,5 +1,4 @@
-#include "spi_interface.h"
-#include <iostream>
+#include <flight_sim.hpp>
 #include <fstream>
 #include <iomanip>
 
