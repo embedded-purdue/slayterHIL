@@ -1,14 +1,28 @@
 cmake_minimum_required(VERSION 3.22)
 project(flight_sim LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g")
 
-find_package(Eigen3 3.4 REQUIRED NO_MODULE)
+find_package(Eigen3 REQUIRED NO_MODULE)
 find_package(Protobuf REQUIRED) # provides protobuf::libprotobuf and (often) protobuf::protoc
-find_package(nlohmann_json REQUIRED) # <-- add this (apt: nlohmann-json3-dev)
+# absl is a required dep of protobuf 6.x; add its include path globally
+foreach(_prefix /opt/homebrew /usr/local)
+  if(EXISTS "${_prefix}/include/absl")
+    include_directories(SYSTEM "${_prefix}/include")
+    message(STATUS "absl headers added from ${_prefix}/include")
+    break()
+  endif()
+endforeach()
+# nlohmann_json vendored as include/json.hpp (single-header amalgamation)
+
+
+# # DEBUG
+# get_target_property(EIGEN_INC Eigen3::Eigen INTERFACE_INCLUDE_DIRECTORIES)
+# message(STATUS "Eigen include path: ${EIGEN_INC}")
 
 # ---- Proto setup -------------------------------------------------------------
 
@@ -24,7 +38,7 @@ protobuf_generate(
   TARGET proto_lib
   LANGUAGE cpp
   PROTOS ${PROTO_FILES}
-  IMPORT_DIRS ${CMAKE_SOURCE_DIR}/../
+  IMPORT_DIRS ${CMAKE_SOURCE_DIR}/../ ${PROTO_DIR}
   PROTOC_OUT_DIR ${GEN_PROTO_DIR}
   APPEND_PATH OFF
 )
@@ -41,42 +55,22 @@ target_include_directories(proto_lib PUBLIC
 
 # ---- Executables ------------------------------------------------------------
 
-add_executable(json_test utils/json_utils.cpp)
+file(GLOB SRC_FILES "${CMAKE_SOURCE_DIR}/src/*.cpp")
+# SPI files use Linux kernel headers — exclude on non-Linux platforms
+if(NOT CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  list(FILTER SRC_FILES EXCLUDE REGEX ".*/spi_linux\\.cpp$")
+  list(FILTER SRC_FILES EXCLUDE REGEX ".*/spi_new_test\\.cpp$")
+endif()
 
-add_executable(${PROJECT_NAME}
-  src/main.cpp
-  src/physics/rigid_body.cpp
-)
-
-add_executable(UDPServer
-  src/UDPServer.cpp
-)
-
-add_executable(UDPClient
-  src/UDPClient.cpp
-)
-
-target_link_libraries(json_test
-  PRIVATE
-    nlohmann_json::nlohmann_json
-)
+add_executable(${PROJECT_NAME} ${SRC_FILES})
 
 target_link_libraries(${PROJECT_NAME}
   PRIVATE
     proto_lib
     Eigen3::Eigen
-    nlohmann_json::nlohmann_json
 )
 
-target_link_libraries(UDPServer
-  PRIVATE
-    proto_lib
-    nlohmann_json::nlohmann_json
-)
-
-target_link_libraries(UDPClient
-  PRIVATE
-    proto_lib
-    nlohmann_json::nlohmann_json
+target_include_directories(${PROJECT_NAME} PRIVATE
+  ${CMAKE_SOURCE_DIR}/include
 )
 

@@ -1,11 +1,4 @@
-#include <fcntl.h>              // open()
-#include <unistd.h>             // close(), usleep()
-#include <sys/ioctl.h>          // ioctl()
-#include <linux/spi/spidev.h>   // SPI ioctl definitions
-#include <cstring>              // memset(), memcpy()
-#include <iostream>             // std::cout, std::cerr
-#include <memory>               // std::make_unique
-#include <cstdlib>              // malloc(), free()
+#include <flight_sim.hpp>
 
 // NEW proto (generated from node_imu.proto)
 #include "../../shared/proto/node_imu.pb.h"
@@ -132,6 +125,8 @@ void init_spi(int *fd_out, uint8_t *mode_out, uint8_t *bits_out, uint32_t *speed
     *speed_out = speed;
 }
 
+#if 0
+
 int main() {
     int fd_out = 0;
     size_t length = 0;
@@ -155,3 +150,5 @@ int main() {
     free(msg);
     return 0;
 }
+
+#endif

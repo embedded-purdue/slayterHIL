@@ -1,9 +1,4 @@
-#include "spi_interface.h"
-#include <fcntl.h>
-#include <unistd.h>
-#include <linux/spi/spidev.h>
-#include <sys/ioctl.h>
-#include <iostream>
+#include <flight_sim.hpp>
 
 class SpiLinux : public SpiInterface {
 public:

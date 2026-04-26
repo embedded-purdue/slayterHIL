@@ -107,13 +107,13 @@ static void bno_consumer(void *arg1, void *arg2, void *arg3) {
 
         // static int print_counter = 0;
         // if (++print_counter >= 10) {
-        printk("[%s] P:%.2f R:%.2f Y:%.2f | Motors FL:%d FR:%d BL:%d BR:%d\n",
-                now_str(),
-                (double)pitch, (double)roll, (double)out.eul.yaw,
-                front_left, front_right, back_left, back_right);
+        // printk("[%s] P:%.2f R:%.2f Y:%.2f | Motors FL:%d FR:%d BL:%d BR:%d\n",
+        //         now_str(),
+        //         (double)pitch, (double)roll, (double)out.eul.yaw,
+        //         front_left, front_right, back_left, back_right);
             // print_counter = 0;
         // }
-        printk("BNO consumer thread heartbeat\n");
+        // printk("BNO consumer thread heartbeat\n");
 
         k_msleep(50);  // 20 Hz control loop
     }

@@ -1,0 +1,9 @@
+&spi1 {
+    status = "okay";
+    pinctrl-0 = <&spi1_sck_pa5 &spi1_miso_pa6 &spi1_mosi_pa7 &spi1_nss_pa4>;
+    pinctrl-names = "default";
+    slave; 
+
+    /* Handshake Pin: STM32 pulls this high when spi_read is called */
+    handshake-gpios = <&gpiog 10 GPIO_ACTIVE_HIGH>; 
+};
