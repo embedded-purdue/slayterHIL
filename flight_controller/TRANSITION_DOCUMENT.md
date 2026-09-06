@@ -1,5 +1,7 @@
 # SlayterHiL - DUT
 
+`LMK if u need help on anything for DUT: Text Aarav Jain. Overlay and Kconfig are confusing`
+
 # Setup
 
 0. Install prerequisites
