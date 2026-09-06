@@ -11,7 +11,7 @@
         led1 = &pwm_led_1;
         led2 = &pwm_led_2;
         led3 = &pwm_led_3;
-        // led4 = &led_4;
+        led4 = &myled0;
         button0 = &button_0;
     };
 
@@ -38,7 +38,7 @@
     leds: leds {
         compatible = "gpio-leds";
         myled0: led_4 {
-            gpios = <&gpio0 17 GPIO_ACTIVE_HIGH>;
+            gpios = <&gpio0 13 GPIO_ACTIVE_HIGH>;
         };
     };
 
@@ -119,8 +119,12 @@
     };
     uart1_pins: uart1_pins {
         group1 {
-            pinmux=<UART1_TX_GPIO16>, <UART1_RX_GPIO17>; 
+            pinmux=<UART1_TX_GPIO16>;
             output-high;
+        };
+        group2 {
+            pinmux=<UART1_RX_GPIO17>;
+            bias-pull-up;
         };
     };
 };

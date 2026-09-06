@@ -10,6 +10,7 @@
 #endif
 
 static const struct device *bno_dev = NULL;
+static volatile bool bno_ready = false;  /* set true once bno_init() completes */
 static struct sensor_trigger trig_acc_drdy; 
 static struct sensor_trigger trig_acc_motion;
 static struct sensor_trigger trig_acc_high_g;
@@ -76,8 +77,10 @@ void bno_read_thread(void *arg1, void *arg2, void *arg3) {
     while (1) { 
         const struct device *dev = bno_dev ? bno_dev : (const struct device *)arg1;
         
-        if (dev == NULL) {
-            k_msleep(50);   // Wait until bno_init() sets bno_dev
+        /* Don't poll until init has fully configured the chip and left CONFIG
+         * mode — otherwise the driver floods "CONFIG Mode no sample". */
+        if (dev == NULL || !bno_ready) {
+            k_msleep(50);
             continue;
         }
 
@@ -185,6 +188,7 @@ int bno_init(const struct device *dev)
     rc = sensor_attr_set(bno_dev, SENSOR_CHAN_GYRO_XYZ, SENSOR_ATTR_FEATURE_MASK, &config);
     if (rc < 0) return rc;
 
+    bno_ready = true;
     printk("BNO055 initialized\n");
     return 0;
 }
