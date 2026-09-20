@@ -25,6 +25,9 @@ void control_adjust_pitch(float delta_deg);
 void control_adjust_roll(float delta_deg);
 void control_adjust_altitude(float delta_mm);
 
+/*Zero out pitch and roll while maintaining altitude in HOVER state*/
+void control_zero_attitude(void);
+
 /* Publish latest measured altitude. On the first sample, engages altitude
  * hold by seeding the setpoint to the current height. */
 void control_set_altitude(uint32_t distance_mm);

@@ -70,8 +70,7 @@ attach-wsl-usb-port:
   usbipd.exe attach --wsl --busid "$BUSID"
 
   echo "Device attached to WSL."
-
-
+  
 # ------------------
 #  Defaults
 # ------------------

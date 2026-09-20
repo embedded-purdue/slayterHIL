@@ -75,3 +75,10 @@ void control_get(float *pitch_sp, float *roll_sp, float *altitude_sp,
     if (altitude_valid) *altitude_valid = s_altitude_valid;
     k_mutex_unlock(&control_mutex);
 }
+
+void control_zero_attitude(void){
+    k_mutex_lock(&control_mutex, K_FOREVER);
+    s_pitch_sp = 0.0f;
+    s_roll_sp = 0.0f;
+    k_mutex_unlock(&control_mutex);
+}

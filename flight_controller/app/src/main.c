@@ -48,7 +48,7 @@ K_TIMER_DEFINE(lidar_timer, lidar_timer_handler, NULL);
 K_THREAD_STACK_DEFINE(lidar_consumer_stack, LIDAR_STACK_SIZE); 
 static struct k_thread lidar_consumer_thread_data;
 
-//imu section
+//state machine thread
 K_THREAD_STACK_DEFINE(state_machine_stack, STACK_SIZE);
 static struct k_thread state_machine_thread_data;
 
@@ -234,7 +234,8 @@ static void lidar_consumer(void *arg1, void *arg2, void *arg3) {
 
 static void uart_consumer(void *arg1,  void *arg2, void *arg3) {
     struct uart_msg out;
-    printk("User Control thread started\n");
+    printk("uart consumer thread started\n");
+    //TODO: Send motor output intensities to test node, i.e. R 100 for right 100% power 
     while(1)
     {
         if(k_msgq_get(&uart_rx_msgq, &out, K_FOREVER) == 0)
@@ -348,13 +349,11 @@ int main(void)
     if(uc != 0){
         printk("uart_init failed: %d\n",uc);
     }
-    initialize_leds(); 
-    printk("Leds initialized\n");
+    // initialize_leds(); 
+    // printk("Leds initialized\n");
 
-    control_init();
-    printk("Control setpoints initialized\n");
-
-
+    // control_init();
+    // printk("Control setpoints initialized\n");
 
     // Start state machine thread
     k_thread_create(&state_machine_thread_data, state_machine_stack, STACK_SIZE,
@@ -390,22 +389,22 @@ int main(void)
     k_timer_start(&lidar_timer, K_MSEC(30), K_MSEC(30));
     
     printk("LiDAR timer started, monitoring data...\n");
-    // while(1) { 
-    //     for(int i = 0; i < 100; i++) { 
-    //         set_led_intensity(TOP_LEFT, i); 
-    //         // set_led_intensity(TOP_RIGHT, i); 
-    //         set_led_intensity(BOTTOM_LEFT, i); 
-    //         // set_led_intensity(BOTTOM_RIGHT, i); 
-    //         k_msleep(10);
-    //     }
-    //     k_msleep(1000); 
-    //     for(int i = 100; i>=0; i--) { 
-    //         set_led_intensity(TOP_LEFT, i); 
-    //         // set_led_intensity(TOP_RIGHT, i); 
-    //         set_led_intensity(BOTTOM_LEFT, i); 
-    //         // set_led_intensity(BOTTOM_RIGHT, i); 
-    //         k_msleep(10);
-    //     }
-    // }
+    while(1) {
+        // for(int i = 0; i < 100; i++) { 
+        //     set_led_intensity(TOP_LEFT, 0); 
+        //     set_led_intensity(TOP_RIGHT, 0); 
+        //     set_led_intensity(BOTTOM_LEFT, 0); 
+        //     set_led_intensity(BOTTOM_RIGHT, 0); 
+        //     k_msleep(10);
+        // }
+        k_msleep(1000); 
+        // for(int i = 100; i>=0; i--) { 
+        //     set_led_intensity(TOP_LEFT, i); 
+        //     // set_led_intensity(TOP_RIGHT, i); 
+        //     set_led_intensity(BOTTOM_LEFT, i); 
+        //     // set_led_intensity(BOTTOM_RIGHT, i); 
+        //     k_msleep(10);
+        // }
+    }
     return 0;
 }
