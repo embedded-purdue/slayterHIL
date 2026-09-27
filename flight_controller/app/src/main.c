@@ -69,6 +69,7 @@ K_THREAD_STACK_DEFINE(uart_consumer_stack, UART_CONSUMER_STACK_SIZE);
 static struct k_thread uart_consumer_thread_data;
 K_MSGQ_DEFINE(uart_rx_msgq, sizeof(struct uart_msg), 16, alignof(struct uart_msg));
 extern struct ring_buf command_queue;
+extern struct k_msgq event_msgq;
 
 
 static const struct gpio_dt_spec led0 = GPIO_DT_SPEC_GET(DT_ALIAS(led4), gpios);
@@ -282,6 +283,13 @@ static void uart_consumer(void *arg1,  void *arg2, void *arg3) {
                     control_adjust_altitude(-CONTROL_ALTITUDE_STEP_MM);
                     printk("UART: DESCEND (altitude setpoint -%dmm)\n",
                            (int)CONTROL_ALTITUDE_STEP_MM);
+                    // static const command_t cmd = DOWN;
+                    // ring_buf_put(&command_queue, (uint8_t*)&cmd, sizeof(command_t));
+                    break;
+                case 'B':
+                    static const system_events_t error_event = ERROR;
+                    k_msgq_put(&event_msgq, &error_event, K_NO_WAIT);
+                    printk("UART: ABORT\n");
                     // static const command_t cmd = DOWN;
                     // ring_buf_put(&command_queue, (uint8_t*)&cmd, sizeof(command_t));
                     break;
