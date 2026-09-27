@@ -51,6 +51,7 @@ static struct k_thread lidar_consumer_thread_data;
 //state machine thread
 K_THREAD_STACK_DEFINE(state_machine_stack, STACK_SIZE);
 static struct k_thread state_machine_thread_data;
+extern 
 
 K_THREAD_STACK_DEFINE(bno_consumer_stack, BNO_STACK_SIZE);
 static struct k_thread bno_consumer_thread_data;
@@ -67,6 +68,8 @@ K_THREAD_DEFINE(lidar_thread, LIDAR_STACK_SIZE, lidar_read_thread, NULL, NULL, N
 K_THREAD_STACK_DEFINE(uart_consumer_stack, UART_CONSUMER_STACK_SIZE);
 static struct k_thread uart_consumer_thread_data;
 K_MSGQ_DEFINE(uart_rx_msgq, sizeof(struct uart_msg), 16, alignof(struct uart_msg));
+extern struct ring_buf command_queue;
+
 
 static const struct gpio_dt_spec led0 = GPIO_DT_SPEC_GET(DT_ALIAS(led4), gpios);
 /* Running count of bytes accepted from uart1 — shown in telemetry so you can
@@ -123,6 +126,7 @@ static void bno_consumer(void *arg1, void *arg2, void *arg3)
         if (rc != 0) {
             /* Sensor loss — idle motors and reset PID state to prevent
              * stale integral and derivative carry-over on recovery. */
+            //need some error recovery -> force FSM to ERROR
             pid_reset(&pitch_pid);
             pid_reset(&roll_pid);
             pid_reset(&alt_pid);
@@ -246,28 +250,40 @@ static void uart_consumer(void *arg1,  void *arg2, void *arg3) {
                 case 'L':
                     control_adjust_roll(-CONTROL_ATTITUDE_STEP_DEG);
                     printk("UART: LEFT  (roll setpoint down)\n");
+                    // static const command_t cmd = LEFT;
+                    // ring_buf_put(&command_queue, (uint8_t*)&cmd, sizeof(command_t));
                     break;
                 case 'R':
                     control_adjust_roll(+CONTROL_ATTITUDE_STEP_DEG);
                     printk("UART: RIGHT (roll setpoint up)\n");
+                    // static const command_t cmd = RIGHT;
+                    // ring_buf_put(&command_queue, (uint8_t*)&cmd, sizeof(command_t));
                     break;
                 case 'U':
                     control_adjust_pitch(+CONTROL_ATTITUDE_STEP_DEG);
                     printk("UART: UP    (pitch setpoint up)\n");
+                    // static const command_t cmd = BACK;
+                    // ring_buf_put(&command_queue, (uint8_t*)&cmd, sizeof(command_t));
                     break;
                 case 'D':
                     control_adjust_pitch(-CONTROL_ATTITUDE_STEP_DEG);
                     printk("UART: DOWN  (pitch setpoint down)\n");
+                    // static const command_t cmd = FORWARD;
+                    // ring_buf_put(&command_queue, (uint8_t*)&cmd, sizeof(command_t));
                     break;
                 case 'A':
                     control_adjust_altitude(+CONTROL_ALTITUDE_STEP_MM);
                     printk("UART: ASCEND  (altitude setpoint +%dmm)\n",
                            (int)CONTROL_ALTITUDE_STEP_MM);
+                       // static const command_t cmd = UP;
+                    // ring_buf_put(&command_queue, (uint8_t*)&cmd, sizeof(command_t));
                     break;
                 case 'X':
                     control_adjust_altitude(-CONTROL_ALTITUDE_STEP_MM);
                     printk("UART: DESCEND (altitude setpoint -%dmm)\n",
                            (int)CONTROL_ALTITUDE_STEP_MM);
+                    // static const command_t cmd = DOWN;
+                    // ring_buf_put(&command_queue, (uint8_t*)&cmd, sizeof(command_t));
                     break;
                 default:
                     printk("UART: UNKNOWN '%c'\n", c);
@@ -390,6 +406,8 @@ int main(void)
     
     printk("LiDAR timer started, monitoring data...\n");
     while(1) {
+        static const command_t cmd = DOWN;
+        ring_buf_put(&command_queue, (uint8_t*)&cmd, sizeof(command_t));
         // for(int i = 0; i < 100; i++) { 
         //     set_led_intensity(TOP_LEFT, 0); 
         //     set_led_intensity(TOP_RIGHT, 0); 

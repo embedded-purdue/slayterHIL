@@ -16,8 +16,8 @@
 #define BOTTOM_LEFT  0
 #define BOTTOM_RIGHT  3
 
-#define IMU_SIZE_BYTES     (IMU_CAPACITY * sizeof(imu_state_t))
-#define LIDAR_SIZE_BYTES   (LIDAR_CAPACITY * sizeof(lidar_state_t))
+// #define IMU_SIZE_BYTES     (IMU_CAPACITY * sizeof(imu_state_t))
+// #define LIDAR_SIZE_BYTES   (LIDAR_CAPACITY * sizeof(lidar_state_t))
 #define COMMAND_SIZE_BYTES (COMMAND_CAPACITY * sizeof(command_t))
 
 //global state transition events
@@ -60,6 +60,7 @@ void init_hw(void) {
     printk("Leds initialized\n");
     control_init();
     printk("Control setpoints initialized\n");
+
     k_msgq_put(&event_msgq, (const void*)INIT_HW_DONE, K_NO_WAIT);
 }
 
@@ -112,20 +113,39 @@ void hover(void) {
 void controlled_flight(void) {
     //handles all user commands from uart thread, returns to hover when done processing
     command_t cmd;
-//while(ring_buffer_get() != 0)
+    while(ring_buf_get(&command_queue, (uint8_t *)&cmd, sizeof(command_t)) != 0){
     switch (cmd){
-        case LEFT: {
+        case LEFT:
             control_adjust_roll(-CONTROL_ATTITUDE_STEP_DEG);
             break;
-        }
-        case RIGHT: {
+        case RIGHT:
             control_adjust_roll(+CONTROL_ATTITUDE_STEP_DEG);
             break;
-        }
+        case FORWARD:
+            control_adjust_pitch(+CONTROL_ATTITUDE_STEP_DEG);
+            break;
+        case BACK:
+            control_adjust_pitch(-CONTROL_ATTITUDE_STEP_DEG);
+            break;
+        case UP:
+            control_adjust_altitude(+CONTROL_ALTITUDE_STEP_MM);
+            break;
+        case DOWN:
+            control_adjust_altitude(-CONTROL_ALTITUDE_STEP_MM);
+            break;
+        case ABORT:
+            static const system_events_t error_event = ERROR;
+            k_msgq_put(&event_msgq, &error_event, K_NO_WAIT);
+            //straight to error state
+            return;
+        default:
+            break;
     }
 
 }
-
+static const system_events_t queue_empty_event = CTRL_QUEUE_EMPTY;
+k_msgq_put(&event_msgq, &queue_empty_event, K_NO_WAIT);
+}
 // define queue of system events
 void state_machine_handler(system_events_t event) {
     switch(event) {
@@ -187,7 +207,9 @@ void state_machine_thread(void *p1, void *p2, void *p3) {
     for(;;) {
         // Thread loop code here
         while (k_msgq_get(&event_msgq, &event, K_FOREVER) == 0) {
+            printk("Event in event queue. Current State: %d\n", current_state);
             state_machine_handler(event);
+            printk("Event processed. Current State: %d\n", current_state);
         }
     }
 }
