@@ -25,12 +25,12 @@ void pwm_thread(void*, void*, void*) {
     uint64_t pwm_pulse4;
 
     while(1) {
-        if(pwm_capture_usec(pwm_input_dev1, 0, &pwm_period1, &pwm_pulse1) == 0 &&
-           pwm_capture_usec(pwm_input_dev2, 0, &pwm_period2, &pwm_pulse2) == 0 &&
-           pwm_capture_usec(pwm_input_dev3, 0, &pwm_period3, &pwm_pulse3) == 0 &&
-           pwm_capture_usec(pwm_input_dev4, 0, &pwm_period4, &pwm_pulse4) == 0) {
+        if(pwm_capture_usec(pwm_input_dev1, 0, PWM_CAPTURE_TYPE_BOTH, &pwm_period1, &pwm_pulse1, K_FOREVER) == 0 &&
+           pwm_capture_usec(pwm_input_dev2, 0, PWM_CAPTURE_TYPE_BOTH, &pwm_period2, &pwm_pulse2, K_FOREVER) == 0 &&
+           pwm_capture_usec(pwm_input_dev3, 0, PWM_CAPTURE_TYPE_BOTH, &pwm_period3, &pwm_pulse3, K_FOREVER) == 0 &&
+           pwm_capture_usec(pwm_input_dev4, 0, PWM_CAPTURE_TYPE_BOTH, &pwm_period4, &pwm_pulse4, K_FOREVER) == 0) {
             // dummy printing for sanity
-            LOG_INF("PWM captured: period = %llu us, pulse = %llu us", pwm_period, pwm_pulse);
+            LOG_INF("PWM captured: period = %llu us, pulse = %llu us", pwm_period1, pwm_pulse1);
 
             double duty_cycle1 = (double)pwm_pulse1 / (double)pwm_period1;
             double avg_voltage1 = duty_cycle1 * VOLTAGE_HIGH;

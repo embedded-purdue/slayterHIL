@@ -17,7 +17,7 @@
 
 syntax = "proto3";
 
-message ImuPayload {
+message BnoImuPayload {
     sint32 gyro_x    = 1;
     sint32 gyro_y    = 2;
     sint32 gyro_z    = 3;
@@ -39,6 +39,6 @@ message RcPayload {
 message SensorPacket {
     uint32     timestamp_us = 1;
     uint32     lidar_mm     = 2;
-    ImuPayload imu          = 3;
+    BnoImuPayload imu          = 3;
     RcPayload  rc           = 4;
 }

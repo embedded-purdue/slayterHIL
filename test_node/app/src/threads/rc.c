@@ -1,5 +1,5 @@
 #include "threads/rc.h"
-#include "threads/sensor_emulation.h" 
+#include "threads/c/sensor_emulation.h" 
 #include <zephyr/drivers/uart.h>
 #include <zephyr/logging/log.h>
 
