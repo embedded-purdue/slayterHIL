@@ -50,8 +50,7 @@ static struct k_thread lidar_consumer_thread_data;
 
 //state machine thread
 K_THREAD_STACK_DEFINE(state_machine_stack, STACK_SIZE);
-static struct k_thread state_machine_thread_data;
-extern 
+static struct k_thread state_machine_thread_data; 
 
 K_THREAD_STACK_DEFINE(bno_consumer_stack, BNO_STACK_SIZE);
 static struct k_thread bno_consumer_thread_data;
