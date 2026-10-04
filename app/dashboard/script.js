@@ -131,7 +131,7 @@ function genericConvertToCommandList(data) {
                     totalzsteps += 1;
                 }
                 for (let j = 0; j < r1; j++) {
-                    if (dz > 0) commands.push('R');
+                    if (dx > 0) commands.push('R');
                     else commands.push('L');
                     totalxsteps += 1;
                 }
@@ -147,16 +147,21 @@ function genericConvertToCommandList(data) {
     return commands;
 }
 
-/** Display string: dots after R, L, F, B; I.; appends I. if last command is U or D. */
-function formatGenericRcDisplay(commandList) {
-    const mapped = commandList.map((c) => {
-        if (c === 'R' || c === 'L' || c === 'F' || c === 'B') return `${c}.`;
-        if (c === 'I') return 'I.';
+/**
+ * Apply the RC delimiter rules to a raw token list (R/L/F/B/U/D/I):
+ * '.' after R, L, F, B and I; U and D stay bare; trailing 'I.' if the
+ * sequence ends on U or D. Tokens that already carry a '.' are left alone.
+ * This is what gets displayed AND what gets sent to the test node.
+ */
+function toDelimitedTokens(commandList) {
+    const tokens = commandList.map((c) => {
+        if (c.endsWith('.')) return c;
+        if (c === 'R' || c === 'L' || c === 'F' || c === 'B' || c === 'I') return `${c}.`;
         return c;
     });
-    const last = commandList[commandList.length - 1];
-    if (last === 'U' || last === 'D') mapped.push('I.');
-    return mapped.join('');
+    const last = tokens[tokens.length - 1];
+    if (last === 'U' || last === 'D') tokens.push('I.');
+    return tokens;
 }
 
 function jsonRecordsToWaypoints(data) {
@@ -659,7 +664,7 @@ class TestAutomationDashboard {
                 ts,
                 'info',
                 'preset-test',
-                `Sent ${cmds.length} RC commands (${presetKey}) to server`
+                `Sent ${cmds.length} RC commands (${presetKey}) to test node`
             );
         } else {
             alert('Not connected to test server.');
@@ -675,7 +680,7 @@ class TestAutomationDashboard {
         const metaEl = document.getElementById(PRESET_META_IDS[presetKey]);
 
         if (statusEl) {
-            statusEl.textContent = 'Loading JSON';
+            statusEl.textContent = 'Loading…';
             statusEl.classList.remove('preset-error');
         }
 
@@ -685,7 +690,6 @@ class TestAutomationDashboard {
                 throw new Error('Preset URL must be a root-relative path starting with /');
             }
             const url = presetJsonFetchUrl(path);
-            console.log('Attempting to load flight data from:', url);
 
             const res = await fetch(path);
             if (!res.ok) {
@@ -704,8 +708,8 @@ class TestAutomationDashboard {
             }
 
             const waypoints = jsonRecordsToWaypoints(data);
-            const cmdList = genericConvertToCommandList(data);
-            const displayStr = formatGenericRcDisplay(cmdList);
+            const tokens = toDelimitedTokens(genericConvertToCommandList(data));
+            const displayStr = tokens.join('');
 
             requestAnimationFrame(() => {
                 if (!this.presetViz[presetKey]) {
@@ -715,19 +719,15 @@ class TestAutomationDashboard {
             });
 
             if (resultEl) resultEl.textContent = displayStr || '(no movement)';
-            if (metaEl) {
-                metaEl.textContent = `JSON samples: ${data.length}. Command tokens: ${cmdList.length}. Display adds a dot after each R, L, F, and B, uses I. for idle, and leaves U and D as single letters (same rules as generic_conversion.py).`;
-            }
-            this._presetRcCommands[presetKey] = cmdList;
+            if (metaEl) metaEl.textContent = `Total commands: ${tokens.length}`;
+            this._presetRcCommands[presetKey] = tokens;
             this._presetLoaded[presetKey] = true;
 
-            if (statusEl) {
-                statusEl.textContent = `Loaded ${data.length} samples from preset JSON.`;
-            }
+            if (statusEl) statusEl.textContent = '';
         } catch (e) {
             console.error('Preset load failed:', presetKey, e);
             if (statusEl) {
-                statusEl.textContent = `Load failed: ${e.message}`;
+                statusEl.textContent = 'Could not load this test. Make sure the dashboard server is running.';
                 statusEl.classList.add('preset-error');
             }
             if (resultEl) resultEl.textContent = '';
@@ -844,13 +844,11 @@ class TestAutomationDashboard {
     }
 
     showRcOutput(commands) {
-        const last = commands[commands.length - 1];
-        const suffix = (last === 'U' || last === 'D') ? 'I.' : '';
-        const output = commands.join('') + suffix;
-        document.getElementById('rcResult').textContent = output || '(no movement)';
-        document.getElementById('rcMeta').textContent = `Total commands: ${commands.length}`;
+        const tokens = toDelimitedTokens(commands);
+        document.getElementById('rcResult').textContent = tokens.join('') || '(no movement)';
+        document.getElementById('rcMeta').textContent = `Total commands: ${tokens.length}`;
         document.getElementById('rcOutput').style.display = 'block';
-        this._lastRcCommands = commands;
+        this._lastRcCommands = tokens;
     }
 
     sendRcToServer() {
@@ -863,7 +861,7 @@ class TestAutomationDashboard {
                 ts,
                 'info',
                 'user-input',
-                `Sent ${this._lastRcCommands.length} RC commands to server`
+                `Sent ${this._lastRcCommands.length} RC commands to test node`
             );
         } else {
             alert('Not connected to test server.');
