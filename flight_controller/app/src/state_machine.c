@@ -60,29 +60,30 @@ void init_hw(void) {
     printk("Leds initialized\n");
     control_init();
     printk("Control setpoints initialized\n");
-
-    k_msgq_put(&event_msgq, (const void*)INIT_HW_DONE, K_NO_WAIT);
+    static const system_events_t hw_done = INIT_HW_DONE;
+    k_msgq_put(&event_msgq, &hw_done, K_NO_WAIT);
 }
 
 void ascend(void) {
     // ascend and then push an ascend_done msg; on first ascend, rise to max_alt / 2
     uint32_t curr_alt, target; 
     bool curr_alt_valid;
-    control_get(NULL, NULL, NULL, &curr_alt, NULL);
-    if (current_state == DRONE_FIRST_ASCEND){
-        control_adjust_altitude(CONTROL_ALTITUDE_MAX_MM / 2);
-        target = 1500;
-    }
-    else{
-        control_adjust_altitude(CONTROL_ALTITUDE_STEP_MM);
-        target = curr_alt + CONTROL_ALTITUDE_STEP_MM;
-    }
-    do{
-        control_get(NULL, NULL, NULL, &curr_alt, &curr_alt_valid);
-        k_msleep(100);
-        //ascends to setpoint altitude - 50mm error
-    } while (!curr_alt_valid || curr_alt < target - 25);
-    k_msgq_put(&event_msgq, (const void*)ASCEND_DONE, K_NO_WAIT);
+    // control_get(NULL, NULL, NULL, &curr_alt, NULL);
+    // if (current_state == DRONE_FIRST_ASCEND){
+    //     control_adjust_altitude(CONTROL_ALTITUDE_MAX_MM / 2);
+    //     target = CONTROL_FIRST_ASCENSION_MM;
+    // }
+    // else{
+    //     control_adjust_altitude(CONTROL_ALTITUDE_STEP_MM);
+    //     target = curr_alt + CONTROL_ALTITUDE_STEP_MM;
+    // }
+    // do{
+    //     control_get(NULL, NULL, NULL, &curr_alt, &curr_alt_valid);
+    //     k_msleep(10);
+    //     //ascends to setpoint altitude - 50mm error
+    // } while (!curr_alt_valid || curr_alt < target - 50);
+    static const system_events_t ascend_done_event = ASCEND_DONE;
+    k_msgq_put(&event_msgq, &ascend_done_event, K_NO_WAIT);
 }
 
 void land(void) {
@@ -91,18 +92,19 @@ void land(void) {
     uint32_t error_timer = 0;
     bool curr_alt_valid;
     control_adjust_altitude(-CONTROL_ALTITUDE_MAX_MM);
-    do{
-        control_get(NULL, NULL, NULL, &curr_alt, &curr_alt_valid);
-        k_msleep(100);
-        error_timer++;
-        //force landing after ~30 seconds of invalid altitude -> happpens if LiDAR fails during land 
-        if (error_timer > 300){ 
-            printk("Forcing LAND after 30 second timeout\n");
-            break;
-        }
-    //wait until current altitude gets near ~50 mm, then confirm landing is done
-    } while (!curr_alt_valid || curr_alt > 50);
-    k_msgq_put(&event_msgq, (const void*)LAND_DONE, K_NO_WAIT);
+    // do{
+    //     control_get(NULL, NULL, NULL, &curr_alt, &curr_alt_valid);
+    //     k_msleep(100);
+    //     error_timer++;
+    //     //force landing after ~30 seconds of invalid altitude -> happpens if LiDAR fails during land 
+    //     if (error_timer > 300){ 
+    //         printk("Forcing LAND after 30 second timeout\n");
+    //         break;
+    //     }
+    // //wait until current altitude gets near ~50 mm, then confirm landing is done
+    // } while (!curr_alt_valid || curr_alt > 50);
+    static const system_events_t land_done_event = LAND_DONE;
+    k_msgq_put(&event_msgq, &land_done_event, K_NO_WAIT);
 }
 
 void hover(void) {
@@ -114,6 +116,7 @@ void controlled_flight(void) {
     //handles all user commands from uart thread, returns to hover when done processing
     command_t cmd;
     while(ring_buf_get(&command_queue, (uint8_t *)&cmd, sizeof(command_t)) != 0){
+    printk("Cmd in controlled flight: %d\n", (int)cmd);
     switch (cmd){
         case LEFT:
             control_adjust_roll(-CONTROL_ATTITUDE_STEP_DEG);
@@ -134,9 +137,9 @@ void controlled_flight(void) {
             control_adjust_altitude(-CONTROL_ALTITUDE_STEP_MM);
             break;
         case ABORT:
-            static const system_events_t error_event = ERROR;
-            k_msgq_put(&event_msgq, &error_event, K_NO_WAIT);
-            //straight to error state
+            //on ABORT, attempt to land the drone
+            static const system_events_t land_event = LAND;
+            k_msgq_put(&event_msgq, &land_event, K_NO_WAIT);
             return;
         default:
             break;
@@ -170,8 +173,8 @@ void state_machine_handler(system_events_t event) {
             hover();
             }
             break;
-        case LAND: //begin landing from hovering state
-            if (current_state == DRONE_HOVER){
+        case LAND: //begin landing from hovering state OR controlled flight on ABORT ('B') UART command
+            if (current_state == DRONE_HOVER || current_state == DRONE_CONTROLLED_FLIGHT){
                 current_state = DRONE_LAND;
                 land();
             }
@@ -204,7 +207,7 @@ void state_machine_handler(system_events_t event) {
 
 void state_machine_thread(void *p1, void *p2, void *p3) {
     ARG_UNUSED(p1); ARG_UNUSED(p2); ARG_UNUSED(p3);
-    for(;;) {
+    while(1) {
         // Thread loop code here
         while (k_msgq_get(&event_msgq, &event, K_FOREVER) == 0) {
             printk("Event in event queue. Current State: %d\n", current_state);

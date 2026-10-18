@@ -14,7 +14,6 @@
 #include "control.h"
 #include <stdalign.h>
 
-
 // static const struct device *bno055_dev = DEVICE_DT_GET(DT_NODELABEL(bno)); 
 
 // define thread
@@ -51,12 +50,12 @@ static struct k_thread lidar_consumer_thread_data;
 //state machine thread
 K_THREAD_STACK_DEFINE(state_machine_stack, STACK_SIZE);
 static struct k_thread state_machine_thread_data;
-extern 
+extern drone_state_t current_state;
+extern struct k_msgq event_msgq;
 
+//bno thread
 K_THREAD_STACK_DEFINE(bno_consumer_stack, BNO_STACK_SIZE);
 static struct k_thread bno_consumer_thread_data;
-
-
 K_MSGQ_DEFINE(bno_msgq, sizeof(struct bno_data), MAX_BNO_MSGQ_LEN, alignof(int));
 K_SEM_DEFINE(bno_sem, BNO_SEM_INIT_COUNT, BNO_SEM_MAX_COUNT);
 
@@ -131,9 +130,12 @@ static void bno_consumer(void *arg1, void *arg2, void *arg3)
             pid_reset(&roll_pid);
             pid_reset(&alt_pid);
             last_time = k_uptime_get_32();
-            for (int i = 0; i < 4; i++) {
-                set_led_intensity(i, 10);
-            }
+            // for (int i = 0; i < 4; i++) {
+            //     set_led_intensity(i, 10);
+            // }
+            //immediately go into error and block forever
+            static const system_events_t bno_error = ERROR;
+            k_msgq_put_front(&event_msgq, &bno_error);
             k_msleep(50);
             continue;
         }
@@ -217,7 +219,7 @@ static void bno_consumer(void *arg1, void *arg2, void *arg3)
 static void lidar_consumer(void *arg1, void *arg2, void *arg3) {
     struct lidar_data out; 
     printk("LiDAR consumer thread started\n");
-    
+
     while (1) {
         int rc = k_msgq_get(&lidar_msgq, &out, K_FOREVER);
         if (rc == 0) {
@@ -238,8 +240,8 @@ static void lidar_consumer(void *arg1, void *arg2, void *arg3) {
 
 static void uart_consumer(void *arg1,  void *arg2, void *arg3) {
     struct uart_msg out;
+    static const system_events_t control_event = CTRL_COMMAND;
     printk("uart consumer thread started\n");
-    //TODO: Send motor output intensities to test node, i.e. R 100 for right 100% power 
     while(1)
     {
         if(k_msgq_get(&uart_rx_msgq, &out, K_FOREVER) == 0)
@@ -250,40 +252,52 @@ static void uart_consumer(void *arg1,  void *arg2, void *arg3) {
                 case 'L':
                     control_adjust_roll(-CONTROL_ATTITUDE_STEP_DEG);
                     printk("UART: LEFT  (roll setpoint down)\n");
-                    // static const command_t cmd = LEFT;
-                    // ring_buf_put(&command_queue, (uint8_t*)&cmd, sizeof(command_t));
+                    // static const command_t left_cmd = LEFT;
+                    // ring_buf_put(&command_queue, (uint8_t*)&left_cmd, sizeof(command_t));
+                    // k_msgq_put(&event_msgq, &control_event, K_NO_WAIT);
                     break;
                 case 'R':
                     control_adjust_roll(+CONTROL_ATTITUDE_STEP_DEG);
                     printk("UART: RIGHT (roll setpoint up)\n");
-                    // static const command_t cmd = RIGHT;
-                    // ring_buf_put(&command_queue, (uint8_t*)&cmd, sizeof(command_t));
+                    // static const command_t right_cmd = RIGHT;
+                    // ring_buf_put(&command_queue, (uint8_t*)&right_cmd, sizeof(command_t));
+                    // k_msgq_put(&event_msgq, &control_event, K_NO_WAIT);
                     break;
                 case 'U':
                     control_adjust_pitch(+CONTROL_ATTITUDE_STEP_DEG);
                     printk("UART: UP    (pitch setpoint up)\n");
-                    // static const command_t cmd = BACK;
-                    // ring_buf_put(&command_queue, (uint8_t*)&cmd, sizeof(command_t));
+                    // static const command_t back_cmd = BACK;
+                    // ring_buf_put(&command_queue, (uint8_t*)&back_cmd, sizeof(command_t));
+                    // k_msgq_put(&event_msgq, &control_event, K_NO_WAIT);
                     break;
                 case 'D':
                     control_adjust_pitch(-CONTROL_ATTITUDE_STEP_DEG);
                     printk("UART: DOWN  (pitch setpoint down)\n");
-                    // static const command_t cmd = FORWARD;
-                    // ring_buf_put(&command_queue, (uint8_t*)&cmd, sizeof(command_t));
+                    // static const command_t forward_cmd = FORWARD;
+                    // ring_buf_put(&command_queue, (uint8_t*)&forward_cmd, sizeof(command_t));
+                    // k_msgq_put(&event_msgq, &control_event, K_NO_WAIT);
                     break;
                 case 'A':
                     control_adjust_altitude(+CONTROL_ALTITUDE_STEP_MM);
                     printk("UART: ASCEND  (altitude setpoint +%dmm)\n",
                            (int)CONTROL_ALTITUDE_STEP_MM);
-                       // static const command_t cmd = UP;
-                    // ring_buf_put(&command_queue, (uint8_t*)&cmd, sizeof(command_t));
+                    // static const command_t up_cmd = UP;
+                    // ring_buf_put(&command_queue, (uint8_t*)&up_cmd, sizeof(command_t));
+                    // k_msgq_put(&event_msgq, &control_event, K_NO_WAIT);
                     break;
                 case 'X':
                     control_adjust_altitude(-CONTROL_ALTITUDE_STEP_MM);
                     printk("UART: DESCEND (altitude setpoint -%dmm)\n",
                            (int)CONTROL_ALTITUDE_STEP_MM);
-                    // static const command_t cmd = DOWN;
-                    // ring_buf_put(&command_queue, (uint8_t*)&cmd, sizeof(command_t));
+                    // static const command_t down_cmd = DOWN;
+                    // ring_buf_put(&command_queue, (uint8_t*)&down_cmd, sizeof(command_t));
+                    // k_msgq_put(&event_msgq, &control_event, K_NO_WAIT);
+                    break;
+                case 'B':
+                    // static const command_t abort_cmd = ABORT;
+                    // ring_buf_put(&command_queue, (uint8_t*)&abort_cmd, sizeof(command_t));
+                    // k_msgq_put(&event_msgq, &control_event, K_NO_WAIT);
+                    printk("UART: ABORT\n");
                     break;
                 default:
                     printk("UART: UNKNOWN '%c'\n", c);
@@ -365,16 +379,14 @@ int main(void)
     if(uc != 0){
         printk("uart_init failed: %d\n",uc);
     }
-    // initialize_leds(); 
-    // printk("Leds initialized\n");
-
-    // control_init();
-    // printk("Control setpoints initialized\n");
 
     // Start state machine thread
     k_thread_create(&state_machine_thread_data, state_machine_stack, STACK_SIZE,
                     state_machine_thread, NULL, NULL, NULL,
                     COMMS_PRIORITY, 0, K_NO_WAIT);
+    //initialize LEDs and control
+    system_events_t event = INIT_HW;
+    k_msgq_put(&event_msgq, &event, K_NO_WAIT);
 
     // Start BNO consumer thread (the one that prints data)
     k_thread_create(&bno_consumer_thread_data, 
@@ -403,11 +415,22 @@ int main(void)
 
     // Start LiDAR timer after everything is initialized
     k_timer_start(&lidar_timer, K_MSEC(30), K_MSEC(30));
+
     
     printk("LiDAR timer started, monitoring data...\n");
-    while(1) {
-        static const command_t cmd = DOWN;
+        k_usleep(100);
+        event = ASCEND;
+        k_msgq_put(&event_msgq, &event, K_NO_WAIT);
+        k_usleep(100);
+        event = CTRL_COMMAND;
+        static const command_t cmd = ABORT;
         ring_buf_put(&command_queue, (uint8_t*)&cmd, sizeof(command_t));
+        k_msgq_put(&event_msgq, &event, K_NO_WAIT);
+        k_usleep(100);
+        // event = LAND;
+        // k_msgq_put(&event_msgq, &event, K_NO_WAIT);
+        
+    while(1) {
         // for(int i = 0; i < 100; i++) { 
         //     set_led_intensity(TOP_LEFT, 0); 
         //     set_led_intensity(TOP_RIGHT, 0); 

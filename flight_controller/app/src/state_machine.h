@@ -23,8 +23,8 @@ typedef enum {
     DRONE_DONE_INIT, //INIT_HW_DONE event from control thread
     DRONE_FIRST_ASCEND, //ASCEND user command sent after HW_DONE_INIT
     DRONE_HOVER, //ASCEND_DONE or CTRL_QUEUE_EMPTY event has finished
-    DRONE_LAND, //LAND user command after HOVER
     DRONE_CONTROLLED_FLIGHT, //CTRL_COMMAND sent by user after HOVER
+    DRONE_LAND, //LAND user command after HOVER
     DRONE_ERROR //certain failures force manual reset
 } drone_state_t;
 

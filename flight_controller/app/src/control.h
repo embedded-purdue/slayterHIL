@@ -17,6 +17,7 @@
 #define CONTROL_ALTITUDE_STEP_MM    100.0f  /* per A/X command       */
 #define CONTROL_ALTITUDE_MIN_MM     200.0f  /* floor of altitude hold */
 #define CONTROL_ALTITUDE_MAX_MM     3000.0f /* ceiling of altitude hold */
+#define CONTROL_FIRST_ASCENSION_MM  1500 /* first ascent height (max / 2)*/
 
 void control_init(void);
 
