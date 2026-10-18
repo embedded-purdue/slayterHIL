@@ -2,6 +2,25 @@
 
 Flight simulation branch.
 
+## Default simulation build
+
+From `flight_sim`, build and run the simulation in `src/main.cpp`:
+
+```sh
+bash setup.sh
+cd build
+./flight_sim
+```
+
+This runs the physics simulation with file capture by default; no Pi or STM32
+is required. It writes `spi_frames.bin` and `pid_tuning.csv` in the working
+directory. For a short run, use `./flight_sim --samples 120`.
+
+The Pi sender is excluded from the default build. Build it explicitly with
+`cmake --build build --target old_main_spi_test` when needed.
+`setup.sh` accepts additional CMake configuration arguments; see the Intel
+Protobuf instructions below for this Mac's dependencies.
+
 ## Fall 2025 Contributions
 
 **Data Packaging and SPI Communication**
