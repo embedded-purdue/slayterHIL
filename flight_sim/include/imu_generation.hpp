@@ -1,4 +1,4 @@
-#// imu_sim.h
+#include <Eigen/Geometry>
 
 #ifndef IMU_SIM_H
 #define IMU_SIM_H
@@ -28,26 +28,14 @@ typedef struct {
     i2c_imu_triplet_t gyro;
 } imu_data_t;
 
+// Sensor axes match body axes. Orientation rotates body vectors into world.
+// Linear acceleration is net kinematic acceleration (hover = zero), in m/s^2.
+// Euler register slots x/y/z carry heading/roll/pitch, respectively.
 class ImuSimulator {
 public:
-    ImuSimulator();
-    ImuSimulator(float mass, float moment_of_inertia);
-    imu_data_t update(float fx, float fy, float fz,
-                      float tx, float ty, float tz,
-                      float dt);
-    imu_data_t update(const Eigen::Vector3f& force,
-                      const Eigen::Vector3f& torque,
-                      float dt);
-
-private:
-    float m_;
-    float I_;
-
-    float wx_, wy_, wz_;
-    float roll_, pitch_, yaw_;
-
-    i2c_imu_data_16_t pack_16(int16_t value);
+    imu_data_t sample(const Eigen::Quaterniond& bodyToWorld,
+                      const Eigen::Vector3d& angularVelocityBody,
+                      const Eigen::Vector3d& linearAccelerationWorld) const;
 };
-
 
 #endif

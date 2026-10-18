@@ -49,7 +49,7 @@ Drone::Drone (
     this->total_force = calculateNetForce();
 
     // Torque
-    this->total_torque_body = calculateNetTorque();
+    this->total_torque_body.setZero();
 
     // Orientation (PARTICULAR to drone and RELATIVE to env)
     this->orientation = Eigen::Quaterniond::Identity();
@@ -61,11 +61,8 @@ Drone::Drone (
 
 // Helpers
 void Drone::applyForce(const Eigen::Vector3d& force) {
-	this->body->applyForce(force);
-	this->m1->applyForce(force);
-	this->m2->applyForce(force);
-	this->m3->applyForce(force);
-	this->m4->applyForce(force); //TODO: make constraints later so they stay same distance apart
+    // Components define aggregate mass; apply each external force once.
+    RigidBody::applyForce(force);
 }
 
 
@@ -78,11 +75,11 @@ double Drone::calculateMass() {
 }
 
 Eigen::Vector3d Drone::getPosition() const {
-    return this->body->getPosition();
+    return RigidBody::getPosition();
 }
 
 Eigen::Vector3d Drone::getVelocity() const {
-	return this->body->getVelocity();
+	return RigidBody::getVelocity();
 }
 
 // Faith in Eigen's Vector Addition
@@ -95,11 +92,7 @@ Eigen::Vector3d Drone::calculateNetForce() {
 }
 
 Eigen::Vector3d Drone::calculateNetTorque() {
-    return this->body->getNetTorque() +
-           this->m1->getNetTorque() +
-           this->m2->getNetTorque() +
-           this->m3->getNetTorque() +
-           this->m4->getNetTorque();
+    return getNetTorque();
 }
 
 Eigen::Vector3d Drone::calculateAngularVelocity() {
@@ -114,26 +107,5 @@ Eigen::Vector3d Drone::calculateAngularVelocity() {
 // Update
 
 void Drone::update(double dt) {
-
-    // Calls parents update method this calls it on Drone class itself, which deosn't affect the actual rigidbodies inside drone
-    //RigidBody::update(dt);
-	body->update(dt);
-	m1->update(dt);
-	m2->update(dt);
-	m3->update(dt);
-	m4->update(dt);
-
-    // Drone updates
-
-    // (Mass stays constant so no need for dynamic updates)
-
-    // Net Force
-    this->total_force = calculateNetForce();
-
-    // Net Torque
-    this->total_torque_body = calculateNetTorque();
-
-    // Angular Velocity Vector
-    this->angularVelocity = calculateAngularVelocity();
-
+    RigidBody::update(dt);
 }

@@ -103,20 +103,10 @@ typedef struct {
 
 /* ── Combined update packet ───────────────────────────────────────────────── */
 
-/**
- * @brief Single packet carrying all sensor state for one simulation tick.
- *
- * The Pi sends IMU + LiDAR + RC together in every SPI frame.  All fields
- * are always populated — there is no sensor_id tag and no union.
- *
- * @note timestamp_us is expressed in the STM32's own µs epoch
- *       (k_cyc_to_us_near32(k_cycle_get_32())).  The Pi must synchronise
- *       to this epoch at startup via the SPI clock-sync handshake in main.c.
- *       If the epochs are misaligned, the injection timer will never fire
- *       (packets will always appear to be in the future).
- */
+/** Combined sensor sample. timestamp_us is simulation-relative metadata in
+ * IMMEDIATE mode. The receiver never compares it with the STM32 clock. */
 typedef struct {
-    uint32_t   timestamp_us;       /**< STM32 µs epoch — causality gate value   */
+    uint32_t   timestamp_us;       /**< Simulation-relative timestamp   */
     imu_data_t imu_data;           /**< Full 18-byte BNO055 register image       */
     uint16_t   lidar_distance_mm;  /**< LIDAR-Lite distance in millimetres       */
     rc_data_t  rc_commands;        /**< RC axis commands (0,0 = no-op)           */
@@ -124,19 +114,7 @@ typedef struct {
 
 /* ── 1-slot ISR gate queue ────────────────────────────────────────────────── */
 
-/**
- * @brief The causality gate between the injection timer ISR and the sensor thread.
- *
- * Exactly ONE slot.  Protocol:
- *   Writer (timer ISR only):  irq_lock → k_msgq_purge → k_msgq_put → irq_unlock
- *   Reader (sensor thread):   k_msgq_peek — NEVER k_msgq_get
- *
- * Keeping the slot permanently full (via peek-not-pop) means the ISR can
- * always safely call purge without checking for an empty queue first.
- *
- * Alignment 4: reduces internal padding and speeds up the memcpy inside
- * Zephyr's k_msgq internals on 32-bit Cortex-M.
- */
+// Latest-sample queue: SPI thread publishes, sensor thread consumes once.
 #define SENSOR_UPDATE_QUEUE_LEN  (1U)
 extern struct k_msgq sensor_update_q;
 
@@ -154,7 +132,7 @@ extern struct k_msgq sensor_update_q;
  * @param i2c_lidar  Zephyr device handle for the LiDAR I2C bus (i2c_lidar alias).
  * @param i2c_imu    Zephyr device handle for the IMU I2C bus   (i2c_imu alias).
  */
-void sensor_emulation_init(const struct device *i2c_lidar,
+int sensor_emulation_init(const struct device *i2c_lidar,
                            const struct device *i2c_imu);
 
 #endif /* THREADS_SENSOR_EMULATION_H */

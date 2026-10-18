@@ -1,50 +1,51 @@
-#include <flight_sim.hpp>
+#include "spi_interface.hpp"
+#include <fcntl.h>
+#include <linux/spi/spidev.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
+#include <cerrno>
+#include <stdexcept>
+#include <system_error>
 
-class SpiLinux : public SpiInterface {
+namespace {
+class SpiLinux final : public SpiInterface {
 public:
-    SpiLinux(const char* dev = "/dev/spidev0.0",
-             uint8_t mode = SPI_MODE_0,
-             uint32_t speed = 500000,
-             uint8_t bits = 8)
-        : devPath(dev), mode(mode), speed(speed), bits(bits), fd(-1) {}
-
-    bool init() override {
-        fd = open(devPath, O_RDWR);
-        if (fd < 0) {
-            std::cerr << "Failed to open SPI device: " << devPath << "\n";
-            return false;
+    SpiLinux(const std::string& device, uint32_t speedHz) : speed(speedHz) {
+        if (speed == 0) throw std::invalid_argument("SPI speed must be positive");
+        fd = open(device.c_str(), O_RDWR | O_CLOEXEC);
+        if (fd < 0) throw std::system_error(errno, std::generic_category(), "Open " + device);
+        uint8_t mode = SPI_MODE_0;
+        uint8_t bits = 8;
+        uint8_t lsbFirst = 0;
+        if (ioctl(fd, SPI_IOC_WR_MODE, &mode) < 0 ||
+            ioctl(fd, SPI_IOC_WR_BITS_PER_WORD, &bits) < 0 ||
+            ioctl(fd, SPI_IOC_WR_LSB_FIRST, &lsbFirst) < 0 ||
+            ioctl(fd, SPI_IOC_WR_MAX_SPEED_HZ, &speed) < 0) {
+            const int error = errno;
+            close(fd);
+            fd = -1;
+            throw std::system_error(error, std::generic_category(), "Configure " + device);
         }
-        if (ioctl(fd, SPI_IOC_WR_MODE, &mode) == -1 ||
-            ioctl(fd, SPI_IOC_WR_BITS_PER_WORD, &bits) == -1 ||
-            ioctl(fd, SPI_IOC_WR_MAX_SPEED_HZ, &speed) == -1) {
-            std::cerr << "Failed to configure SPI device.\n";
-            return false;
-        }
-        return true;
     }
-
-    bool transmit(const uint8_t* data, size_t len) override {
-        struct spi_ioc_transfer tr{};
-        tr.tx_buf = (unsigned long)data;
-        tr.len = len;
+    void transmit(const uint8_t* data, size_t len) override {
+        if (!data || len != 256) throw std::invalid_argument("Expected a 256-byte frame");
+        spi_ioc_transfer tr{};
+        tr.tx_buf = reinterpret_cast<uintptr_t>(data);
+        tr.len = static_cast<uint32_t>(len);
         tr.speed_hz = speed;
-        tr.bits_per_word = bits;
-        int ret = ioctl(fd, SPI_IOC_MESSAGE(1), &tr);
-        if (ret < 1) {
-            std::cerr << "SPI transmit failed.\n";
-            return false;
-        }
-        return true;
+        tr.bits_per_word = 8;
+        // One ioctl/transfer keeps CS asserted across the entire frame.
+        const int result = ioctl(fd, SPI_IOC_MESSAGE(1), &tr);
+        if (result < 0) throw std::system_error(errno, std::generic_category(), "SPI transfer");
+        if (result != static_cast<int>(len)) throw std::runtime_error("Short SPI transfer");
     }
-
-    ~SpiLinux() {
-        if (fd >= 0) close(fd);
-    }
-
+    ~SpiLinux() override { if (fd >= 0) close(fd); }
 private:
-    const char* devPath;
-    uint8_t mode;
     uint32_t speed;
-    uint8_t bits;
-    int fd;
+    int fd = -1;
 };
+}
+
+std::unique_ptr<SpiInterface> makeLinuxSpiTransport(const std::string& device, uint32_t speedHz) {
+    return std::make_unique<SpiLinux>(device, speedHz);
+}

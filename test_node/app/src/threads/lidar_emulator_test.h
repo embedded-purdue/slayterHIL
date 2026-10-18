@@ -72,7 +72,7 @@
  *
  * @param i2c_dev  Zephyr I2C device handle (from DT_ALIAS(i2c_lidar) in main.c).
  */
-void lidar_emulator_init(const struct device *i2c_dev);
+int lidar_emulator_init(const struct device *i2c_dev);
 
 /**
  * @brief Update the simulated distance.

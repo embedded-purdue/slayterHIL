@@ -1,29 +1,31 @@
-#include <flight_sim.hpp>
+#include "spi_interface.hpp"
 #include <fstream>
-#include <iomanip>
+#include <stdexcept>
 
-//this is a stub implementation of the SPI interface for testing without actual hardware
-//switch to spi_linux.cpp after obtaining properly configured hardware (rpi)
-
-class SpiStub : public SpiInterface {
+namespace {
+class CaptureTransport final : public SpiInterface {
 public:
-    bool init() override {
-        std::cout << "[SPI Stub] Initialized.\n";
-        return true;
+    explicit CaptureTransport(const std::string& path)
+        : output(path, std::ios::binary | std::ios::trunc) {
+        if (!output) throw std::runtime_error("Cannot open capture: " + path);
     }
-
-    bool transmit(const uint8_t* data, size_t len) override {
-        std::ofstream f("spi_payload.log", std::ios::app | std::ios::binary);
-        f.write(reinterpret_cast<const char*>(data), len);
-        f.close();
-
-        std::cout << "[SPI Stub] Wrote " << len << " bytes to spi_payload.log\n";
-        // Print hex for inspection
-        for (size_t i = 0; i < len; i++) {
-            std::cout << std::hex << std::setw(2) << std::setfill('0')
-                      << static_cast<int>(data[i]) << " ";
-        }
-        std::cout << std::dec << "\n";
-        return true;
+    void transmit(const uint8_t* data, size_t len) override {
+        if (!data || len != 256) throw std::invalid_argument("Expected a 256-byte frame");
+        output.write(reinterpret_cast<const char*>(data), len);
+        output.flush();
+        if (!output) throw std::runtime_error("Failed to write capture frame");
     }
+private:
+    std::ofstream output;
 };
+}
+
+std::unique_ptr<SpiInterface> makeCaptureTransport(const std::string& path) {
+    return std::make_unique<CaptureTransport>(path);
+}
+
+#ifndef __linux__
+std::unique_ptr<SpiInterface> makeLinuxSpiTransport(const std::string&, uint32_t) {
+    throw std::runtime_error("SPI transport requires Linux spidev; use --transport capture on this host");
+}
+#endif

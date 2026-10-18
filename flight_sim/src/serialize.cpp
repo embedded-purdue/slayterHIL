@@ -1,53 +1,45 @@
-#include <flight_sim.hpp>
+#include "serialize.hpp"
+#include "sensor_data.pb.h"
+#include <stdexcept>
 
-uint8_t* serialize(const imu_data_t& data, uint8_t *buffer) {
-    
-    // 288 bytes
-    // Needs to be in NanoPB decodable format
-    // Thus I am applying keys ( key = (field_num << 3 | wire_type = 0) for wire_type = varint)
-    // This is just key = counting by 0x08 for each field
+namespace {
+int32_t unpack(const i2c_imu_data_16_t& value) {
+    const uint32_t bits = static_cast<uint8_t>(value.lsb) |
+                         (uint32_t{static_cast<uint8_t>(value.msb)} << 8);
+    return bits >= 0x8000 ? static_cast<int32_t>(bits) - 0x10000
+                          : static_cast<int32_t>(bits);
+}
+}
 
-    // Serialize Euler Angles Data
-    buffer[0] = 0x08;
-    buffer[1] = data.euler_angles.x.lsb & 0xFF;
-    buffer[2] = 0x10;
-    buffer[3] = data.euler_angles.x.msb & 0xFF;
-    buffer[4] = 0x18;
-    buffer[5] = data.euler_angles.y.lsb & 0xFF;
-    buffer[6] = 0x20;
-    buffer[7] = data.euler_angles.y.msb & 0xFF;
-    buffer[8] = 0x28;
-    buffer[9] = data.euler_angles.z.lsb & 0xFF;
-    buffer[10] = 0x30;
-    buffer[11] = data.euler_angles.z.msb & 0xFF;
+SensorFrame encodeSensorFrame(const imu_data_t& data, uint32_t timestampUs,
+                              uint16_t lidarMm, int8_t rcVertical,
+                              int8_t rcHorizontal) {
+    SensorPacket packet;
+    packet.set_timestamp_us(timestampUs);
+    packet.set_injection_mode(IMMEDIATE);
+    packet.set_lidar_mm(lidarMm);
+    auto* imu = packet.mutable_imu();
+    imu->set_euler_x(unpack(data.euler_angles.x));
+    imu->set_euler_y(unpack(data.euler_angles.y));
+    imu->set_euler_z(unpack(data.euler_angles.z));
+    imu->set_lin_acc_x(unpack(data.linear_acceleration.x));
+    imu->set_lin_acc_y(unpack(data.linear_acceleration.y));
+    imu->set_lin_acc_z(unpack(data.linear_acceleration.z));
+    imu->set_gyro_x(unpack(data.gyro.x));
+    imu->set_gyro_y(unpack(data.gyro.y));
+    imu->set_gyro_z(unpack(data.gyro.z));
+    packet.mutable_rc()->set_vertical(rcVertical);
+    packet.mutable_rc()->set_horizontal(rcHorizontal);
 
-    // Serialize Linear Acceleration Data
-    buffer[12] = 0x38;
-    buffer[13] = data.linear_acceleration.x.lsb & 0xFF;
-    buffer[14] = 0x40;
-    buffer[15] = data.linear_acceleration.x.msb & 0xFF;
-    buffer[16] = 0x48;
-    buffer[17] = data.linear_acceleration.y.lsb & 0xFF;
-    buffer[18] = 0x50;
-    buffer[19] = data.linear_acceleration.y.msb & 0xFF;
-    buffer[20] = 0x58;
-    buffer[21] = data.linear_acceleration.z.lsb & 0xFF;
-    buffer[22] = 0x60;
-    buffer[23] = data.linear_acceleration.z.msb & 0xFF;
-
-    // Serialize Gyro Data
-    buffer[24] = 0x68;
-    buffer[25] = data.gyro.x.lsb & 0xFF;
-    buffer[26] = 0x70;
-    buffer[27] = data.gyro.x.msb & 0xFF;
-    buffer[28] = 0x78;    
-    buffer[29] = data.gyro.y.lsb & 0xFF;
-    buffer[30] = 0x80;
-    buffer[31] = data.gyro.y.msb & 0xFF;
-    buffer[32] = 0x88;
-    buffer[33] = data.gyro.z.lsb & 0xFF;
-    buffer[34] = 0x90;
-    buffer[35] = data.gyro.z.msb & 0xFF;
-
-    return buffer;
+    SensorFrame frame{};
+    const auto length = packet.ByteSizeLong();
+    if (length == 0 || length > frame.size() - 2) {
+        throw std::length_error("SensorPacket exceeds SPI payload capacity");
+    }
+    frame[0] = static_cast<uint8_t>(length & 0xff);
+    frame[1] = static_cast<uint8_t>(length >> 8);
+    if (!packet.SerializeToArray(frame.data() + 2, static_cast<int>(length))) {
+        throw std::runtime_error("Failed to encode SensorPacket");
+    }
+    return frame;
 }

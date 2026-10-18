@@ -1,69 +1,37 @@
-// Parses RC Commands and translates them into vectors
+#include "rc_parser.hpp"
+#include <cctype>
+#include <fstream>
+#include <stdexcept>
 
-// Reference RC Language:
-// I --> Idle for 100 ms
-// L, R --> Left, Right
-// F, B --> Forward, Backward
-// U, D --> Up, Down
-
-#include <flight_sim.hpp>
-
-#define TEST_PATH_ROOT ("../../tests/flightpaths/")
-
-Eigen::Vector3d rc_parse(std::string);
-
-std::vector<Eigen::Vector3d> rc_read(std::string test_name) {
-    std::string path = TEST_PATH_ROOT;
-    path += test_name;
-
-    FILE *fp = fopen(path.c_str(), "r");
-    assert(fp);
-
-    std::vector<Eigen::Vector3d> ret;
-
-    for (;;) {
-        char cmd[3] = {};
-
-        size_t scan = fscanf(fp, "%2[^.].", cmd);
-
-        if (scan != 1) {
-            if (scan == EOF) {
-                break;
-            }
-
-            assert(false);
+std::vector<Eigen::Vector3d> rc_read(std::string path) {
+    std::ifstream file(path);
+    if (!file) throw std::runtime_error("Cannot read flightpath: " + path);
+    std::vector<Eigen::Vector3d> result;
+    Eigen::Vector3d target = Eigen::Vector3d::Zero();
+    unsigned count = 0;
+    for (char ch; file.get(ch);) {
+        if (std::isspace(static_cast<unsigned char>(ch))) continue;
+        if (ch == '.') {
+            if (!count) throw std::runtime_error("Empty flightpath command");
+            result.push_back(target);
+            target.setZero();
+            count = 0;
+            continue;
         }
-
-        ret.push_back(rc_parse(cmd));
-    }
-
-    return ret;
-}
-
-Eigen::Vector3d rc_parse(std::string cmdString) {
-    Eigen::Vector3d ret = Eigen::Vector3d(0, 0, 0);
-
-    for (char cmd : cmdString) {
-        switch (cmd) {
-            case 'L':
-                ret += Eigen::Vector3d(-1, 0, 0);
-                break;
-            case 'R':
-                ret += Eigen::Vector3d(1, 0, 0);
-                break;
-            case 'F':
-                ret += Eigen::Vector3d(0, 1, 0);
-                break;
-            case 'B':
-                ret += Eigen::Vector3d(0, -1, 0);
-                break;
-            case 'U':
-                ret += Eigen::Vector3d(0, 0, 1);
-                break;
-            case 'D':
-                ret += Eigen::Vector3d(0, 0, -1);
-                break;
+        if (++count > 2) throw std::runtime_error("Flightpath commands allow at most two letters");
+        switch (ch) {
+        case 'L': target.x() -= 1; break;
+        case 'R': target.x() += 1; break;
+        case 'F': target.y() += 1; break;
+        case 'B': target.y() -= 1; break;
+        case 'U': target.z() += 1; break;
+        case 'D': target.z() -= 1; break;
+        case 'I': break;
+        default: throw std::runtime_error("Unknown flightpath command");
         }
     }
-    return ret;
+    if (!file.eof()) throw std::runtime_error("Failed to read flightpath");
+    if (count) throw std::runtime_error("Flightpath must end with '.'");
+    if (result.empty()) throw std::runtime_error("Flightpath contains no waypoints");
+    return result;
 }

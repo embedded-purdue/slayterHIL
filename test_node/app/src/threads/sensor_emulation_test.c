@@ -10,6 +10,7 @@
 #include "threads/sensor_emulation_test.h"
 #include "threads/imu_emulator_test.h"
 #include "threads/lidar_emulator_test.h"
+#include "hil_diag.h"
 
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
@@ -37,12 +38,16 @@ static void sensor_emulation_thread(void *p1, void *p2, void *p3)
     LOG_INF("Sensor emulation thread running");
 
     while (1) {
-        if (k_msgq_peek(&sensor_update_q, &pkt) == 0) {
+        if (k_msgq_get(&sensor_update_q, &pkt, K_FOREVER) == 0) {
             loop_count++;
 
             /* All three sensors update every tick — no routing needed */
             lidar_emulator_update_distance(pkt.lidar_distance_mm);
             imu_emulator_update_data(&pkt.imu_data);
+            // Historical counter name retained: counts applied samples in MVP.
+            hil_diag_inc_timer_inject();
+            hil_diag_set_last_inject_ts(pkt.timestamp_us);
+            hil_diag_set_last_lidar(pkt.lidar_distance_mm);
 
             /* RC forwarding — only act if at least one axis is non-zero */
             if (pkt.rc_commands.rc_vert != 0 || pkt.rc_commands.rc_horiz != 0) {
@@ -60,17 +65,19 @@ static void sensor_emulation_thread(void *p1, void *p2, void *p3)
                     pkt.imu_data.euler_angles.x.lsb);
         }
 
-        k_sleep(K_USEC(500));
+
     }
 }
 /* ── Public initialisation ──────────────────────────────────────────────── */
-void sensor_emulation_init(const struct device *i2c_lidar,
+int sensor_emulation_init(const struct device *i2c_lidar,
                            const struct device *i2c_imu)
 {
     LOG_INF("Initialising sensor emulation subsystem");
 
-    lidar_emulator_init(i2c_lidar);
-    imu_emulator_init(i2c_imu);
+    int err = lidar_emulator_init(i2c_lidar);
+    if (err) return err;
+    err = imu_emulator_init(i2c_imu);
+    if (err) return err;
 
     k_thread_create(&sensor_emulation_data,
                     sensor_emulation_stack,
@@ -81,4 +88,5 @@ void sensor_emulation_init(const struct device *i2c_lidar,
     k_thread_name_set(&sensor_emulation_data, "sensor_emu");
     LOG_INF("Sensor emulation thread created (priority %d)",
             SENSOR_EMULATION_PRIORITY);
+    return 0;
 }

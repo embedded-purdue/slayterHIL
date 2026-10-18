@@ -89,7 +89,7 @@
  *
  * @param i2c_dev  Zephyr I2C device handle (from DT_ALIAS(i2c_imu) in main.c).
  */
-void imu_emulator_init(const struct device *i2c_dev);
+int imu_emulator_init(const struct device *i2c_dev);
 
 /**
  * @brief Write a new IMU state into the inactive ping-pong buffer and publish it.

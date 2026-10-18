@@ -14,12 +14,13 @@
 #include "hil_diag.h"
 
 #include <zephyr/kernel.h>
+#include <errno.h>
 #include <zephyr/drivers/i2c.h>
 #include <zephyr/sys/atomic.h>
 #include <zephyr/logging/log.h>
 #include <string.h>
 
-LOG_MODULE_REGISTER(imu_emulator, LOG_LEVEL_DBG);
+LOG_MODULE_REGISTER(imu_emulator, LOG_LEVEL_INF);
 
 /* ── Ping-Pong Double Buffer ─────────────────────────────────────────────── */
 static imu_data_t imu_buf[2];
@@ -27,12 +28,12 @@ static atomic_t   active_idx = ATOMIC_INIT(0);
 
 /* ── I2C Transaction State ────────────────────────────────────────────────── */
 static uint8_t imu_current_reg  = 0x00;
-static int     imu_snap_buf_idx = 0;
+static imu_data_t imu_read_snapshot;
 
 /* ── Register byte servant ───────────────────────────────────────────────── */
-static uint8_t serve_imu_byte(int buf_idx, uint8_t reg)
+static uint8_t serve_imu_byte(uint8_t reg)
 {
-    const imu_data_t *d = &imu_buf[buf_idx];
+    const imu_data_t *d = &imu_read_snapshot;
     const uint8_t *raw;
     uint8_t offset;
 
@@ -84,21 +85,20 @@ static int imu_read_requested_cb(struct i2c_target_config *config, uint8_t *val)
     ARG_UNUSED(config);
 
     /* Snapshot the active buffer index for this entire transaction. */
-    imu_snap_buf_idx = (int)atomic_get(&active_idx);
-    *val = serve_imu_byte(imu_snap_buf_idx, imu_current_reg);
+    memcpy(&imu_read_snapshot, &imu_buf[(int)atomic_get(&active_idx)], sizeof(imu_read_snapshot));
+    *val = serve_imu_byte(imu_current_reg);
 
     hil_diag_inc_imu_read();
 
     /* Store euler_x (LSB + MSB pair at 0x1A, 0x1B) for diagnostic display. */
     if (imu_current_reg == IMU_REG_EUL_X_LSB) {
         int16_t ex = (int16_t)(
-            (uint16_t)serve_imu_byte(imu_snap_buf_idx, IMU_REG_EUL_X_LSB) |
-            ((uint16_t)serve_imu_byte(imu_snap_buf_idx, IMU_REG_EUL_X_MSB) << 8));
+            (uint16_t)serve_imu_byte(IMU_REG_EUL_X_LSB) |
+            ((uint16_t)serve_imu_byte(IMU_REG_EUL_X_MSB) << 8));
         hil_diag_set_last_euler_x((int32_t)ex);
     }
 
-    LOG_DBG("[IMU READ_REQ] buf=%d reg=0x%02X val=0x%02X",
-            imu_snap_buf_idx, imu_current_reg, *val);
+    LOG_DBG("[IMU READ_REQ] reg=0x%02X val=0x%02X", imu_current_reg, *val);
 
     imu_current_reg++;
     return 0;
@@ -107,9 +107,8 @@ static int imu_read_requested_cb(struct i2c_target_config *config, uint8_t *val)
 static int imu_read_processed_cb(struct i2c_target_config *config, uint8_t *val)
 {
     ARG_UNUSED(config);
-    *val = serve_imu_byte(imu_snap_buf_idx, imu_current_reg);
-    LOG_DBG("[IMU READ_PROC] buf=%d reg=0x%02X val=0x%02X",
-            imu_snap_buf_idx, imu_current_reg, *val);
+    *val = serve_imu_byte(imu_current_reg);
+    LOG_DBG("[IMU READ_PROC] reg=0x%02X val=0x%02X", imu_current_reg, *val);
     imu_current_reg++;
     return 0;
 }
@@ -121,7 +120,7 @@ static int imu_stop_cb(struct i2c_target_config *config)
     uint8_t start_reg = imu_current_reg;   /* already incremented past last byte */
     LOG_DBG("[IMU STOP] transaction ended. Last reg=0x%02X", start_reg - 1);
     imu_current_reg  = 0x00;
-    imu_snap_buf_idx = 0;
+
     return 0;
 }
 
@@ -139,18 +138,19 @@ static struct i2c_target_config imu_config = {
     .callbacks = &imu_callbacks,
 };
 
-void imu_emulator_init(const struct device *i2c_dev)
+int imu_emulator_init(const struct device *i2c_dev)
 {
     memset(imu_buf, 0, sizeof(imu_buf));
     atomic_set(&active_idx, 0);
 
     if (!device_is_ready(i2c_dev)) {
         LOG_ERR("IMU I2C device not ready");
-        return;
+        return -ENODEV;
     }
     if (i2c_target_register(i2c_dev, &imu_config) < 0) {
         LOG_ERR("Failed to register IMU at 0x%02X", IMU_ADDRESS);
-        return;
+        return -EIO;
     }
     LOG_INF("IMU target registered at 0x%02X", IMU_ADDRESS);
+    return 0;
 }

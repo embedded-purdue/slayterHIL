@@ -17,6 +17,7 @@
 
 syntax = "proto3";
 
+// Euler slots follow BNO055 register order: heading, roll, pitch.
 message ImuPayload {
     sint32 gyro_x    = 1;
     sint32 gyro_y    = 2;
@@ -36,9 +37,17 @@ message RcPayload {
 
 // Every frame contains all sensors.  Fields are always present;
 // zero-values mean "no update" for RC (both axes = 0 → no-op).
+enum InjectionMode {
+    // Legacy mode: timestamp_us is a deadline in the receiver clock epoch.
+    SCHEDULED = 0;
+    // MVP: apply on receipt; timestamp_us is simulation-relative metadata.
+    IMMEDIATE = 1;
+}
+
 message SensorPacket {
     uint32     timestamp_us = 1;
     uint32     lidar_mm     = 2;
     ImuPayload imu          = 3;
     RcPayload  rc           = 4;
+    InjectionMode injection_mode = 5;
 }

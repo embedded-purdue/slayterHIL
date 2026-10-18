@@ -1,89 +1,46 @@
-#include <flight_sim.hpp>
+#include "imu_generation.hpp"
+#include <algorithm>
+#include <cmath>
+#include <numbers>
+#include <stdexcept>
 
-ImuSimulator::ImuSimulator() : m_(0.0), I_(0.0) {}
-
-ImuSimulator::ImuSimulator(float m, float moi) : m_(m), I_(moi) {}
-
-i2c_imu_data_16_t ImuSimulator::pack_16(int16_t value) {
-  i2c_imu_data_16_t result;
-  result.lsb = (int8_t)(value & 0xFF);
-  result.msb = (int8_t)((value >> 8) & 0xFF);
-  return result;
+namespace {
+i2c_imu_data_16_t pack(double value) {
+    if (!std::isfinite(value)) throw std::invalid_argument("Non-finite IMU value");
+    // Clamp before rounding/casting, so overflow cannot wrap a sensor reading.
+    const auto raw = static_cast<int16_t>(std::lround(std::clamp(value, -32768.0, 32767.0)));
+    const auto bits = static_cast<uint16_t>(raw);
+    return {static_cast<int8_t>(bits & 0xff), static_cast<int8_t>(bits >> 8)};
+}
 }
 
-imu_data_t ImuSimulator::update(float fx, float fy, float fz, float tx,
-                                float ty, float tz, float dt) {
-  float accel_x = fx / m_;
-  float accel_y = fy / m_;
-  float accel_z = fz / m_;
-
-  float angular_x = wx_ + (tx / I_) * dt;
-  float angular_y = wy_ + (ty / I_) * dt;
-  float angular_z = wz_ + (tz / I_) * dt;
-
-  float roll = roll_ + angular_x * dt;
-  float pitch = pitch_ + angular_y * dt;
-  float yaw = yaw_ + angular_z * dt;
-
-  wx_ = angular_x;
-  wy_ = angular_y;
-  wz_ = angular_z;
-  roll_ = roll;
-  pitch_ = pitch;
-  yaw_ = yaw;
-
-  imu_data_t data;
-
-  data.euler_angles.x = pack_16((int16_t)(roll * EULER_SCALE));
-  data.euler_angles.y = pack_16((int16_t)(pitch * EULER_SCALE));
-  data.euler_angles.z = pack_16((int16_t)(yaw * EULER_SCALE));
-
-  data.linear_acceleration.x = pack_16((int16_t)(accel_x * ACCEL_SCALE));
-  data.linear_acceleration.y = pack_16((int16_t)(accel_y * ACCEL_SCALE));
-  data.linear_acceleration.z = pack_16((int16_t)(accel_z * ACCEL_SCALE));
-
-  data.gyro.x = pack_16((int16_t)(angular_x * GYRO_SCALE));
-  data.gyro.y = pack_16((int16_t)(angular_y * GYRO_SCALE));
-  data.gyro.z = pack_16((int16_t)(angular_z * GYRO_SCALE));
-
-  return data;
-}
-
-imu_data_t ImuSimulator::update(const Eigen::Vector3f &force,
-                                const Eigen::Vector3f &torque, float dt) {
-  float accel_x = force.x() / m_;
-  float accel_y = force.y() / m_;
-  float accel_z = force.z() / m_;
-
-  float angular_x = wx_ + (torque.x() / I_) * dt;
-  float angular_y = wy_ + (torque.y() / I_) * dt;
-  float angular_z = wz_ + (torque.z() / I_) * dt;
-
-  float roll = roll_ + angular_x * dt;
-  float pitch = pitch_ + angular_y * dt;
-  float yaw = yaw_ + angular_z * dt;
-
-  wx_ = angular_x;
-  wy_ = angular_y;
-  wz_ = angular_z;
-
-  roll_ = roll;
-  pitch_ = pitch;
-  yaw_ = yaw;
-
-  imu_data_t data;
-
-  data.euler_angles.x = pack_16((int16_t)(roll * EULER_SCALE));
-  data.euler_angles.y = pack_16((int16_t)(pitch * EULER_SCALE));
-  data.euler_angles.z = pack_16((int16_t)(yaw * EULER_SCALE));
-
-  data.linear_acceleration.x = pack_16((int16_t)(accel_x * ACCEL_SCALE));
-  data.linear_acceleration.y = pack_16((int16_t)(accel_y * ACCEL_SCALE));
-  data.linear_acceleration.z = pack_16((int16_t)(accel_z * ACCEL_SCALE));
-
-  data.gyro.x = pack_16((int16_t)(angular_x * GYRO_SCALE));
-  data.gyro.y = pack_16((int16_t)(angular_y * GYRO_SCALE));
-  data.gyro.z = pack_16((int16_t)(angular_z * GYRO_SCALE));
-
-  return data;
+imu_data_t ImuSimulator::sample(const Eigen::Quaterniond& bodyToWorld,
+                               const Eigen::Vector3d& angularVelocityBody,
+                               const Eigen::Vector3d& linearAccelerationWorld) const {
+    if (!bodyToWorld.coeffs().allFinite() || bodyToWorld.norm() < 1e-12 ||
+        !std::isfinite(bodyToWorld.norm()) || !angularVelocityBody.allFinite() ||
+        !linearAccelerationWorld.allFinite()) {
+        throw std::invalid_argument("Invalid rigid-body state for IMU");
+    }
+    const auto q = bodyToWorld.normalized();
+    // ZYX yaw/pitch/roll convention: q = Rz(yaw) * Ry(pitch) * Rx(roll).
+    const double roll = std::atan2(2 * (q.w()*q.x() + q.y()*q.z()),
+                                  1 - 2 * (q.x()*q.x() + q.y()*q.y()));
+    const double pitch = std::asin(std::clamp(2 * (q.w()*q.y() - q.z()*q.x()), -1.0, 1.0));
+    double heading = std::atan2(2 * (q.w()*q.z() + q.x()*q.y()),
+                               1 - 2 * (q.y()*q.y() + q.z()*q.z()));
+    if (heading < 0) heading += 2 * std::numbers::pi;
+    constexpr double degreesPerRadian = 180.0 / std::numbers::pi;
+    const Eigen::Vector3d accelBody = q.conjugate() * linearAccelerationWorld;
+    const Eigen::Vector3d gyro = angularVelocityBody * degreesPerRadian * GYRO_SCALE;
+    imu_data_t result{};
+    // BNO055 register order is heading, roll, pitch (not roll, pitch, yaw).
+    result.euler_angles = {pack(heading * degreesPerRadian * EULER_SCALE),
+                           pack(roll * degreesPerRadian * EULER_SCALE),
+                           pack(pitch * degreesPerRadian * EULER_SCALE)};
+    result.linear_acceleration = {pack(accelBody.x() * ACCEL_SCALE),
+                                  pack(accelBody.y() * ACCEL_SCALE),
+                                  pack(accelBody.z() * ACCEL_SCALE)};
+    result.gyro = {pack(gyro.x()), pack(gyro.y()), pack(gyro.z())};
+    return result;
 }

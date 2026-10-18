@@ -13,11 +13,12 @@
 #include "hil_diag.h"
 
 #include <zephyr/kernel.h>
+#include <errno.h>
 #include <zephyr/drivers/i2c.h>
 #include <zephyr/sys/atomic.h>
 #include <zephyr/logging/log.h>
 
-LOG_MODULE_REGISTER(lidar_emulator, LOG_LEVEL_DBG);
+LOG_MODULE_REGISTER(lidar_emulator, LOG_LEVEL_INF);
 
 /* ── Atomic distance backing store ───────────────────────────────────────── */
 static atomic_t  simulated_distance_mm     = ATOMIC_INIT(0);
@@ -122,20 +123,21 @@ static struct i2c_target_config lidar_config = {
 };
 
 /* ── Public API ──────────────────────────────────────────────────────────── */
-void lidar_emulator_init(const struct device *i2c_dev)
+int lidar_emulator_init(const struct device *i2c_dev)
 {
     atomic_set(&simulated_distance_mm, 0);
     transaction_distance_cache = 0;
 
     if (!device_is_ready(i2c_dev)) {
         LOG_ERR("LiDAR I2C device not ready");
-        return;
+        return -ENODEV;
     }
     if (i2c_target_register(i2c_dev, &lidar_config) < 0) {
         LOG_ERR("Failed to register LiDAR at 0x%02X", LIDAR_ADDRESS);
-        return;
+        return -EIO;
     }
     LOG_INF("LiDAR target registered at 0x%02X", LIDAR_ADDRESS);
+    return 0;
 }
 
 void lidar_emulator_update_distance(uint16_t new_distance_mm)

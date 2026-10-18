@@ -124,6 +124,9 @@ void RigidBody::update(double dt) {
   qNew.coeffs() = orientation.coeffs() + qInc;
   orientation = qNew.normalized();
 
+  // Preserve net kinematic acceleration for sensor sampling after the step.
+  acceleration = k1.dVelocity;
+
   // clear accumulators for next step
   clearAccumulators();
 }
