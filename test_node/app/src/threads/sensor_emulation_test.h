@@ -101,7 +101,7 @@ typedef struct {
     int8_t rc_horiz;  /**< Horizontal axis: negative = left, positive = right */
 } rc_data_t;
 
-struct gps_data_t {
+typedef struct {
     int valid; // 1 = valid, 0 = invalid
     char time[11];          // hhmmss.ss
     double latitude;        // Decimal degrees
@@ -114,17 +114,18 @@ struct gps_data_t {
     double altitude;        // Altitude above mean sea level
     char alt_units;         // M (meters)
 
-    gps_data_t(){
-        valid = 1;
-        latitude = 40.432708;
-        lat_dir = N;
-        longitude = 86.923442;
-        lon_dir = W;
-        fix_quality = 1;
-        satellites = 10;
-        hdop = 1;
-    }
-}
+    // gps_data_t gps = {
+    //     .valid = 1,
+    //     .latitude = 4025.96248,
+    //     .lat_dir = 'N',
+    //     .longitude = 08655.40652,
+    //     .lon_dir = 'W',
+    //     .fix_quality = 1,
+    //     .satellites = 10,
+    //     .hdop = 1,
+    //     .alt_units = 'M',
+    // };
+} gps_data_t;
 
 /* ── Combined update packet ───────────────────────────────────────────────── */
 

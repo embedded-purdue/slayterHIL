@@ -10,6 +10,7 @@
 
 #include <zephyr/drivers/uart.h>
 #include <zephyr/logging/log.h>
+#include <stdio.h>
 
 LOG_MODULE_REGISTER(gnss_emulator, LOG_LEVEL_INF);
 
@@ -21,55 +22,44 @@ static const struct device *gnss_uart;
 K_THREAD_STACK_DEFINE(gnss_stack, GNSS_EMULATOR_STACK_SIZE);
 static struct k_thread gnss_thread_data;
 
-// struct gps_data_t {
-//     int valid; // 1 = valid, 0 = invalid
-//     char time[11];          // hhmmss.ss
-//     double latitude;        // Decimal degrees
-//     char lat_dir;           // N or S
-//     double longitude;       // Decimal degrees
-//     char lon_dir;           // E or W
-//     int fix_quality;        // 0 = Invalid, 1 = GPS fix, 2 = DGPS fix, etc.
-//     int satellites;         // Number of satellites in use. 
-//     double hdop;            // Horizontal dilution of precision. hardcode to 1
-//     double altitude;        // Altitude above mean sea level
-//     char alt_units;         // M (meters) or F (feet)
-
-//     gps_data_t(){
-//         valid = 0;
-//         latitude = ;
-//         lat_dir = ;
-//         longitude = ;
-//         lon_dir = ;
-//         fix_quality = 1;
-//         satellites = 10;
-//         hdop = 1;
-//     }
-// }
-
 /* Send len bytes, one at a time */
-static void gps_update_location(const gps_data * data)
+void gps_update_location(const gps_data_t * packet)
 {
     char gps_string[160];
-    //$GPGGA,181908.00,3404.7041778,N,07044.3966270,W,4,13,1.00,495.144,M
-    printf("%d, %s", i, j);
     int len = snprintf(gps_string, sizeof(gps_string),
-        "$GPGGA, %.2d,%.7s,%c,%.8f,%c,%.8f,%c,%d,%d,%.1f,%.2f,%c",
+        "$GPGGA,%s,%010.5f,%c,%011.5f,%c,%d,%d,%.2f,%.3f,%c,,,,",
         packet->time,
         packet->latitude,
         packet->lat_dir,
         packet->longitude,
         packet->lon_dir,
-        packet->fix_quality,
+        /* If valid is nonzero, use fix_quality; otherwise send 0 (no GPS fix).
+         * GGA reports validity through fix quality, not a separate field. */
+        packet->valid ? packet->fix_quality : 0,
         packet->satellites,
-        1.0,
+        packet->hdop,
         packet->altitude,
         packet->alt_units);
 
-    if (len < 0 || len >= sizeof(gps_string)){
+    if (len < 0 || (size_t)len >= sizeof(gps_string)){
         return;
     }
 
-    for (size_t i = 0; i < len; i++) {
+    unsigned int checksum = 0;
+    for (int i = 1; i < len; i++) {
+        checksum ^= (unsigned char)gps_string[i];
+    }
+
+    int added = snprintf(gps_string + len,
+                         sizeof(gps_string) - (size_t)len,
+                         "*%02X\r\n", checksum);
+    if (added < 0 ||
+        (size_t)added >= sizeof(gps_string) - (size_t)len) {
+        return;
+    }
+    len += added;
+
+    for (size_t i = 0; i < (size_t)len; i++) {
         uart_poll_out(gnss_uart, (unsigned char)gps_string[i]);
     }
 }
@@ -81,7 +71,7 @@ static void gnss_thread(void *p1, void *p2, void *p3)
     ARG_UNUSED(p3);
 
     while (1) {
-        gnss_send(test_msg, sizeof(test_msg) - 1);  /* -1 skips the hidden '\0' */
+        // gnss_send(test_msg, sizeof(test_msg) - 1);  /* -1 skips the hidden '\0' */
         k_msleep(GNSS_SEND_PERIOD_MS);
     }
 }

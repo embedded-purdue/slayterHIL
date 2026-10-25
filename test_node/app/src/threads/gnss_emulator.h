@@ -22,6 +22,6 @@
 #define GNSS_EMULATOR_PRIORITY    8     /* below scheduler (5) and sensor emulation (7) */
 
 int gnss_emulator_init(const struct device *uart_dev);
-static void gps_update_location(const gps_data * data);
+void gps_update_location(const gps_data_t *packet);
 
 #endif /* THREADS_GNSS_EMULATOR_H */
