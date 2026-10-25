@@ -9,6 +9,7 @@
         pwm-input3 = &timers3_pwm;
         pwm-input4 = &timers4_pwm;
         uart-rc = &uart4;
+        uart-gnss = &usart6;
     };
 };
 
@@ -74,6 +75,15 @@
     status = "okay";
     pinctrl-0 = <&uart4_tx_pa0 &uart4_rx_pd11>;
     pinctrl-names = "default";
+};
+
+/* GNSS emulator: TX (PC6) goes to the flight controller's GNSS RX pin.
+ * RX (PC7) is only needed if the flight software sends config commands. */
+&usart6 {
+    status = "okay";
+    pinctrl-0 = <&usart6_tx_pc6 &usart6_rx_pc7>;
+    pinctrl-names = "default";
+    current-speed = <9600>;
 };
 
 &timers3 {

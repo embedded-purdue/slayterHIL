@@ -36,6 +36,7 @@
 
 #include "threads/sensor_emulation_test.h"
 #include "threads/scheduler_test.h"
+#include "threads/gnss_emulator.h"
 #include "hil_diag.h"
 
 #include <zephyr/kernel.h>
@@ -276,6 +277,7 @@ int main(void)
     const struct device *i2c_lidar = DEVICE_DT_GET(DT_ALIAS(i2c_lidar));
     const struct device *i2c_imu = DEVICE_DT_GET(DT_ALIAS(i2c_imu));
     const struct device *spi_dev = DEVICE_DT_GET(DT_ALIAS(spi_orchestrator));
+    const struct device *uart_gnss = DEVICE_DT_GET(DT_ALIAS(uart_gnss));
     while(1) {
     printk("\nHIL Nucleo HIL Bridge v1.0\n");
     LOG_INF("HIL Nucleo bridge starting...");
@@ -310,6 +312,11 @@ int main(void)
      */
     sensor_emulation_init(i2c_lidar, i2c_imu);
     LOG_INF("Sensor emulation subsystem started");
+
+    /* GNSS runs on its own thread; a failure here shouldn't stop the I2C sensors */
+    if (gnss_emulator_init(uart_gnss) < 0) {
+        LOG_ERR("GNSS emulator failed to start");
+    }
 
     scheduler_init();
     LOG_INF("Scheduler subsystem started");
