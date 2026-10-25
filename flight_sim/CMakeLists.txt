@@ -61,7 +61,7 @@ endif()
 
 # Keep entry points separate: both define main().
 list(FILTER SRC_FILES EXCLUDE REGEX ".*/(main|old_main)\\.cpp$")
-add_executable(${PROJECT_NAME} src/main.cpp ${SRC_FILES})
+add_executable(${PROJECT_NAME} src/old_main.cpp ${SRC_FILES})
 # Hardware sender is opt-in; the default build remains the desktop simulation.
 add_executable(old_main_spi_test EXCLUDE_FROM_ALL src/old_main.cpp ${SRC_FILES})
 target_compile_definitions(old_main_spi_test PRIVATE

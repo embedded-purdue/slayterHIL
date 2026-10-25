@@ -4,17 +4,18 @@ Flight simulation branch.
 
 ## Default simulation build
 
-From `flight_sim`, build and run the simulation in `src/main.cpp`:
+From `flight_sim`, build and run the simulation in `src/old_main.cpp`:
 
 ```sh
 bash setup.sh
 cd build
-./flight_sim
+./flight_sim --capture spi_frames.bin
 ```
 
-This runs the physics simulation with file capture by default; no Pi or STM32
-is required. It writes `spi_frames.bin` and `pid_tuning.csv` in the working
-directory. For a short run, use `./flight_sim --samples 120`.
+The `--capture` option runs the physics simulation without a Pi or STM32.
+It writes `spi_frames.bin` and `old_main_pid_tuning.csv` in the working
+directory. For a short run, add `--samples 120`. Without `--capture`,
+the old-main entry point attempts Linux SPI transmission.
 
 The Pi sender is excluded from the default build. Build it explicitly with
 `cmake --build build --target old_main_spi_test` when needed.
