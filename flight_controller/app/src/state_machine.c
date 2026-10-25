@@ -63,46 +63,53 @@ void init_hw(void) {
     static const system_events_t hw_done = INIT_HW_DONE;
     k_msgq_put(&event_msgq, &hw_done, K_NO_WAIT);
 }
-
+//ascend and then push an ascend_done msg
 void ascend(void) {
-    // ascend and then push an ascend_done msg; on first ascend, rise to max_alt / 2
-    uint32_t curr_alt, target; 
-    bool curr_alt_valid;
-    // control_get(NULL, NULL, NULL, &curr_alt, NULL);
-    // if (current_state == DRONE_FIRST_ASCEND){
-    //     control_adjust_altitude(CONTROL_ALTITUDE_MAX_MM / 2);
-    //     target = CONTROL_FIRST_ASCENSION_MM;
-    // }
-    // else{
-    //     control_adjust_altitude(CONTROL_ALTITUDE_STEP_MM);
-    //     target = curr_alt + CONTROL_ALTITUDE_STEP_MM;
-    // }
-    // do{
-    //     control_get(NULL, NULL, NULL, &curr_alt, &curr_alt_valid);
-    //     k_msleep(10);
-    //     //ascends to setpoint altitude - 50mm error
-    // } while (!curr_alt_valid || curr_alt < target - 50);
+    uint32_t curr_alt;
+    float target;
+    bool curr_alt_valid = false;
+    //make sure LiDAR still giving valid readings
+    while (!curr_alt_valid) {
+        control_get(NULL, NULL, NULL, &curr_alt, &curr_alt_valid);
+        k_msleep(10);
+    }
+
+    if (current_state == DRONE_FIRST_ASCEND) {
+        control_adjust_altitude(CONTROL_FIRST_ASCENSION_MM - (float)curr_alt);
+    } else {
+        control_adjust_altitude(CONTROL_ALTITUDE_STEP_MM);
+    }
+
+    do {
+        control_get(NULL, NULL, &target, &curr_alt, &curr_alt_valid);
+        k_msleep(10);
+    } while (!curr_alt_valid || (float)curr_alt < target - 50.0f);
+
     static const system_events_t ascend_done_event = ASCEND_DONE;
     k_msgq_put(&event_msgq, &ascend_done_event, K_NO_WAIT);
 }
 
 void land(void) {
-    //land and then push a land_done msg
-    uint32_t curr_alt; 
+    uint32_t curr_alt;
     uint32_t error_timer = 0;
     bool curr_alt_valid;
+    //level drone (zero attitude) and setpoint for 
+    control_zero_attitude();
     control_adjust_altitude(-CONTROL_ALTITUDE_MAX_MM);
-    // do{
-    //     control_get(NULL, NULL, NULL, &curr_alt, &curr_alt_valid);
-    //     k_msleep(100);
-    //     error_timer++;
-    //     //force landing after ~30 seconds of invalid altitude -> happpens if LiDAR fails during land 
-    //     if (error_timer > 300){ 
-    //         printk("Forcing LAND after 30 second timeout\n");
-    //         break;
-    //     }
-    // //wait until current altitude gets near ~50 mm, then confirm landing is done
-    // } while (!curr_alt_valid || curr_alt > 50);
+
+    do {
+        control_get(NULL, NULL, NULL, &curr_alt, &curr_alt_valid);
+        k_msleep(100);
+        if (++error_timer > 300) {
+            //goto error if land takes too long
+            printk("Forcing ERROR after 30 second land timeout\n");
+            static const system_events_t err_event = ERROR;
+            k_msgq_put_front(&event_msgq, &err_event);
+            return;
+        }
+    //repeat altitude readings until we are close enough to ground
+    } while (!curr_alt_valid || curr_alt > (uint32_t)CONTROL_ALTITUDE_MIN_MM + 50);
+
     static const system_events_t land_done_event = LAND_DONE;
     k_msgq_put(&event_msgq, &land_done_event, K_NO_WAIT);
 }
@@ -197,7 +204,6 @@ void state_machine_handler(system_events_t event) {
         case CTRL_QUEUE_EMPTY:
             if (current_state == DRONE_CONTROLLED_FLIGHT){
                 current_state = DRONE_HOVER;   
-                hover();
             }
             break;
         default:

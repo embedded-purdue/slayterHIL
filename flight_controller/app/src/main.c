@@ -134,8 +134,12 @@ static void bno_consumer(void *arg1, void *arg2, void *arg3)
             //     set_led_intensity(i, 10);
             // }
             //immediately go into error and block forever
-            static const system_events_t bno_error = ERROR;
-            k_msgq_put_front(&event_msgq, &bno_error);
+            
+            //UNCOMMENT when bno consumer is ready; else then sends it to error pretty fast
+            // static const system_events_t bno_error = ERROR;
+            // k_msgq_put_front(&event_msgq, &bno_error);
+            
+            
             k_msleep(50);
             continue;
         }
@@ -250,53 +254,53 @@ static void uart_consumer(void *arg1,  void *arg2, void *arg3) {
             uart_rx_count++;
                 switch (c) {
                 case 'L':
-                    control_adjust_roll(-CONTROL_ATTITUDE_STEP_DEG);
+                    // control_adjust_roll(-CONTROL_ATTITUDE_STEP_DEG);
                     printk("UART: LEFT  (roll setpoint down)\n");
-                    // static const command_t left_cmd = LEFT;
-                    // ring_buf_put(&command_queue, (uint8_t*)&left_cmd, sizeof(command_t));
-                    // k_msgq_put(&event_msgq, &control_event, K_NO_WAIT);
+                    static const command_t left_cmd = LEFT;
+                    ring_buf_put(&command_queue, (uint8_t*)&left_cmd, sizeof(command_t));
+                    k_msgq_put(&event_msgq, &control_event, K_NO_WAIT);
                     break;
                 case 'R':
-                    control_adjust_roll(+CONTROL_ATTITUDE_STEP_DEG);
+                    // control_adjust_roll(+CONTROL_ATTITUDE_STEP_DEG);
                     printk("UART: RIGHT (roll setpoint up)\n");
-                    // static const command_t right_cmd = RIGHT;
-                    // ring_buf_put(&command_queue, (uint8_t*)&right_cmd, sizeof(command_t));
-                    // k_msgq_put(&event_msgq, &control_event, K_NO_WAIT);
+                    static const command_t right_cmd = RIGHT;
+                    ring_buf_put(&command_queue, (uint8_t*)&right_cmd, sizeof(command_t));
+                    k_msgq_put(&event_msgq, &control_event, K_NO_WAIT);
                     break;
                 case 'U':
-                    control_adjust_pitch(+CONTROL_ATTITUDE_STEP_DEG);
+                    // control_adjust_pitch(+CONTROL_ATTITUDE_STEP_DEG);
                     printk("UART: UP    (pitch setpoint up)\n");
-                    // static const command_t back_cmd = BACK;
-                    // ring_buf_put(&command_queue, (uint8_t*)&back_cmd, sizeof(command_t));
-                    // k_msgq_put(&event_msgq, &control_event, K_NO_WAIT);
+                    static const command_t back_cmd = BACK;
+                    ring_buf_put(&command_queue, (uint8_t*)&back_cmd, sizeof(command_t));
+                    k_msgq_put(&event_msgq, &control_event, K_NO_WAIT);
                     break;
                 case 'D':
-                    control_adjust_pitch(-CONTROL_ATTITUDE_STEP_DEG);
+                    // control_adjust_pitch(-CONTROL_ATTITUDE_STEP_DEG);
                     printk("UART: DOWN  (pitch setpoint down)\n");
-                    // static const command_t forward_cmd = FORWARD;
-                    // ring_buf_put(&command_queue, (uint8_t*)&forward_cmd, sizeof(command_t));
-                    // k_msgq_put(&event_msgq, &control_event, K_NO_WAIT);
+                    static const command_t forward_cmd = FORWARD;
+                    ring_buf_put(&command_queue, (uint8_t*)&forward_cmd, sizeof(command_t));
+                    k_msgq_put(&event_msgq, &control_event, K_NO_WAIT);
                     break;
                 case 'A':
-                    control_adjust_altitude(+CONTROL_ALTITUDE_STEP_MM);
+                    // control_adjust_altitude(+CONTROL_ALTITUDE_STEP_MM);
                     printk("UART: ASCEND  (altitude setpoint +%dmm)\n",
                            (int)CONTROL_ALTITUDE_STEP_MM);
-                    // static const command_t up_cmd = UP;
-                    // ring_buf_put(&command_queue, (uint8_t*)&up_cmd, sizeof(command_t));
-                    // k_msgq_put(&event_msgq, &control_event, K_NO_WAIT);
+                    static const command_t up_cmd = UP;
+                    ring_buf_put(&command_queue, (uint8_t*)&up_cmd, sizeof(command_t));
+                    k_msgq_put(&event_msgq, &control_event, K_NO_WAIT);
                     break;
                 case 'X':
-                    control_adjust_altitude(-CONTROL_ALTITUDE_STEP_MM);
+                    // control_adjust_altitude(-CONTROL_ALTITUDE_STEP_MM);
                     printk("UART: DESCEND (altitude setpoint -%dmm)\n",
                            (int)CONTROL_ALTITUDE_STEP_MM);
-                    // static const command_t down_cmd = DOWN;
-                    // ring_buf_put(&command_queue, (uint8_t*)&down_cmd, sizeof(command_t));
-                    // k_msgq_put(&event_msgq, &control_event, K_NO_WAIT);
+                    static const command_t down_cmd = DOWN;
+                    ring_buf_put(&command_queue, (uint8_t*)&down_cmd, sizeof(command_t));
+                    k_msgq_put(&event_msgq, &control_event, K_NO_WAIT);
                     break;
                 case 'B':
-                    // static const command_t abort_cmd = ABORT;
-                    // ring_buf_put(&command_queue, (uint8_t*)&abort_cmd, sizeof(command_t));
-                    // k_msgq_put(&event_msgq, &control_event, K_NO_WAIT);
+                    static const command_t abort_cmd = ABORT;
+                    ring_buf_put(&command_queue, (uint8_t*)&abort_cmd, sizeof(command_t));
+                    k_msgq_put(&event_msgq, &control_event, K_NO_WAIT);
                     printk("UART: ABORT\n");
                     break;
                 default:
@@ -418,15 +422,15 @@ int main(void)
 
     
     printk("LiDAR timer started, monitoring data...\n");
-        k_usleep(100);
-        event = ASCEND;
-        k_msgq_put(&event_msgq, &event, K_NO_WAIT);
-        k_usleep(100);
-        event = CTRL_COMMAND;
-        static const command_t cmd = ABORT;
-        ring_buf_put(&command_queue, (uint8_t*)&cmd, sizeof(command_t));
-        k_msgq_put(&event_msgq, &event, K_NO_WAIT);
-        k_usleep(100);
+    //     k_usleep(100);
+    //     event = ASCEND;
+    //     k_msgq_put(&event_msgq, &event, K_NO_WAIT);
+    //     k_usleep(100);
+    //     event = CTRL_COMMAND;
+    //     static const command_t cmd = ABORT;
+    //     ring_buf_put(&command_queue, (uint8_t*)&cmd, sizeof(command_t));
+    //     k_msgq_put(&event_msgq, &event, K_NO_WAIT);
+    //     k_usleep(100);
         // event = LAND;
         // k_msgq_put(&event_msgq, &event, K_NO_WAIT);
         

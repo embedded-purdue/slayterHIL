@@ -1,9 +1,9 @@
 #include <zephyr/dt-bindings/pwm/pwm.h>
 / {
-    // chosen {
-    //     zephyr,console = &usb_serial;
-    //     zephyr,shell-uart = &usb_serial;
-    // };
+    chosen {
+        zephyr,console = &usb_serial;
+        zephyr,shell-uart = &usb_serial;
+    };
 
     example_sensor: example_sensor_0 {
         compatible = "zephyr,example-sensor";
@@ -132,16 +132,16 @@
             bias-pull-up;
         };
     };
-    // uart0_pins: uart0_pins {
-    //     group1 {
-    //         pinmux = <UART0_RX_GPIO40>;
-    //         bias-pull-up;
-    //     };
-    //     group2 {
-    //         pinmux = <UART0_TX_GPIO39>;
-    //         output-high;
-    //     };
-    // };
+    uart0_pins: uart0_pins {
+        group1 {
+            pinmux = <UART0_RX_GPIO40>;
+            bias-pull-up;
+        };
+        group2 {
+            pinmux = <UART0_TX_GPIO39>;
+            output-high;
+        };
+    };
 
 };
 
@@ -185,19 +185,19 @@
 };
 
 
-// &uart0 {
-//     status = "okay";
-//     pinctrl-0 = <&uart0_pins>;
-//     pinctrl-names = "default";
-//     current-speed = <9600>;
-//     ublox_gnss: ublox_gnss {
-//         status = "okay";
-//         compatible = "u-blox,m8";
-//         initial-baudrate = <9600>;
-//         fix-rate = <1000>;
-//     };
-// };
+&uart0 {
+    status = "okay";
+    pinctrl-0 = <&uart0_pins>;
+    pinctrl-names = "default";
+    current-speed = <9600>;
+    ublox_gnss: ublox_gnss {
+        status = "okay";
+        compatible = "u-blox,m8";
+        initial-baudrate = <9600>;
+        fix-rate = <1000>;
+    };
+};
 
-// &usb_serial {
-//     status = "okay";
-// };
+&usb_serial {
+    status = "okay";
+};
