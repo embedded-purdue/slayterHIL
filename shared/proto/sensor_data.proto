@@ -34,6 +34,19 @@ message RcPayload {
     sint32 horizontal = 2;   // rc_horiz: -127..+127, 0 = no-op
 }
 
+message GpsPayload {
+    char time[11];      // hhmmss.ss
+    double latitude;        // Decimal degrees
+    char lat_dir;           // N or S
+    double longitude;       // Decimal degrees
+    char lon_dir;           // E or W
+    int fix_quality;        // 0 = Invalid, 1 = GPS fix, 2 = DGPS fix, etc.
+    int satellites;         // Number of satellites in use. 
+    double hdop;            // Horizontal dilution of precision. hardcode to 1
+    double altitude;        // Altitude above mean sea level
+    char alt_units;         // M (meters)
+}
+
 // Every frame contains all sensors.  Fields are always present;
 // zero-values mean "no update" for RC (both axes = 0 → no-op).
 message SensorPacket {

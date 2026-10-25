@@ -41,6 +41,16 @@ static void gnss_thread(void *p1, void *p2, void *p3)
     }
 }
 
+pb_istream_t stream = pb_istream_from_buffer(
+            rx_buf + SPI_FRAME_HDR_SIZE, payload_len);
+
+        if (!pb_decode(&stream, SensorPacket_fields, &proto)) {
+            LOG_WRN("[#%u] pb_decode failed (plen=%u): %s",
+                    loop, payload_len, PB_GET_ERROR(&stream));
+            hil_diag_inc_decode_fail();
+            continue;
+        }
+
 int gnss_emulator_init(const struct device *uart_dev)
 {
     if (!device_is_ready(uart_dev)) {
