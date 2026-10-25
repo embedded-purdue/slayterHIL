@@ -10,6 +10,7 @@
 #include "threads/sensor_emulation_test.h"
 #include "threads/imu_emulator_test.h"
 #include "threads/lidar_emulator_test.h"
+#include "threads/ "
 
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
@@ -43,6 +44,7 @@ static void sensor_emulation_thread(void *p1, void *p2, void *p3)
             /* All three sensors update every tick — no routing needed */
             lidar_emulator_update_distance(pkt.lidar_distance_mm);
             imu_emulator_update_data(&pkt.imu_data);
+            gps_update_location(&pkt.gps_data);
 
             /* RC forwarding — only act if at least one axis is non-zero */
             if (pkt.rc_commands.rc_vert != 0 || pkt.rc_commands.rc_horiz != 0) {

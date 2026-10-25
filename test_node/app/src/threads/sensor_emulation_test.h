@@ -101,6 +101,31 @@ typedef struct {
     int8_t rc_horiz;  /**< Horizontal axis: negative = left, positive = right */
 } rc_data_t;
 
+struct gps_data_t {
+    int valid; // 1 = valid, 0 = invalid
+    char time[11];          // hhmmss.ss
+    double latitude;        // Decimal degrees
+    char lat_dir;           // N or S
+    double longitude;       // Decimal degrees
+    char lon_dir;           // E or W
+    int fix_quality;        // 0 = Invalid, 1 = GPS fix, 2 = DGPS fix, etc.
+    int satellites;         // Number of satellites in use. 
+    double hdop;            // Horizontal dilution of precision. hardcode to 1
+    double altitude;        // Altitude above mean sea level
+    char alt_units;         // M (meters)
+
+    gps_data_t(){
+        valid = 1;
+        latitude = 40.432708;
+        lat_dir = N;
+        longitude = 86.923442;
+        lon_dir = W;
+        fix_quality = 1;
+        satellites = 10;
+        hdop = 1;
+    }
+}
+
 /* ── Combined update packet ───────────────────────────────────────────────── */
 
 /**
@@ -120,6 +145,7 @@ typedef struct {
     imu_data_t imu_data;           /**< Full 18-byte BNO055 register image       */
     uint16_t   lidar_distance_mm;  /**< LIDAR-Lite distance in millimetres       */
     rc_data_t  rc_commands;        /**< RC axis commands (0,0 = no-op)           */
+    gps_data_t gps_data;
 } device_update_packet_t;
 
 /* ── 1-slot ISR gate queue ────────────────────────────────────────────────── */

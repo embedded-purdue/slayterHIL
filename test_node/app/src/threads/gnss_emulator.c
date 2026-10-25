@@ -21,11 +21,56 @@ static const struct device *gnss_uart;
 K_THREAD_STACK_DEFINE(gnss_stack, GNSS_EMULATOR_STACK_SIZE);
 static struct k_thread gnss_thread_data;
 
+// struct gps_data_t {
+//     int valid; // 1 = valid, 0 = invalid
+//     char time[11];          // hhmmss.ss
+//     double latitude;        // Decimal degrees
+//     char lat_dir;           // N or S
+//     double longitude;       // Decimal degrees
+//     char lon_dir;           // E or W
+//     int fix_quality;        // 0 = Invalid, 1 = GPS fix, 2 = DGPS fix, etc.
+//     int satellites;         // Number of satellites in use. 
+//     double hdop;            // Horizontal dilution of precision. hardcode to 1
+//     double altitude;        // Altitude above mean sea level
+//     char alt_units;         // M (meters) or F (feet)
+
+//     gps_data_t(){
+//         valid = 0;
+//         latitude = ;
+//         lat_dir = ;
+//         longitude = ;
+//         lon_dir = ;
+//         fix_quality = 1;
+//         satellites = 10;
+//         hdop = 1;
+//     }
+// }
+
 /* Send len bytes, one at a time */
-static void gnss_send(const char *msg, size_t len)
+static void gps_update_location(const gps_data * data)
 {
+    char gps_string[160];
+    //$GPGGA,181908.00,3404.7041778,N,07044.3966270,W,4,13,1.00,495.144,M
+    printf("%d, %s", i, j);
+    int len = snprintf(gps_string, sizeof(gps_string),
+        "$GPGGA, %.2d,%.7s,%c,%.8f,%c,%.8f,%c,%d,%d,%.1f,%.2f,%c",
+        packet->time,
+        packet->latitude,
+        packet->lat_dir,
+        packet->longitude,
+        packet->lon_dir,
+        packet->fix_quality,
+        packet->satellites,
+        1.0,
+        packet->altitude,
+        packet->alt_units);
+
+    if (len < 0 || len >= sizeof(gps_string)){
+        return;
+    }
+
     for (size_t i = 0; i < len; i++) {
-        uart_poll_out(gnss_uart, (unsigned char)msg[i]);
+        uart_poll_out(gnss_uart, (unsigned char)gps_string[i]);
     }
 }
 
@@ -40,16 +85,6 @@ static void gnss_thread(void *p1, void *p2, void *p3)
         k_msleep(GNSS_SEND_PERIOD_MS);
     }
 }
-
-pb_istream_t stream = pb_istream_from_buffer(
-            rx_buf + SPI_FRAME_HDR_SIZE, payload_len);
-
-        if (!pb_decode(&stream, SensorPacket_fields, &proto)) {
-            LOG_WRN("[#%u] pb_decode failed (plen=%u): %s",
-                    loop, payload_len, PB_GET_ERROR(&stream));
-            hil_diag_inc_decode_fail();
-            continue;
-        }
 
 int gnss_emulator_init(const struct device *uart_dev)
 {

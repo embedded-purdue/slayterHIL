@@ -54,4 +54,5 @@ message SensorPacket {
     uint32     lidar_mm     = 2;
     BnoImuPayload imu          = 3;
     RcPayload  rc           = 4;
+    GpsPayload gps = 5;
 }
