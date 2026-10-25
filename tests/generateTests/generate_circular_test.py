@@ -1,5 +1,6 @@
 import json
 import math
+import os
 
 
 def compute_direction(x_vel, y_vel, z_vel):
@@ -31,7 +32,9 @@ def generate_circular_test():
 
     # Phase durations
     ascend_time = 3.0     # seconds (6 points)
-    circle_time = 9.0     # seconds (18 points)
+    # Keep the circle coarse: each segment must be long enough (>= ~3.75 m per
+    # axis) to survive the 7.5 m-per-command RC conversion on the dashboard.
+    circle_time = 4.0     # seconds (8 points, 45 deg apart)
     descend_time = 3.0    # seconds (6 points)
 
     # Velocities
@@ -106,7 +109,8 @@ def generate_circular_test():
         message_id += 1
 
     # Write to JSON file
-    with open(r"JSONTests\circular_test.json", "w") as f:
+    out_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "JSONtests", "circular_test.json")
+    with open(out_path, "w") as f:
         json.dump(data, f, indent=4)
 
     print(f"Generated {len(data)} points → circular_test.json")

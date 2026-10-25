@@ -691,7 +691,8 @@ class TestAutomationDashboard {
             }
             const url = presetJsonFetchUrl(path);
 
-            const res = await fetch(path);
+            // Revalidate every time so regenerated test JSON shows up without a hard refresh.
+            const res = await fetch(path, { cache: 'no-cache' });
             if (!res.ok) {
                 console.error(
                     'Preset JSON HTTP error:',

@@ -7,7 +7,8 @@
         "Z_pos": 0.0,
         "X_vel_ext": 0,
         "Y_vel_ext": 0,
-        "Z_vel_ext": 25.0
+        "Z_vel_ext": 25.0,
+        "Direction": "U"
     },
     {
         "Message_id": 2,
@@ -17,7 +18,8 @@
         "Z_pos": 12.5,
         "X_vel_ext": 0,
         "Y_vel_ext": 0,
-        "Z_vel_ext": 25.0
+        "Z_vel_ext": 25.0,
+        "Direction": "U"
     },
     {
         "Message_id": 3,
@@ -27,7 +29,8 @@
         "Z_pos": 25.0,
         "X_vel_ext": 0,
         "Y_vel_ext": 0,
-        "Z_vel_ext": 25.0
+        "Z_vel_ext": 25.0,
+        "Direction": "U"
     },
     {
         "Message_id": 4,
@@ -37,7 +40,8 @@
         "Z_pos": 37.5,
         "X_vel_ext": 0,
         "Y_vel_ext": 0,
-        "Z_vel_ext": 25.0
+        "Z_vel_ext": 25.0,
+        "Direction": "U"
     },
     {
         "Message_id": 5,
@@ -47,7 +51,8 @@
         "Z_pos": 50.0,
         "X_vel_ext": 0,
         "Y_vel_ext": 0,
-        "Z_vel_ext": 25.0
+        "Z_vel_ext": 25.0,
+        "Direction": "U"
     },
     {
         "Message_id": 6,
@@ -57,7 +62,8 @@
         "Z_pos": 62.5,
         "X_vel_ext": 0,
         "Y_vel_ext": 0,
-        "Z_vel_ext": 25.0
+        "Z_vel_ext": 25.0,
+        "Direction": "U"
     },
     {
         "Message_id": 7,
@@ -66,237 +72,151 @@
         "Y_pos": 0.0,
         "Z_pos": 75,
         "X_vel_ext": -0.0,
-        "Y_vel_ext": 6.98,
-        "Z_vel_ext": 0
+        "Y_vel_ext": 15.71,
+        "Z_vel_ext": 0,
+        "Direction": "F"
     },
     {
         "Message_id": 8,
         "Timestamp": 3.5,
-        "X_pos": 9.4,
-        "Y_pos": 3.42,
+        "X_pos": 7.07,
+        "Y_pos": 7.07,
         "Z_pos": 75,
-        "X_vel_ext": -2.39,
-        "Y_vel_ext": 6.56,
-        "Z_vel_ext": 0
+        "X_vel_ext": -11.11,
+        "Y_vel_ext": 11.11,
+        "Z_vel_ext": 0,
+        "Direction": "LF"
     },
     {
         "Message_id": 9,
         "Timestamp": 4.0,
-        "X_pos": 7.66,
-        "Y_pos": 6.43,
+        "X_pos": 0.0,
+        "Y_pos": 10.0,
         "Z_pos": 75,
-        "X_vel_ext": -4.49,
-        "Y_vel_ext": 5.35,
-        "Z_vel_ext": 0
+        "X_vel_ext": -15.71,
+        "Y_vel_ext": 0.0,
+        "Z_vel_ext": 0,
+        "Direction": "L"
     },
     {
         "Message_id": 10,
         "Timestamp": 4.5,
-        "X_pos": 5.0,
-        "Y_pos": 8.66,
+        "X_pos": -7.07,
+        "Y_pos": 7.07,
         "Z_pos": 75,
-        "X_vel_ext": -6.05,
-        "Y_vel_ext": 3.49,
-        "Z_vel_ext": 0
+        "X_vel_ext": -11.11,
+        "Y_vel_ext": -11.11,
+        "Z_vel_ext": 0,
+        "Direction": "LB"
     },
     {
         "Message_id": 11,
         "Timestamp": 5.0,
-        "X_pos": 1.74,
-        "Y_pos": 9.85,
-        "Z_pos": 75,
-        "X_vel_ext": -6.88,
-        "Y_vel_ext": 1.21,
-        "Z_vel_ext": 0
-    },
-    {
-        "Message_id": 12,
-        "Timestamp": 5.5,
-        "X_pos": -1.74,
-        "Y_pos": 9.85,
-        "Z_pos": 75,
-        "X_vel_ext": -6.88,
-        "Y_vel_ext": -1.21,
-        "Z_vel_ext": 0
-    },
-    {
-        "Message_id": 13,
-        "Timestamp": 6.0,
-        "X_pos": -5.0,
-        "Y_pos": 8.66,
-        "Z_pos": 75,
-        "X_vel_ext": -6.05,
-        "Y_vel_ext": -3.49,
-        "Z_vel_ext": 0
-    },
-    {
-        "Message_id": 14,
-        "Timestamp": 6.5,
-        "X_pos": -7.66,
-        "Y_pos": 6.43,
-        "Z_pos": 75,
-        "X_vel_ext": -4.49,
-        "Y_vel_ext": -5.35,
-        "Z_vel_ext": 0
-    },
-    {
-        "Message_id": 15,
-        "Timestamp": 7.0,
-        "X_pos": -9.4,
-        "Y_pos": 3.42,
-        "Z_pos": 75,
-        "X_vel_ext": -2.39,
-        "Y_vel_ext": -6.56,
-        "Z_vel_ext": 0
-    },
-    {
-        "Message_id": 16,
-        "Timestamp": 7.5,
         "X_pos": -10.0,
         "Y_pos": 0.0,
         "Z_pos": 75,
         "X_vel_ext": -0.0,
-        "Y_vel_ext": -6.98,
-        "Z_vel_ext": 0
+        "Y_vel_ext": -15.71,
+        "Z_vel_ext": 0,
+        "Direction": "B"
     },
     {
-        "Message_id": 17,
-        "Timestamp": 8.0,
-        "X_pos": -9.4,
-        "Y_pos": -3.42,
+        "Message_id": 12,
+        "Timestamp": 5.5,
+        "X_pos": -7.07,
+        "Y_pos": -7.07,
         "Z_pos": 75,
-        "X_vel_ext": 2.39,
-        "Y_vel_ext": -6.56,
-        "Z_vel_ext": 0
+        "X_vel_ext": 11.11,
+        "Y_vel_ext": -11.11,
+        "Z_vel_ext": 0,
+        "Direction": "RB"
     },
     {
-        "Message_id": 18,
-        "Timestamp": 8.5,
-        "X_pos": -7.66,
-        "Y_pos": -6.43,
+        "Message_id": 13,
+        "Timestamp": 6.0,
+        "X_pos": -0.0,
+        "Y_pos": -10.0,
         "Z_pos": 75,
-        "X_vel_ext": 4.49,
-        "Y_vel_ext": -5.35,
-        "Z_vel_ext": 0
+        "X_vel_ext": 15.71,
+        "Y_vel_ext": -0.0,
+        "Z_vel_ext": 0,
+        "Direction": "R"
     },
     {
-        "Message_id": 19,
-        "Timestamp": 9.0,
-        "X_pos": -5.0,
-        "Y_pos": -8.66,
+        "Message_id": 14,
+        "Timestamp": 6.5,
+        "X_pos": 7.07,
+        "Y_pos": -7.07,
         "Z_pos": 75,
-        "X_vel_ext": 6.05,
-        "Y_vel_ext": -3.49,
-        "Z_vel_ext": 0
+        "X_vel_ext": 11.11,
+        "Y_vel_ext": 11.11,
+        "Z_vel_ext": 0,
+        "Direction": "RF"
     },
     {
-        "Message_id": 20,
-        "Timestamp": 9.5,
-        "X_pos": -1.74,
-        "Y_pos": -9.85,
-        "Z_pos": 75,
-        "X_vel_ext": 6.88,
-        "Y_vel_ext": -1.21,
-        "Z_vel_ext": 0
-    },
-    {
-        "Message_id": 21,
-        "Timestamp": 10.0,
-        "X_pos": 1.74,
-        "Y_pos": -9.85,
-        "Z_pos": 75,
-        "X_vel_ext": 6.88,
-        "Y_vel_ext": 1.21,
-        "Z_vel_ext": 0
-    },
-    {
-        "Message_id": 22,
-        "Timestamp": 10.5,
-        "X_pos": 5.0,
-        "Y_pos": -8.66,
-        "Z_pos": 75,
-        "X_vel_ext": 6.05,
-        "Y_vel_ext": 3.49,
-        "Z_vel_ext": 0
-    },
-    {
-        "Message_id": 23,
-        "Timestamp": 11.0,
-        "X_pos": 7.66,
-        "Y_pos": -6.43,
-        "Z_pos": 75,
-        "X_vel_ext": 4.49,
-        "Y_vel_ext": 5.35,
-        "Z_vel_ext": 0
-    },
-    {
-        "Message_id": 24,
-        "Timestamp": 11.5,
-        "X_pos": 9.4,
-        "Y_pos": -3.42,
-        "Z_pos": 75,
-        "X_vel_ext": 2.39,
-        "Y_vel_ext": 6.56,
-        "Z_vel_ext": 0
-    },
-    {
-        "Message_id": 25,
-        "Timestamp": 12.0,
+        "Message_id": 15,
+        "Timestamp": 7.0,
         "X_pos": 10.0,
         "Y_pos": 0,
         "Z_pos": 75.0,
         "X_vel_ext": 0,
         "Y_vel_ext": 0,
-        "Z_vel_ext": -25.0
+        "Z_vel_ext": -25.0,
+        "Direction": "D"
     },
     {
-        "Message_id": 26,
-        "Timestamp": 12.5,
+        "Message_id": 16,
+        "Timestamp": 7.5,
         "X_pos": 10.0,
         "Y_pos": 0,
         "Z_pos": 62.5,
         "X_vel_ext": 0,
         "Y_vel_ext": 0,
-        "Z_vel_ext": -25.0
+        "Z_vel_ext": -25.0,
+        "Direction": "D"
     },
     {
-        "Message_id": 27,
-        "Timestamp": 13.0,
+        "Message_id": 17,
+        "Timestamp": 8.0,
         "X_pos": 10.0,
         "Y_pos": 0,
         "Z_pos": 50.0,
         "X_vel_ext": 0,
         "Y_vel_ext": 0,
-        "Z_vel_ext": -25.0
+        "Z_vel_ext": -25.0,
+        "Direction": "D"
     },
     {
-        "Message_id": 28,
-        "Timestamp": 13.5,
+        "Message_id": 18,
+        "Timestamp": 8.5,
         "X_pos": 10.0,
         "Y_pos": 0,
         "Z_pos": 37.5,
         "X_vel_ext": 0,
         "Y_vel_ext": 0,
-        "Z_vel_ext": -25.0
+        "Z_vel_ext": -25.0,
+        "Direction": "D"
     },
     {
-        "Message_id": 29,
-        "Timestamp": 14.0,
+        "Message_id": 19,
+        "Timestamp": 9.0,
         "X_pos": 10.0,
         "Y_pos": 0,
         "Z_pos": 25.0,
         "X_vel_ext": 0,
         "Y_vel_ext": 0,
-        "Z_vel_ext": -25.0
+        "Z_vel_ext": -25.0,
+        "Direction": "D"
     },
     {
-        "Message_id": 30,
-        "Timestamp": 14.5,
+        "Message_id": 20,
+        "Timestamp": 9.5,
         "X_pos": 10.0,
         "Y_pos": 0,
         "Z_pos": 12.5,
         "X_vel_ext": 0,
         "Y_vel_ext": 0,
-        "Z_vel_ext": -25.0
+        "Z_vel_ext": -25.0,
+        "Direction": "D"
     }
 ]
