@@ -117,7 +117,10 @@ class TestServer:
 
 def main():
     server = TestServer()
-    web.run_app(server.app, host='localhost', port=8080)
+    # Overridable for hosting (see README "Dashboard Hosting"); defaults keep local dev unchanged.
+    host = os.environ.get('DASHBOARD_HOST', 'localhost')
+    port = int(os.environ.get('DASHBOARD_PORT', '8080'))
+    web.run_app(server.app, host=host, port=port)
 
 
 if __name__ == '__main__':
