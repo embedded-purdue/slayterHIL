@@ -13,6 +13,11 @@
 LOG_MODULE_REGISTER(scheduler, LOG_LEVEL_INF);
 static const struct device *const spi_dev = DEVICE_DT_GET(DT_ALIAS(spi_orchestrator));
 static uint8_t rx_buf[256];
+// Full-duplex slave must supply outgoing bytes even when the Pi ignores MISO.
+// Keep TX and RX the same length to avoid a TX underrun during the frame.
+static uint8_t tx_dummy[256];
+static struct spi_buf tx_desc = { .buf = tx_dummy, .len = sizeof(tx_dummy) };
+static struct spi_buf_set tx_set = { .buffers = &tx_desc, .count = 1 };
 static struct spi_buf rx_desc = { .buf = rx_buf, .len = sizeof(rx_buf) };
 static struct spi_buf_set rx_set = { .buffers = &rx_desc, .count = 1 };
 static const struct spi_config spi_cfg = {
@@ -32,10 +37,10 @@ static i2c_imu_data_16_t pack(int32_t value)
 static void scheduler_thread(void *p1, void *p2, void *p3)
 {
     ARG_UNUSED(p1); ARG_UNUSED(p2); ARG_UNUSED(p3);
-    LOG_INF("SPI receiver ready: 256 bytes, mode 0, IMMEDIATE injection");
+    LOG_INF("SPI receiver ready: 256 bytes, mode 0, dummy TX, IMMEDIATE injection");
     uint32_t received = 0;
     while (1) {
-        const int err = spi_read(spi_dev, &spi_cfg, &rx_set);
+        const int err = spi_transceive(spi_dev, &spi_cfg, &tx_set, &rx_set);
         // Some slave drivers return the positive byte count on success.
         if (err < 0 || (err > 0 && err != sizeof(rx_buf))) {
             atomic_inc(&spi_err_count);
