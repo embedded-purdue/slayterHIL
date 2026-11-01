@@ -64,3 +64,16 @@ Tips:
 # Using Protobuf with C++ (flight sim)
 1. install protobuf 
     * `sudo apt install -y protobuf-compiler` OR `brew install protobuf`
+
+`sensor_data.proto` supports GPS through `SensorPacket.gps` (field 6).
+Populate it with `packet.mutable_gps()` in C++; nanopb exposes `packet.gps`
+and `packet.has_gps`. Missing GPS means no GPS update; a present payload
+with `valid = false` reports an invalid fix. Coordinates use positive decimal
+degree magnitudes with separate `N`/`S` and `E`/`W` direction strings.
+Time is UTC `hhmmss.ss`, altitude is above mean sea level with units `M`,
+and HDOP is supplied by the sender (use 1 for the emulated fix).
+
+`sensor_data.options` bounds the GPS strings for nanopb so they decode into
+fixed C arrays. Rebuild both endpoints after changing the schema. This adds
+the wire fields; populating GPS in the simulation and forwarding it to a GPS
+emulator are separate application work.

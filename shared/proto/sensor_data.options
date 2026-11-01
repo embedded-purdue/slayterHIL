@@ -1,0 +1,5 @@
+# Fixed buffers include the terminating NUL and match gps_data_t.
+GpsPayload.time      max_size:11
+GpsPayload.lat_dir   max_size:2
+GpsPayload.lon_dir   max_size:2
+GpsPayload.alt_units max_size:2

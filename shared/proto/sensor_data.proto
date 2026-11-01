@@ -1,6 +1,6 @@
 // sensor_data.proto
 //
-// Single combined packet — Pi sends IMU + LiDAR + RC in every frame.
+// Single combined packet — Pi sends IMU + LiDAR + RC, optionally with GPS.
 // Wire framing (transport layer, not protobuf):
 //   [LEN_LOW][LEN_HIGH][protobuf payload...][zero-pad to 256]
 //
@@ -35,6 +35,23 @@ message RcPayload {
     sint32 horizontal = 2;   // rc_horiz: -127..+127, 0 = no-op
 }
 
+// Matches gps_data_t. Coordinates are unsigned magnitudes in decimal degrees;
+// lat_dir/lon_dir supply the hemisphere (N/S and E/W).
+// No default fix is assumed: valid=false means the fix is invalid.
+message GpsPayload {
+    bool   valid       = 1;
+    string time        = 2;   // UTC hhmmss.ss; up to 10 characters
+    double latitude    = 3;
+    string lat_dir     = 4;   // N or S
+    double longitude   = 5;
+    string lon_dir     = 6;   // E or W
+    uint32 fix_quality = 7;   // 0 = invalid, 1 = GPS, 2 = DGPS
+    uint32 satellites  = 8;
+    double hdop        = 9;   // Horizontal dilution of precision
+    double altitude    = 10;  // Altitude above mean sea level
+    string alt_units   = 11;  // M (meters)
+}
+
 // Every frame contains all sensors.  Fields are always present;
 // zero-values mean "no update" for RC (both axes = 0 → no-op).
 enum InjectionMode {
@@ -50,4 +67,5 @@ message SensorPacket {
     ImuPayload imu          = 3;
     RcPayload  rc           = 4;
     InjectionMode injection_mode = 5;
+    GpsPayload gps          = 6; // Absent for senders without GPS support
 }

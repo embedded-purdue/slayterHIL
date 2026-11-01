@@ -56,4 +56,31 @@ int main() {
             "Zero sample cannot decode");
     require(packet.has_imu() && packet.has_rc() && packet.imu().gyro_x() == 0,
             "Zero sample contains stale values");
+    require(!packet.has_gps(), "Legacy sample unexpectedly contains GPS");
+
+    auto* gps = packet.mutable_gps();
+    gps->set_valid(true);
+    gps->set_time("123456.78");
+    gps->set_latitude(40.432708);
+    gps->set_lat_dir("N");
+    gps->set_longitude(86.923442);
+    gps->set_lon_dir("W");
+    gps->set_fix_quality(1);
+    gps->set_satellites(10);
+    gps->set_hdop(1.0);
+    gps->set_altitude(-12.5);
+    gps->set_alt_units("M");
+    SensorPacket decoded;
+    require(decoded.ParseFromString(packet.SerializeAsString()), "GPS decode failed");
+    const auto& fix = decoded.gps();
+    require(decoded.has_gps() && fix.valid() && fix.time() == "123456.78" &&
+            fix.latitude() == 40.432708 && fix.lat_dir() == "N" &&
+            fix.longitude() == 86.923442 && fix.lon_dir() == "W" &&
+            fix.fix_quality() == 1 && fix.satellites() == 10 &&
+            fix.hdop() == 1.0 && fix.altitude() == -12.5 && fix.alt_units() == "M",
+            "GPS fields did not round-trip");
+    require(packet.ByteSizeLong() <= 254, "GPS sample exceeds SPI payload capacity");
+    gps->set_valid(false);
+    require(decoded.ParseFromString(packet.SerializeAsString()) &&
+            decoded.has_gps() && !decoded.gps().valid(), "Invalid GPS fix lost");
 }
