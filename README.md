@@ -6,7 +6,7 @@ A hardware-in-the-loop test system codesigned with a drone flight controller. Es
 
 1. Test Automation: The front-end interface for user interaction with the HIL system
 2. Flight Simulation: The in-house physics simulation that generates sensor outputs for the DUT
-3. HIL Node: the deterministic injection system that simulates the DUT's sensors using the simulation's outputs.
+3. Test Node: the deterministic injection system that simulates the DUT's sensors using the simulation's outputs.
 4. DUT: the drone itself. The subteam is building flight controller software. 
 
 ### Dashboard Hosting
