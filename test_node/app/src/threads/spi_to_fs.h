@@ -3,10 +3,7 @@
 
 typedef struct
 {
-    double v1;
-    double v2;
-    double v3;
-    double v4;
+    double v[4];
 } avg_v_packet_t;
 
 typedef struct
