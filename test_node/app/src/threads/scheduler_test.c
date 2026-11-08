@@ -380,6 +380,19 @@ static void scheduler_thread(void *p1, void *p2, void *p3)
         device_update_packet_t pkt;
         memset(&pkt, 0, sizeof(pkt));
 
+        /* Fixed GPS values for every simulation tick (NMEA degrees/minutes). */
+        pkt.gps_data = (gps_data_t){
+            .valid = 1,
+            .latitude = 4025.96248,
+            .lat_dir = 'N',
+            .longitude = 8655.40652,
+            .lon_dir = 'W',
+            .fix_quality = 1,
+            .satellites = 10,
+            .hdop = 1,
+            .alt_units = 'M',
+        };
+
         pkt.timestamp_us      = proto.timestamp_us;
         pkt.lidar_distance_mm = (uint16_t)(proto.lidar_mm & 0xFFFFU);
 

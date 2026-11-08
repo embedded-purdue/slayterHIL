@@ -104,9 +104,9 @@ typedef struct {
 typedef struct {
     int valid; // 1 = valid, 0 = invalid
     char time[11];          // hhmmss.ss
-    double latitude;        // Decimal degrees
+    double latitude;        // NMEA ddmm.mmmmm
     char lat_dir;           // N or S
-    double longitude;       // Decimal degrees
+    double longitude;       // NMEA dddmm.mmmmm
     char lon_dir;           // E or W
     int fix_quality;        // 0 = Invalid, 1 = GPS fix, 2 = DGPS fix, etc.
     int satellites;         // Number of satellites in use. 
@@ -114,17 +114,6 @@ typedef struct {
     double altitude;        // Altitude above mean sea level
     char alt_units;         // M (meters)
 
-    // gps_data_t gps = {
-    //     .valid = 1,
-    //     .latitude = 4025.96248,
-    //     .lat_dir = 'N',
-    //     .longitude = 08655.40652,
-    //     .lon_dir = 'W',
-    //     .fix_quality = 1,
-    //     .satellites = 10,
-    //     .hdop = 1,
-    //     .alt_units = 'M',
-    // };
 } gps_data_t;
 
 /* ── Combined update packet ───────────────────────────────────────────────── */
