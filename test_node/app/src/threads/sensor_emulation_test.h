@@ -122,6 +122,12 @@ typedef struct
     char var_dir;     // E or W for magnetic variation
     char mode;        // position mode indicator
     char nav_status;  // nav status
+    uint8_t valid;    // GGA fix validity
+    uint8_t fix_quality;
+    uint8_t satellites;
+    float hdop;
+    float altitude;
+    char alt_units;
 } gps_data_t;
 
 /* ── Combined update packet ───────────────────────────────────────────────── */

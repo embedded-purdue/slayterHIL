@@ -62,6 +62,44 @@ void gps_update_location(const gps_data_t * packet)
     for (size_t i = 0; i < (size_t)len; i++) {
         uart_poll_out(gnss_uart, (unsigned char)gps_string[i]);
     }
+
+    len = snprintf(gps_string, sizeof(gps_string),
+        "$GPRMC,%.10s,%c,%010.5f,%c,%011.5f,%c,%.1f,%.1f,%.6s,%.2f,%c,%c,%c",
+        packet->time,
+        packet->status,
+        packet->latitude,
+        packet->lat_dir,
+        packet->longitude,
+        packet->lon_dir,
+        packet->speed,
+        packet->course,
+        packet->date,
+        packet->variation,
+        packet->var_dir,
+        packet->mode,
+        packet->nav_status);
+
+    if (len < 0 || (size_t)len >= sizeof(gps_string)){
+        return;
+    }
+
+    checksum = 0;
+    for (int i = 1; i < len; i++) {
+        checksum ^= (unsigned char)gps_string[i];
+    }
+
+    added = snprintf(gps_string + len,
+                         sizeof(gps_string) - (size_t)len,
+                         "*%02X\r\n", checksum);
+    if (added < 0 ||
+        (size_t)added >= sizeof(gps_string) - (size_t)len) {
+        return;
+    }
+    len += added;
+
+    for (size_t i = 0; i < (size_t)len; i++) {
+        uart_poll_out(gnss_uart, (unsigned char)gps_string[i]);
+    }
 }
 
 static void gnss_thread(void *p1, void *p2, void *p3)

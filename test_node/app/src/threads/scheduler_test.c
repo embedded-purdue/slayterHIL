@@ -383,6 +383,10 @@ static void scheduler_thread(void *p1, void *p2, void *p3)
         /* Fixed GPS values for every simulation tick (NMEA degrees/minutes). */
         pkt.gps_data = (gps_data_t){
             .valid = 1,
+            .status = 'A',
+            .var_dir = 'E',
+            .mode = 'A',
+            .nav_status = 'S',
             .latitude = 4025.96248,
             .lat_dir = 'N',
             .longitude = 8655.40652,

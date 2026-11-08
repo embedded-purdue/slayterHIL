@@ -5,12 +5,23 @@ YOUR SCOPE
 
 You own the outgoing communication module:
 
-  Teammates calculate measurements
+  DUT (flight controller) produces PWM outputs
+      -> STM32 measurement code receives the DUT signals
+      -> teammates' STM32 code calculates measurements
       -> teammates enqueue a message
       -> your communication thread receives it
       -> your code encodes protobuf
-      -> your code sends the frame over SPI
-      -> flight simulator receives and decodes it
+      -> your code prepares the frame for SPI transmission
+      -> Pi supplies the SPI clock and reads the frame over MISO
+      -> flight simulator on the Pi decodes it
+
+Confirmed hardware role: the Pi supplies the SPI clock. Data travels
+STM32 -> Pi even though the clock travels Pi -> STM32. These directions
+are independent.
+
+The queue connects software inside the STM32. The DUT does not write into
+the Zephyr queue directly. Your teammate's measurement code is the producer;
+your communication thread is the consumer.
 
 Your responsibilities are the new queue, a general communication thread,
 protobuf encoding, and SPI transmission. PWM capture, voltage calculations,
@@ -35,13 +46,13 @@ Keep the thread general, with SPI details inside a helper:
 Later, another transport can have its own helper. You do not need to build
 a transport abstraction immediately.
 
-Existing unfinished files:
+Files already renamed from:
 
   test_node/app/src/threads/spi_to_fs.c
   test_node/app/src/threads/spi_to_fs.h
 
-You can rename and build on these instead of creating a duplicate module.
-Update include paths and references when renaming. CMake currently includes
+Continue in flight_sim_comms.c and flight_sim_comms.h. Update old spi_to_fs
+include paths and names inside them. CMake currently includes
 every .c file directly under src/threads, so an unfinished old .c file would
 still be compiled. Its K_THREAD_DEFINE currently contains placeholders that
 must be replaced or removed as part of your implementation.
@@ -58,21 +69,69 @@ The header is the interface between your teammates' code and yours. Agree on:
 For the current task, the existing timestamp plus four voltages is enough.
 A general thread does not require a complicated message format immediately.
 
-Header outline:
+Suggested complete header for flight_sim_comms.h:
 
-  /* Add an include guard and required includes. */
+  #ifndef FLIGHT_SIM_COMMS_H
+  #define FLIGHT_SIM_COMMS_H
 
+  #include <stdint.h>
+  #include <zephyr/kernel.h>
+
+  /* Four PWM-derived average voltages, measured in volts. */
   typedef struct {
-      /* Agreed timestamp and measurement fields. */
+      double v1;
+      double v2;
+      double v3;
+      double v4;
+  } avg_v_packet_t;
+
+  /*
+   * DUT measurements collected by the STM32.
+   * Queued for protobuf encoding and transmission to the Pi.
+   */
+  typedef struct {
+      /* Measurement time in microseconds; agree on the clock reference. */
+      uint32_t timestamp_us;
+      avg_v_packet_t avg_voltages;
   } flight_sim_message_t;
 
+  /* Maximum number of messages waiting for the worker. */
+  #define FLIGHT_SIM_QUEUE_LEN 1U
+
+  /* Storage is defined once in flight_sim_comms.c. */
   extern struct k_msgq flight_sim_tx_q;
 
+  /* Implement when adding device checks and thread startup. */
   int flight_sim_comms_init(void);
+
+  #endif /* FLIGHT_SIM_COMMS_H */
+
+WHY THE HEADER WORKS
+
+The #ifndef / #define / #endif is an include guard. If one source file
+includes this header through several paths, these declarations are only
+processed once, avoiding duplicate structure definitions.
+
+stdint.h supplies uint32_t. zephyr/kernel.h supplies the Zephyr queue type
+and kernel APIs.
+
+avg_v_packet_t groups the four related voltages. flight_sim_message_t adds
+their measurement timestamp, forming one complete queue item. The general
+module name leaves room for future communication work, while the current
+message stays simple and tailored to today's requirement.
+
+Keep the timestamp comment neutral until the team agrees on its reference.
+The producer records measurement time, not the later SPI transmission time.
+A uint32_t microsecond timestamp wraps about every 71.6 minutes, so agree
+on rollover handling if long runs are needed.
 
 The typedef defines one queue item. The extern declaration lets other files
 refer to the queue; it does not allocate another queue. Define the actual
 queue in exactly one .c file.
+
+The initialization function declaration tells other source files how to
+call your future startup function. Declaring it does not start a thread.
+You must implement it before code calls it.
 
 Your teammates include this header and enqueue the agreed structure.
 If several message types are already planned, discuss a type field and a
@@ -80,7 +139,9 @@ union of payloads. Otherwise, start with the one required message type.
 
 3. DEFINE THE STATIC QUEUE IN THE .C FILE
 
-Pattern:
+At the top of flight_sim_comms.c, use:
+
+  #include "threads/flight_sim_comms.h"
 
   K_MSGQ_DEFINE(flight_sim_tx_q,
                 sizeof(flight_sim_message_t),
@@ -97,6 +158,17 @@ Arguments:
 K_MSGQ_DEFINE creates the queue and its static backing storage. You do not
 need malloc() or a separate backing-buffer declaration.
 
+sizeof includes any structure padding inserted by the compiler; do not
+calculate the message size by adding field sizes yourself. The alignment
+argument applies to queue backing storage; Zephyr copies message bytes.
+
+Static storage means this memory exists for the program's lifetime. It
+does not mean the queue is private to the .c file: the extern declaration
+makes the queue accessible from other source files.
+
+Do not put K_MSGQ_DEFINE in the header. Including that header from several
+source files could create duplicate queue definitions.
+
 Producer call (your teammates):
 
   int err = k_msgq_put(&flight_sim_tx_q, &message, K_NO_WAIT);
@@ -110,6 +182,17 @@ local message variable can be reused after a successful put. Avoid pointers
 to temporary data inside the message: copying a pointer does not copy the
 data it points to.
 
+The data path is:
+
+  Producer's local message
+      -> copy on successful k_msgq_put()
+      -> queue backing storage
+      -> copy on successful k_msgq_get()
+      -> worker's local message
+
+The current structure contains its numbers directly, with no pointers to
+temporary external data.
+
 K_NO_WAIT returns immediately if the queue is full. K_FOREVER on get lets
 the consumer sleep until a message arrives; it does not busy-poll.
 
@@ -118,6 +201,17 @@ waiting packet, plus any packet already removed and being transmitted.
 If SPI stops progressing, any finite queue eventually fills. For initial
 bring-up, producers can drop incoming messages when full and count drops.
 Agree on this policy rather than silently ignoring enqueue errors.
+
+With capacity one, this sequence is possible:
+
+  1. Producer queues message A.
+  2. Worker removes A and prepares it for a Pi-clocked transfer.
+  3. Producer queues message B while the worker waits for the Pi.
+  4. A nonblocking put of message C fails if B still occupies the queue.
+
+A full queue does not automatically replace B. Queueing also does not
+notify the Pi or start an SPI transfer. The worker and readiness protocol
+handle those steps later.
 
 Reference:
 https://docs.zephyrproject.org/latest/kernel/services/data_passing/message_queues.html
@@ -153,6 +247,20 @@ k_thread in the .c file, as well as stack size and priority constants.
 
 Choose either explicit creation or K_THREAD_DEFINE; do not start the same
 worker both ways. Arrange for initialization to run once.
+
+CURRENT PLACEHOLDERS TO ADDRESS
+
+The existing K_THREAD_DEFINE block uses STACK_SIZE, my_entry_point, arg1,
+arg2, arg3, and PRIORITY as placeholders. Remove or comment out that block
+until implementing real thread startup; those names currently prevent
+compilation if undefined.
+
+The current worker skeleton has an empty infinite loop. Do not start it
+in that form: it would continuously execute without waiting. Add the
+blocking k_msgq_get(..., K_FOREVER) before starting it.
+
+Completing just the header and queue does not require starting the worker
+yet. That is a useful first checkpoint before thread implementation.
 
 The teammate responsible for main.c should call flight_sim_comms_init()
 once during startup and handle its result. Coordinate this integration
@@ -236,9 +344,9 @@ Keep the transmit buffer valid and unchanged until the SPI transfer has
 completed. A single worker owning a static transmit buffer is a simple
 approach for synchronous transfers.
 
-IMPORTANT: CONFIRM WHICH SIDE SUPPLIES THE SPI CLOCK
+CONFIRMED: THE PI SUPPLIES THE SPI CLOCK
 
-If the Pi is the controller and STM32 is the peripheral:
+The Pi is the SPI controller and STM32 is the SPI peripheral:
 
   - The Pi drives clock and chip select.
   - STM32 prepares outgoing data.
