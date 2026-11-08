@@ -13,3 +13,6 @@ K_MSGQ_DEFINE(spi_to_fs_q,
 // init
 
 // create thread
+K_THREAD_DEFINE(tn_to_fs, STACK_SIZE, 
+    my_entry_point, arg1, arg2, arg3, 
+    PRIORITY, 0, 0);

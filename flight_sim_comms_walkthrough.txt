@@ -1,0 +1,308 @@
+Flight simulator communication module: implementation walkthrough
+================================================================
+
+YOUR SCOPE
+
+You own the outgoing communication module:
+
+  Teammates calculate measurements
+      -> teammates enqueue a message
+      -> your communication thread receives it
+      -> your code encodes protobuf
+      -> your code sends the frame over SPI
+      -> flight simulator receives and decodes it
+
+Your responsibilities are the new queue, a general communication thread,
+protobuf encoding, and SPI transmission. PWM capture, voltage calculations,
+and measurement timestamps are being handled by others.
+
+This is a guide, not an implementation. The snippets are patterns to adapt.
+
+1. NAME THE MODULE FOR ITS PURPOSE
+
+Suggested files:
+
+  test_node/app/src/threads/flight_sim_comms.c
+  test_node/app/src/threads/flight_sim_comms.h
+
+Keep the thread general, with SPI details inside a helper:
+
+  flight_sim_comms_thread()
+      -> receive queued message
+      -> encode message
+      -> send through SPI helper
+
+Later, another transport can have its own helper. You do not need to build
+a transport abstraction immediately.
+
+Existing unfinished files:
+
+  test_node/app/src/threads/spi_to_fs.c
+  test_node/app/src/threads/spi_to_fs.h
+
+You can rename and build on these instead of creating a duplicate module.
+Update include paths and references when renaming. CMake currently includes
+every .c file directly under src/threads, so an unfinished old .c file would
+still be compiled. Its K_THREAD_DEFINE currently contains placeholders that
+must be replaced or removed as part of your implementation.
+
+2. AGREE ON THE QUEUE CONTRACT
+
+The header is the interface between your teammates' code and yours. Agree on:
+
+  - Fields and units in each message.
+  - Timestamp units and clock reference.
+  - What producers do when the queue is full.
+  - Whether multiple message types are needed now or only later.
+
+For the current task, the existing timestamp plus four voltages is enough.
+A general thread does not require a complicated message format immediately.
+
+Header outline:
+
+  /* Add an include guard and required includes. */
+
+  typedef struct {
+      /* Agreed timestamp and measurement fields. */
+  } flight_sim_message_t;
+
+  extern struct k_msgq flight_sim_tx_q;
+
+  int flight_sim_comms_init(void);
+
+The typedef defines one queue item. The extern declaration lets other files
+refer to the queue; it does not allocate another queue. Define the actual
+queue in exactly one .c file.
+
+Your teammates include this header and enqueue the agreed structure.
+If several message types are already planned, discuss a type field and a
+union of payloads. Otherwise, start with the one required message type.
+
+3. DEFINE THE STATIC QUEUE IN THE .C FILE
+
+Pattern:
+
+  K_MSGQ_DEFINE(flight_sim_tx_q,
+                sizeof(flight_sim_message_t),
+                FLIGHT_SIM_QUEUE_LEN,
+                4);
+
+Arguments:
+
+  flight_sim_tx_q                 Queue name.
+  sizeof(flight_sim_message_t)    Number of bytes in one item.
+  FLIGHT_SIM_QUEUE_LEN            Maximum number of waiting items.
+  4                              Backing storage alignment in bytes.
+
+K_MSGQ_DEFINE creates the queue and its static backing storage. You do not
+need malloc() or a separate backing-buffer declaration.
+
+Producer call (your teammates):
+
+  int err = k_msgq_put(&flight_sim_tx_q, &message, K_NO_WAIT);
+
+Consumer call (your thread):
+
+  int err = k_msgq_get(&flight_sim_tx_q, &message, K_FOREVER);
+
+Zephyr copies each complete message into and out of the queue. A producer's
+local message variable can be reused after a successful put. Avoid pointers
+to temporary data inside the message: copying a pointer does not copy the
+data it points to.
+
+K_NO_WAIT returns immediately if the queue is full. K_FOREVER on get lets
+the consumer sleep until a message arrives; it does not busy-poll.
+
+Choose a small bounded capacity with your team. A capacity of one means one
+waiting packet, plus any packet already removed and being transmitted.
+If SPI stops progressing, any finite queue eventually fills. For initial
+bring-up, producers can drop incoming messages when full and count drops.
+Agree on this policy rather than silently ignoring enqueue errors.
+
+Reference:
+https://docs.zephyrproject.org/latest/kernel/services/data_passing/message_queues.html
+
+4. CREATE THE COMMUNICATION THREAD
+
+Thread outline:
+
+  static void flight_sim_comms_thread(void *p1, void *p2, void *p3)
+  {
+      flight_sim_message_t message;
+
+      for (;;) {
+          /* Wait for a message with k_msgq_get(). */
+          /* Check its return value. */
+          /* Encode the message into protobuf bytes. */
+          /* Pass encoded bytes to the SPI helper. */
+          /* Record or log failures. */
+      }
+  }
+
+Handle unused thread arguments with ARG_UNUSED() if appropriate.
+
+Implement flight_sim_comms_init() to:
+
+  1. Check that the SPI device is ready.
+  2. Create the communication thread.
+  3. Return success or an error.
+
+Using k_thread_create() matches the explicit initialization approach used
+elsewhere in this project. You will define a thread stack and a struct
+k_thread in the .c file, as well as stack size and priority constants.
+
+Choose either explicit creation or K_THREAD_DEFINE; do not start the same
+worker both ways. Arrange for initialization to run once.
+
+The teammate responsible for main.c should call flight_sim_comms_init()
+once during startup and handle its result. Coordinate this integration
+without taking over their measurement code.
+
+5. MAP THE QUEUED MESSAGE TO PROTOBUF
+
+There are two representations:
+
+  flight_sim_message_t:
+      C structure passed between threads inside the STM32.
+
+  Generated protobuf message:
+      Portable encoding understood by the flight simulator.
+
+Agree with the simulator teammate on the .proto schema and who owns it.
+Both endpoints must generate compatible bindings from the same schema.
+Field numbers are stable identifiers: do not renumber existing fields.
+Document units and timestamp meaning in the schema.
+
+Your encoding helper should:
+
+  1. Initialize a generated protobuf structure.
+  2. Copy the queued timestamp and measurements into its fields.
+  3. Create a nanopb output stream over a byte buffer.
+  4. Encode the message.
+  5. Return the encoded length or an error.
+
+Core nanopb pattern (replace MessageName with the generated name):
+
+  pb_ostream_t stream = pb_ostream_from_buffer(buffer, capacity);
+
+  bool ok = pb_encode(&stream, MessageName_fields, &protobuf_message);
+
+Include the generated protobuf header and pb_encode.h as needed.
+On success, stream.bytes_written is the payload length. On failure, do not
+transmit the buffer as a valid packet. Use an adequate bounded buffer, using
+the generated maximum-size constant when available.
+
+Do not send the raw C structure over SPI: padding and memory layout are not
+a portable wire format.
+
+Project build note: test_node/app/CMakeLists.txt currently finds .proto files
+under shared/proto and generates nanopb sources. Reconfigure after adding a
+schema. When inspected, shared/proto/sensor_data.proto had C declarations
+inside GpsPayload, such as char time[11], which are invalid protobuf syntax.
+If still present, coordinate a fix with its owner: generation processes all
+schemas in that directory, so this can block your build too.
+
+Reference:
+https://jpa.kapsi.fi/nanopb/docs/reference.html
+
+6. KEEP SPI DETAILS IN A HELPER
+
+Suggested internal interface:
+
+  static int flight_sim_send_spi(const uint8_t *payload, size_t length);
+
+The helper handles framing, SPI buffer descriptors, the SPI operation, and
+returning errors. The thread remains responsible for consuming messages
+and choosing what to send.
+
+The project's existing incoming protocol uses:
+
+  [2-byte little-endian payload length][protobuf payload][padding]
+
+Reusing that pattern is reasonable. Both endpoints must agree on:
+
+  - Total transaction/frame size.
+  - Whether length counts only protobuf payload bytes.
+  - Byte order of the length prefix.
+  - SPI clock mode, word size, bit order, and supported clock speed.
+  - Readiness/handshake behavior.
+  - What to do on malformed frames or transfer failures.
+
+The receiver must validate the length before decoding exactly that many
+payload bytes. Protobuf encodes the payload; your transport framing marks
+its boundaries.
+
+Keep the transmit buffer valid and unchanged until the SPI transfer has
+completed. A single worker owning a static transmit buffer is a simple
+approach for synchronous transfers.
+
+IMPORTANT: CONFIRM WHICH SIDE SUPPLIES THE SPI CLOCK
+
+If the Pi is the controller and STM32 is the peripheral:
+
+  - The Pi drives clock and chip select.
+  - STM32 prepares outgoing data.
+  - The Pi initiates a transfer to read it.
+  - STM32-to-Pi data travels on MISO.
+
+The STM32 cannot independently push bytes onto the wire in that arrangement.
+Your thread prepares the transfer, and the Pi must clock it. Agree on a
+polling protocol with defined readiness behavior or a data-ready GPIO
+handshake. A transfer may block while waiting for the other side, which is
+one reason to keep transmission out of the measurement thread.
+
+If the worker later supports additional transports, remember that blocking
+on SPI also delays those messages. Address that when their requirements are
+known; you do not need multiple transport workers for the initial task.
+
+Existing hardware configuration:
+
+  - SPI4 is used by the incoming spi-orchestrator path.
+  - SPI1 is also enabled in the STM32 overlay and is a possible separate
+    interface, subject to confirming peripheral assignment and pin wiring.
+
+A new software thread does not create a new hardware SPI channel. Confirm
+the peripheral, pins, chip select, wiring, and device-tree alias with your
+team before configuring this module around a particular interface.
+
+Reference:
+https://docs.zephyrproject.org/latest/hardware/peripherals/spi.html
+
+7. BUILD AND VERIFY IN SMALL STAGES
+
+Stage A: Queue and thread
+
+  - Finish the header, queue definition, and initialization function.
+  - Start the worker once.
+  - Enqueue a manually constructed dummy message.
+  - Verify the worker receives the same fields.
+  - Check behavior when the queue fills.
+
+Stage B: Protobuf
+
+  - Agree on the schema and generate bindings.
+  - Encode a known message.
+  - Have the simulator decode it and compare every field.
+  - Check encode failures and buffer-size limits.
+
+Stage C: SPI
+
+  - Confirm hardware roles, wiring, readiness protocol, and framing.
+  - Send a known framed payload.
+  - Verify the simulator receives and decodes the expected values.
+  - Check the behavior when the simulator is not reading.
+
+Stage D: Integration
+
+  - Have teammates enqueue real measurements.
+  - Verify timestamps and units match the agreed contract.
+  - Count dropped messages and transmission failures.
+
+You do not need working PWM capture to test your module. Dummy messages
+let you verify your work independently.
+
+FIRST TASK WHEN YOU RETURN
+
+Finish the communication header, define its static queue, and create a
+thread that waits on that queue. Verify a dummy message reaches the thread.
+Then add the encoding helper, followed by the SPI helper.
