@@ -143,6 +143,18 @@
         };
     };
 
+    spi2_sd_pins: spi2_sd_pins {
+        group1 {
+            pinmux = <SPIM2_SCLK_GPIO10>, <SPIM2_MOSI_GPIO11>;
+            output-enable;
+        };
+        group2 {
+            pinmux = <SPIM2_MISO_GPIO15>;
+            input-enable;
+            bias-pull-up;
+        };
+    };
+
 };
 
 
@@ -200,4 +212,29 @@
 
 &usb_serial {
     status = "okay";
+};
+
+&spi2 {
+    status = "okay";
+    pinctrl-0 = <&spi2_sd_pins>;
+    pinctrl-names = "default";
+    cs-gpios = <&gpio0 18 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+    sd_card@0 {
+        #address-cells = <0x1>;
+        #size-cells = <0x0>;
+        compatible = "zephyr,sdhc-spi-slot";
+        reg = <0>;
+        spi-max-frequency = <4000000>;
+        power-delay-ms = <200>;
+        sdmmc@0 {
+            reg = <0>;
+            compatible = "zephyr,sdmmc-disk";
+            disk-name = "SD";
+            status = "okay";
+        };
+    };
+};
+
+&spi3 {
+    status = "disabled";
 };
