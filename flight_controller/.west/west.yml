@@ -36,6 +36,7 @@ manifest:
         name-allowlist:
           - hal_espressif # required for ESP32-based boards
           - nanopb # protobuf
+          - fatfs # SD SPI Logging
 
   self:
     path: zephyr
