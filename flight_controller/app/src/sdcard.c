@@ -8,8 +8,15 @@
 #include <ff.h>
 #include <string.h>
 
+/* --------- GPIO Mapping --------- 
 
-// FatFs Setup
+SCLK = GPIO10
+MOSI = GPIO11
+MISO = GPIO15
+CS = GPIO18
+
+------------ GPIO Mapping ---------*/
+
 static const char *pdrv = "SD";
 static const char *test_path = "/SD:/TEST.TXT";
 static bool sdcard_flag = false;
