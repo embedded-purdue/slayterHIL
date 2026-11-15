@@ -112,7 +112,7 @@ void pwm_init()
 
     for (int i = 0; i < 4; i++)
     {
-        int ret = pwm_configure_capture(device_list[i], 0,
+        int ret = pwm_configure_capture(device_list[i], 1,
                                         PWM_CAPTURE_TYPE_BOTH | PWM_CAPTURE_MODE_CONTINUOUS,
                                         pwm_capture_cb, (void *)(uintptr_t)i);
         if (ret != 0)
@@ -120,7 +120,7 @@ void pwm_init()
             LOG_ERR("Failed to configure PWM %d: %d", i + 1, ret);
             return;
         }
-        ret = pwm_enable_capture(device_list[i], 0);
+        ret = pwm_enable_capture(device_list[i], 1);
         if (ret != 0)
         {
             LOG_ERR("Failed to enable PWM %d: %d", i + 1, ret);

@@ -3,7 +3,7 @@ find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 project(app LANGUAGES C)
 
 file(GLOB THREAD_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/src/threads/*.c)
-target_sources(app PRIVATE src/main.c src/hil_diag.c ${THREAD_SRCS})
+target_sources(app PRIVATE src/main.c src/gps_test.c src/hil_diag.c ${THREAD_SRCS})
 
 zephyr_include_directories(src)
 

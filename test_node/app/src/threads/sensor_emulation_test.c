@@ -10,7 +10,7 @@
 #include "threads/sensor_emulation_test.h"
 #include "threads/imu_emulator_test.h"
 #include "threads/lidar_emulator_test.h"
-#include "threads/ "
+#include "threads/gnss_emulator.h"
 
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>

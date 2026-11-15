@@ -83,6 +83,7 @@ void gps_update_location(const gps_data_t *packet)
         {
             uart_poll_out(gnss_uart, (unsigned char)gps_string[i]);
         }
+        printk("%s", gps_string);
     }
 }
 

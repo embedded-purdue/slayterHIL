@@ -1,4 +1,4 @@
-
+/* 
 #include "threads/gnss_emulator.h"
 #include "threads/sensor_emulation_test.h"
 
@@ -14,11 +14,13 @@ static const struct device *uart_gnss = DEVICE_DT_GET(DT_ALIAS(uart_gnss));
 
 int main(void)
 {
+    printk("starting up\n");
     if (!device_is_ready(uart_gnss))
     {
         LOG_ERR("GNSS UART not ready");
         return -ENODEV;
     }
+    printk("device is ready\n");
 
     LOG_INF("GNSS UART ready: %s", uart_gnss->name);
 
@@ -27,6 +29,8 @@ int main(void)
         LOG_ERR("Failed to initialize GNSS emulator");
         return -ENODEV;
     }
+
+    printk("successful init\n");
 
     gps_data_t gps_packet = {
         .time = "123519.00",
@@ -47,9 +51,12 @@ int main(void)
 
     while (1)
     {
+        printk("sending packet\n");
         gps_update_location(&gps_packet);
+        printk("packet sent\n");
         k_msleep(1000);
     }
 
     return 0;
 }
+ */

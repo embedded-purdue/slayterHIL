@@ -382,15 +382,19 @@ static void scheduler_thread(void *p1, void *p2, void *p3)
 
         /* Fixed GPS values for every simulation tick (NMEA degrees/minutes). */
         pkt.gps_data = (gps_data_t){
-            .valid = 1,
+            .time = "123519.00",
+            .status = 'A',
             .latitude = 4025.96248,
             .lat_dir = 'N',
             .longitude = 8655.40652,
             .lon_dir = 'W',
-            .fix_quality = 1,
-            .satellites = 10,
-            .hdop = 1,
-            .alt_units = 'M',
+            .speed = 12.0f,
+            .course = 185.0f,
+            .date = "151126",
+            .variation = 0.0f,
+            .var_dir = 'E',
+            .mode = 'A',
+            .nav_status = 'S'
         };
 
         pkt.timestamp_us      = proto.timestamp_us;
