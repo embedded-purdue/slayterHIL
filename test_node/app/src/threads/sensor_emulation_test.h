@@ -117,7 +117,7 @@ typedef struct
     char lon_dir;     // E or W
     float speed;      // fff.f speed over ground in knots
     float course;     // fff.f course over ground from 0 to 360 deg
-    char date[6];     // ddmmyy
+    char date[7];     // ddmmyy
     float variation;  // fff.ff magnetic variation in deg 0 to 180
     char var_dir;     // E or W for magnetic variation
     char mode;        // position mode indicator
