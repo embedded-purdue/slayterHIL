@@ -1,4 +1,6 @@
-/* 
+#define GPS_SEND 1
+
+#if GPS_SEND == 1
 #include "threads/gnss_emulator.h"
 #include "threads/sensor_emulation_test.h"
 
@@ -59,4 +61,41 @@ int main(void)
 
     return 0;
 }
- */
+
+#else
+#include <zephyr/kernel.h>
+#include <zephyr/device.h>
+#include <zephyr/drivers/uart.h>
+#include <zephyr/sys/printk.h>
+#include <errno.h>
+
+#define UART_RX_NODE DT_ALIAS(uart_gnss)
+
+#if !DT_NODE_EXISTS(UART_RX_NODE)
+#error "uart_gnss alias is not defined in the devicetree"
+#endif
+
+static const struct device *uart_dev = DEVICE_DT_GET(UART_RX_NODE);
+
+int main(void)
+{
+    if (!device_is_ready(uart_dev)) {
+        printk("UART device not ready\n");
+        return -ENODEV;
+    }
+
+    printk("UART receiver started on %s\n", uart_dev->name);
+
+    uint8_t c;
+
+    while (1) {
+        if (uart_poll_in(uart_dev, &c) == 0) {
+            printk("%c", c);
+        } else {
+            k_msleep(1);
+        }
+    }
+
+    return 0;
+}
+#endif
