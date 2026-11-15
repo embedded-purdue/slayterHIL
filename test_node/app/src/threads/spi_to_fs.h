@@ -1,3 +1,8 @@
+#ifndef SPI_TO_FS_H
+#define SPI_TO_FS_H
+
+#pragma once
+
 #include <stdint.h>
 #include <zephyr/kernel.h>
 
@@ -14,3 +19,5 @@ typedef struct
 
 #define SPI_TO_FS_QUEUE_LEN (1U)
 extern struct k_msgq spi_to_fs_q;
+
+#endif // SPI_TO_FS_H

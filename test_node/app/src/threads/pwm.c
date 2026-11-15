@@ -10,7 +10,7 @@ const struct device *pwm_input_dev2 = DEVICE_DT_GET(DT_ALIAS(pwm_input2));
 const struct device *pwm_input_dev3 = DEVICE_DT_GET(DT_ALIAS(pwm_input3));
 const struct device *pwm_input_dev4 = DEVICE_DT_GET(DT_ALIAS(pwm_input4));
 const struct device *pwm_output_dev = NULL; // TODO: assign correct device
-
+    
 const struct device *const device_list[NUM_PWM] = {
     DEVICE_DT_GET(DT_ALIAS(pwm_input1)),
     DEVICE_DT_GET(DT_ALIAS(pwm_input2)),
@@ -42,7 +42,7 @@ void pwm_thread(void *, void *, void *)
     {
         if (k_msgq_get(&avg_v_q, &single_packet, K_FOREVER) == 0)
         {
-            LOG_INF("PWM %d: %.3f V", single_packet.id, single_packet.avg_v);
+            // LOG_INF("PWM %d: %.3f V", single_packet.id, single_packet.avg_v);
 
             if (single_packet.id < 0 || single_packet.id >= NUM_PWM)
             {
@@ -69,10 +69,30 @@ void pwm_capture_cb(const struct device *dev,
                     int status,
                     void *user_data)
 {
-    if (status != 0)
-    {
-        LOG_ERR("PWM capture failed: %d", status);
+    static uint32_t success_count[NUM_PWM];
+    static uint32_t error_count[NUM_PWM];
+
+    int id = (int)(uintptr_t)user_data;
+
+    if (id < 0 || id >= NUM_PWM) {
         return;
+    }
+
+    if (status != 0) {
+        error_count[id]++;
+
+        if (error_count[id] % 100 == 1) {
+            printk("PWM %d error %d, total %u\n",
+                id + 1, status, error_count[id]);
+        }
+        return;
+    }
+
+    success_count[id]++;
+
+    if (success_count[id] % 1000 == 1) {
+        printk("PWM %d success: period=%u, pulse=%u\n",
+            id + 1, period_cycles, pulse_cycles);
     }
 
     if (period_cycles == 0)
@@ -89,7 +109,8 @@ void pwm_capture_cb(const struct device *dev,
 
     if (k_msgq_put(&avg_v_q, &packet, K_NO_WAIT) != 0)
     {
-        LOG_WRN("Average voltage queue full");
+        k_msgq_purge(&avg_v_q);
+        k_msgq_put(&avg_v_q, &packet, K_NO_WAIT);
     }
 }
 
@@ -110,6 +131,12 @@ void pwm_init()
     //     return;
     // }
 
+    k_thread_create(&pwm_thread_data, pwm_stack,
+                    K_THREAD_STACK_SIZEOF(pwm_stack),
+                    pwm_thread,
+                    NULL, NULL, NULL,
+                    PWM_PRIORITY, 0, K_NO_WAIT);
+
     for (int i = 0; i < 4; i++)
     {
         int ret = pwm_configure_capture(device_list[i], 1,
@@ -127,10 +154,4 @@ void pwm_init()
             return;
         }
     }
-
-    k_thread_create(&pwm_thread_data, pwm_stack,
-                    K_THREAD_STACK_SIZEOF(pwm_stack),
-                    pwm_thread,
-                    NULL, NULL, NULL,
-                    PWM_PRIORITY, 0, K_NO_WAIT);
 }

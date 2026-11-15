@@ -1,5 +1,8 @@
 #ifndef PWM_H
 #define PWM_H
+
+#pragma once
+
 #include <zephyr/drivers/pwm.h>
 
 #include "spi_to_fs.h"
