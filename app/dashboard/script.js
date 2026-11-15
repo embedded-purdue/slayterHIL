@@ -1784,6 +1784,12 @@ class TestAutomationDashboard {
             case 'status':
                 console.log('Status:', message.status);
                 break;
+            case 'dutTelemetry':
+                // Parsed DUT console line: attitude, setpoints, altitude, motor mix.
+                // Kept on the dashboard + re-emitted so any panel can listen for it.
+                this.latestDutTelemetry = message.data;
+                document.dispatchEvent(new CustomEvent('dut-telemetry', { detail: message.data }));
+                break;
             default:
                 break;
         }

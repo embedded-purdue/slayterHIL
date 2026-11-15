@@ -4,6 +4,9 @@ import asyncio
 import json
 import os
 import re
+import time
+
+from dut_telemetry import read_dut
 
 # Absolute paths only: never rely on the process cwd.
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -21,6 +24,14 @@ TESTS_DIR = os.path.abspath(os.path.join(PROJECT_ROOT, 'tests'))
 SIM_OUTPUT_DIR = os.path.abspath(
     os.environ.get('SIM_OUTPUT_DIR') or os.path.join(PROJECT_ROOT, 'sim_output')
 )
+# DUT (flight controller) USB serial port, e.g. COM5 or /dev/ttyUSB0, or "fake" to
+# replay sample lines. Unset = DUT telemetry reader is off.
+DUT_SERIAL_PORT = os.environ.get('DUT_SERIAL_PORT')
+DUT_SERIAL_BAUD = int(os.environ.get('DUT_SERIAL_BAUD', '115200'))
+# Every parsed DUT telemetry sample is appended here as one JSON object per line.
+DUT_LOG_DIR = os.path.abspath(
+    os.environ.get('DUT_LOG_DIR') or os.path.join(PROJECT_ROOT, 'dut_logs')
+)
 # Plain file names only: no path separators, no leading dot.
 SIM_OUTPUT_NAME_RE = re.compile(r'^[A-Za-z0-9_][A-Za-z0-9_.\-]*\.json$')
 
@@ -37,12 +48,16 @@ class TestServer:
         self.setup_routes()
         self.clients = set()
         self.current_test = None
+        self.latest_dut_telemetry = None
+        self.app.on_startup.append(self.start_dut_reader)
+        self.app.on_cleanup.append(self.stop_dut_reader)
 
     def setup_routes(self):
         self.app.router.add_get('/', self.serve_index)
         self.app.router.add_get('/ws', self.websocket_handler)
         self.app.router.add_get('/api/sim-output', self.list_sim_output)
         self.app.router.add_get('/api/sim-output/{name}', self.get_sim_output)
+        self.app.router.add_get('/api/dut-telemetry/latest', self.get_latest_dut_telemetry)
 
         if os.path.isdir(TESTS_DIR):
             # Mount repo tests as a sub-app so requests are never handled by the
@@ -100,6 +115,49 @@ class TestServer:
             'Content-Type': 'application/json',
             'Cache-Control': 'no-cache',
         })
+
+    async def get_latest_dut_telemetry(self, request):
+        return web.json_response({
+            'enabled': bool(DUT_SERIAL_PORT),
+            'port': DUT_SERIAL_PORT,
+            'latest': self.latest_dut_telemetry,
+        })
+
+    async def start_dut_reader(self, app):
+        if not DUT_SERIAL_PORT:
+            print('[dut] DUT_SERIAL_PORT not set; DUT telemetry reader off')
+            self.dut_task = None
+            return
+        print(f'[dut] reading DUT telemetry from {DUT_SERIAL_PORT} @ {DUT_SERIAL_BAUD}')
+        self.dut_task = asyncio.create_task(self.dut_reader_loop())
+
+    async def stop_dut_reader(self, app):
+        if getattr(self, 'dut_task', None):
+            self.dut_task.cancel()
+
+    async def dut_reader_loop(self):
+        os.makedirs(DUT_LOG_DIR, exist_ok=True)
+        log_path = os.path.join(DUT_LOG_DIR, time.strftime('dut_%Y%m%d_%H%M%S.jsonl'))
+        print(f'[dut] logging telemetry to {log_path}')
+        with open(log_path, 'a', encoding='utf-8') as log_file:
+            async for kind, payload in read_dut(DUT_SERIAL_PORT, DUT_SERIAL_BAUD):
+                if kind == 'telemetry':
+                    # received_at: Pi wall clock, so samples can be lined up with FS output.
+                    sample = {'received_at': time.time(), **payload}
+                    self.latest_dut_telemetry = sample
+                    log_file.write(json.dumps(sample) + '\n')
+                    log_file.flush()
+                    await self.broadcast({'type': 'dutTelemetry', 'data': sample})
+                elif kind == 'line':
+                    await self.broadcast({
+                        'type': 'log', 'level': 'info', 'step': 'dut', 'message': payload,
+                    })
+                else:  # 'status': connect / disconnect / retry
+                    print(f'[dut] {payload}')
+                    await self.broadcast({
+                        'type': 'log', 'level': 'warning' if 'error' in payload else 'info',
+                        'step': 'dut-serial', 'message': payload,
+                    })
 
     async def websocket_handler(self, request):
         ws = web.WebSocketResponse()

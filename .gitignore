@@ -8,3 +8,4 @@ build
 
 # Flight sim output files read by the dashboard (generated)
 sim_output/
+dut_logs/
