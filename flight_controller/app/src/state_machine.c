@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <zephyr/kernel.h>
 #include <stddef.h>
 #include <stdalign.h>
@@ -23,6 +24,54 @@
 //global state transition events
 system_events_t event;
 drone_state_t current_state = DRONE_IDLE;
+
+//Maps enums to an array of strings for logging purposes
+// IF YOU UPDATE THE ENUMS THEN UPDATE THIS PLS THANKS
+static const char *const event_table[] = {
+    [INIT_HW]          = "INIT_HW",
+    [INIT_HW_DONE]     = "INIT_HW_DONE",
+    [ASCEND]           = "ASCEND",
+    [ASCEND_DONE]      = "ASCEND_DONE",
+    [LAND]             = "LAND",
+    [LAND_DONE]        = "LAND_DONE",
+    [ERROR]            = "ERROR",
+    [CTRL_COMMAND]     = "CTRL_COMMAND",
+    [CTRL_QUEUE_EMPTY] = "CTRL_QUEUE_EMPTY"
+};
+static const char *const state_table[] = {
+    [DRONE_IDLE]              = "DRONE_IDLE",
+    [DRONE_START_INIT]        = "DRONE_START_INIT",
+    [DRONE_DONE_INIT]         = "DRONE_DONE_INIT",
+    [DRONE_FIRST_ASCEND]      = "DRONE_FIRST_ASCEND",
+    [DRONE_HOVER]             = "DRONE_HOVER",
+    [DRONE_CONTROLLED_FLIGHT] = "DRONE_CONTROLLED_FLIGHT",
+    [DRONE_LAND]              = "DRONE_LAND",
+    [DRONE_ERROR]             = "DRONE_ERROR"
+};
+
+const char *event_name(system_events_t event) {
+    if ((size_t)event >= ARRAY_SIZE(event_table)) {
+        return "UNKNOWN";
+    }
+
+    if (event_table[event] == NULL) {
+        return "UNKNOWN";
+    }
+
+    return event_table[event];
+}
+
+const char *state_name(drone_state_t state) {
+    if ((size_t)state >= ARRAY_SIZE(state_table)) {
+        return "UNKNOWN";
+    }
+
+    if (state_table[state] == NULL) {
+        return "UNKNOWN";
+    }
+
+    return state_table[state];
+}
 
 // define message queue
 

@@ -48,6 +48,8 @@ typedef struct { //may need to be changed to match alex's lidar lite driver
 } lidar_state_t;
 
 // function declarations
+const char *event_name(system_events_t event);
+const char *state_name(drone_state_t state);
 void state_machine_handler(system_events_t event);
 void state_machine_thread(void *p1, void *p2, void *p3);
 
