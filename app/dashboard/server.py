@@ -3,6 +3,7 @@ import aiohttp
 import asyncio
 import json
 import os
+import re
 
 # Absolute paths only: never rely on the process cwd.
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -15,6 +16,19 @@ if os.path.normcase(DASHBOARD_DIR) != os.path.normcase(BASE_DIR):
     )
     DASHBOARD_DIR = BASE_DIR
 TESTS_DIR = os.path.abspath(os.path.join(PROJECT_ROOT, 'tests'))
+# Folder flight sim writes its output JSON files into (see
+# docs/dashboard/sim_output_format.md). Override with SIM_OUTPUT_DIR.
+SIM_OUTPUT_DIR = os.path.abspath(
+    os.environ.get('SIM_OUTPUT_DIR') or os.path.join(PROJECT_ROOT, 'sim_output')
+)
+# Plain file names only: no path separators, no leading dot.
+SIM_OUTPUT_NAME_RE = re.compile(r'^[A-Za-z0-9_][A-Za-z0-9_.\-]*\.json$')
+
+
+def display_path(path):
+    """Path relative to the repo when inside it, for showing in the UI."""
+    rel = os.path.relpath(path, PROJECT_ROOT)
+    return path if rel.startswith('..') else rel + '/'
 
 
 class TestServer:
@@ -27,6 +41,8 @@ class TestServer:
     def setup_routes(self):
         self.app.router.add_get('/', self.serve_index)
         self.app.router.add_get('/ws', self.websocket_handler)
+        self.app.router.add_get('/api/sim-output', self.list_sim_output)
+        self.app.router.add_get('/api/sim-output/{name}', self.get_sim_output)
 
         if os.path.isdir(TESTS_DIR):
             # Mount repo tests as a sub-app so requests are never handled by the
@@ -45,11 +61,45 @@ class TestServer:
         print(f'[dashboard] PROJECT_ROOT={PROJECT_ROOT}')
         print(f'[dashboard] DASHBOARD_DIR={DASHBOARD_DIR}')
         print(f'[dashboard] TESTS_DIR={TESTS_DIR} (exists={os.path.isdir(TESTS_DIR)})')
+        print(f'[dashboard] SIM_OUTPUT_DIR={SIM_OUTPUT_DIR} (exists={os.path.isdir(SIM_OUTPUT_DIR)})')
 
     async def serve_index(self, request):
         index_path = os.path.join(DASHBOARD_DIR, 'index.html')
         with open(index_path, encoding='utf-8') as f:
             return web.Response(text=f.read(), content_type='text/html')
+
+    async def list_sim_output(self, request):
+        """JSON files in SIM_OUTPUT_DIR, newest first."""
+        exists = os.path.isdir(SIM_OUTPUT_DIR)
+        files = []
+        if exists:
+            with os.scandir(SIM_OUTPUT_DIR) as it:
+                for entry in it:
+                    if entry.is_file() and SIM_OUTPUT_NAME_RE.match(entry.name):
+                        st = entry.stat()
+                        files.append({
+                            'name': entry.name,
+                            'size': st.st_size,
+                            'modified': st.st_mtime,
+                        })
+        files.sort(key=lambda f: f['modified'], reverse=True)
+        return web.json_response({
+            'dir': display_path(SIM_OUTPUT_DIR),
+            'exists': exists,
+            'files': files,
+        })
+
+    async def get_sim_output(self, request):
+        name = request.match_info['name']
+        if not SIM_OUTPUT_NAME_RE.match(name):
+            raise web.HTTPBadRequest(text='Invalid file name')
+        path = os.path.join(SIM_OUTPUT_DIR, name)
+        if not os.path.isfile(path):
+            raise web.HTTPNotFound(text=f'{name} not found in {display_path(SIM_OUTPUT_DIR)}')
+        return web.FileResponse(path, headers={
+            'Content-Type': 'application/json',
+            'Cache-Control': 'no-cache',
+        })
 
     async def websocket_handler(self, request):
         ws = web.WebSocketResponse()
@@ -72,16 +122,16 @@ class TestServer:
         if data['command'] == 'runTest':
             await self.run_test(data['testId'])
         elif data['command'] == 'rcCommands':
-            await self.handle_rc_commands(data['commands'])
+            await self.handle_rc_commands(data['commands'], data.get('run_id'))
 
-    async def handle_rc_commands(self, commands):
+    async def handle_rc_commands(self, commands, run_id=None):
         command_str = ''.join(commands)
-        print(f'[RC] Received {len(commands)} commands: {command_str}')
+        print(f'[RC] Run {run_id}: received {len(commands)} commands: {command_str}')
         await self.broadcast({
             'type': 'log',
             'level': 'info',
             'step': 'rc-input',
-            'message': f'RC commands queued ({len(commands)} steps): {command_str}'
+            'message': f'Run {run_id}: RC commands queued ({len(commands)} steps): {command_str}'
         })
         # TODO: forward commands to the test node over SPI/serial when that
         # interface is ready.
@@ -110,8 +160,10 @@ class TestServer:
 
     async def broadcast(self, message):
         if self.clients:
+            # return_exceptions: one closed tab must not stop the others.
             await asyncio.gather(
-                *(client.send_json(message) for client in self.clients)
+                *(client.send_json(message) for client in list(self.clients)),
+                return_exceptions=True,
             )
 
 

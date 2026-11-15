@@ -802,6 +802,215 @@ body {
     color: var(--text-muted);
 }
 
+/* Sim output: controls strip under the 3D canvas */
+.sim-output {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 14px;
+    background-color: var(--bg-dark);
+    border-top: 1px solid var(--border-color);
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.sim-output-bar,
+.sim-playback,
+.sim-layers,
+.sim-stats {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.sim-output-bar {
+    gap: 6px;
+}
+
+.sim-output-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-right: 4px;
+}
+
+.sim-file-select,
+.sim-speed {
+    background-color: var(--bg-darker);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    border-radius: 4px;
+    padding: 4px 6px;
+    font-size: 12px;
+    font-family: inherit;
+}
+
+.sim-file-select {
+    flex: 1 1 200px;
+    min-width: 0;
+}
+
+.sim-btn {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    border-radius: 4px;
+    padding: 4px 10px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.sim-btn:hover {
+    border-color: var(--accent-blue);
+}
+
+.sim-btn[hidden],
+.sim-playback[hidden],
+.sim-readout[hidden],
+.sim-stats[hidden] {
+    display: none;
+}
+
+/* Readout: values at the playhead */
+.sim-readout {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 4px 16px;
+    padding: 6px 8px;
+    background-color: var(--bg-darker);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 11px;
+    color: var(--text-primary);
+    overflow-x: auto;
+}
+
+.sim-readout table {
+    border-collapse: collapse;
+}
+
+.sim-readout th,
+.sim-readout td {
+    padding: 1px 6px;
+    text-align: right;
+    font-weight: normal;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.sim-readout th {
+    text-align: left;
+    color: var(--text-secondary);
+}
+
+.sim-readout tr.h td,
+.sim-readout td.u,
+.sim-readout td.x {
+    color: var(--text-muted);
+}
+
+.sim-readout td.x {
+    text-align: left;
+    padding-left: 10px;
+}
+
+.sim-readout .att {
+    padding: 1px 6px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+.sim-status:empty {
+    display: none;
+}
+
+.sim-status code,
+.sim-warn code {
+    font-size: 11px;
+    color: var(--text-primary);
+}
+
+.sim-status strong {
+    color: var(--text-primary);
+}
+
+.sim-status-error {
+    color: var(--accent-red);
+}
+
+.sim-warn {
+    margin-top: 4px;
+    color: var(--accent-orange);
+}
+
+.sim-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.sim-chip:has(input:checked) {
+    color: var(--text-primary);
+    background-color: var(--bg-card);
+}
+
+.sim-chip input {
+    margin: 0;
+    accent-color: var(--accent-blue);
+}
+
+.sim-swatch {
+    display: inline-block;
+    width: 10px;
+    height: 3px;
+    border-radius: 2px;
+}
+
+.sim-play {
+    width: 34px;
+    padding: 4px 0;
+}
+
+.sim-scrub {
+    flex: 1 1 160px;
+    min-width: 0;
+    accent-color: #a78bfa;
+}
+
+.sim-time {
+    font-variant-numeric: tabular-nums;
+    min-width: 92px;
+    text-align: right;
+}
+
+.sim-stats {
+    gap: 16px;
+    font-variant-numeric: tabular-nums;
+}
+
+.sim-stats b {
+    color: var(--text-primary);
+    font-weight: 600;
+    margin-left: 4px;
+}
+
+.sim-link {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--accent-blue);
+    font-size: 12px;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar {
     width: 8px;

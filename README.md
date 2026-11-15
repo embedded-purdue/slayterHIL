@@ -15,7 +15,11 @@ The test dashboard (`app/dashboard`) runs on the team Pi (`raspi-5-orcheslayter`
 
 Open it from any device on the tailnet: **https://raspi-5-orcheslayter.tailf4a1c1.ts.net/**
 
-> Note: the page's WebSocket still points at `ws://localhost:8080/ws`, so **Start Test** and live logs only work from a browser on the Pi itself. Other devices can view tests and RC command output.
+The page connects its WebSocket to the same host it was loaded from, so **Start Test** works from any device on the tailnet.
+
+### Sim Output View
+
+Each test panel has a **Sim output** strip under the 3D view that plays back what the drone actually did. It reads JSON files that flight sim writes into `sim_output/` (override with `SIM_OUTPUT_DIR`). It draws the actual path over the planned one, with a drone model, velocity arrow, error line, a readout and error stats, and each layer can be toggled. File format: [docs/dashboard/sim_output_format.md](docs/dashboard/sim_output_format.md). To try it without the sim, run `python3 tests/mock_sim_output.py hover` and pick the file on the Hover Test panel.
 
 How it's set up:
 - `server.py` listens on `127.0.0.1:8080` (set via `DASHBOARD_HOST` / `DASHBOARD_PORT`; defaults to `localhost:8080` for local dev).
