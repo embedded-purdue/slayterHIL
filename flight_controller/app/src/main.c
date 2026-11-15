@@ -13,6 +13,7 @@
 #include "pid.h"
 #include "control.h"
 #include <stdalign.h>
+#include "sdcard.h"
 
 // static const struct device *bno055_dev = DEVICE_DT_GET(DT_NODELABEL(bno)); 
 
@@ -382,6 +383,12 @@ int main(void)
     int uc = uart_init(uart_control);
     if(uc != 0){
         printk("uart_init failed: %d\n",uc);
+    }
+
+    //Initialize SD Logging
+    rc = sdcard_init();
+    if (rc != 0) {
+        printk("sdcard_init failed: %d - continuing without SD logging\n", rc);
     }
 
     // Start state machine thread
