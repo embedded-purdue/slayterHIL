@@ -3,6 +3,12 @@ import aiohttp
 import asyncio
 import json
 import os
+from uuid import uuid4
+
+try:
+    from .validation import compare_trajectory, finite_number, validate_limits, validate_samples
+except ImportError:
+    from validation import compare_trajectory, finite_number, validate_limits, validate_samples
 
 # Absolute paths only: never rely on the process cwd.
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -15,6 +21,8 @@ if os.path.normcase(DASHBOARD_DIR) != os.path.normcase(BASE_DIR):
     )
     DASHBOARD_DIR = BASE_DIR
 TESTS_DIR = os.path.abspath(os.path.join(PROJECT_ROOT, 'tests'))
+PRESET_FILES = {name: f'{name}_test.json' for name in ('hover', 'circular', 'step', 'trapezoidal')}
+MAX_RUN_SAMPLES = 100000
 
 
 class TestServer:
@@ -23,10 +31,14 @@ class TestServer:
         self.setup_routes()
         self.clients = set()
         self.current_test = None
+        self.runs = {}
 
     def setup_routes(self):
         self.app.router.add_get('/', self.serve_index)
         self.app.router.add_get('/ws', self.websocket_handler)
+        self.app.router.add_post('/api/runs', self.start_run_http)
+        self.app.router.add_post('/api/simulation/samples', self.samples_http)
+        self.app.router.add_post('/api/simulation/complete', self.complete_http)
 
         if os.path.isdir(TESTS_DIR):
             # Mount repo tests as a sub-app so requests are never handled by the
@@ -59,8 +71,13 @@ class TestServer:
         try:
             async for msg in ws:
                 if msg.type == aiohttp.WSMsgType.TEXT:
-                    data = json.loads(msg.data)
-                    await self.handle_message(ws, data)
+                    try:
+                        data = json.loads(msg.data)
+                        response = await self.handle_message(ws, data)
+                        if response is not None:
+                            await ws.send_json(response)
+                    except (ValueError, KeyError, TypeError, OverflowError) as error:
+                        await ws.send_json({'type': 'error', 'message': str(error)})
                 elif msg.type == aiohttp.WSMsgType.ERROR:
                     print(f'WebSocket connection closed with error: {ws.exception()}')
         finally:
@@ -69,10 +86,91 @@ class TestServer:
         return ws
 
     async def handle_message(self, ws, data):
-        if data['command'] == 'runTest':
-            await self.run_test(data['testId'])
-        elif data['command'] == 'rcCommands':
-            await self.handle_rc_commands(data['commands'])
+        if not isinstance(data, dict):
+            raise ValueError('Message must be an object')
+        # Flight simulation may send the agreed packet without a command field.
+        if 'samples' in data:
+            return await self.receive_samples(data)
+        command = data.get('command')
+        if command == 'runTest':
+            return await self.run_test(data.get('testId', 'custom'), data.get('reference'),
+                                       data.get('limits'), data.get('max_sample_gap_s'))
+        if command == 'rcCommands':
+            commands = data.get('commands')
+            if not isinstance(commands, list) or not commands or not all(isinstance(c, str) for c in commands):
+                raise ValueError('commands must be a nonempty list of strings')
+            response = None
+            if 'testId' in data or 'reference' in data:
+                response = await self.run_test(data.get('testId', 'custom'), data.get('reference'),
+                                               data.get('limits'), data.get('max_sample_gap_s'))
+            await self.handle_rc_commands(commands)
+            return response
+        if command == 'simulationComplete':
+            return await self.complete_run(data)
+        raise ValueError('Unknown command')
+
+    async def http_action(self, request, action):
+        try:
+            data = await request.json()
+            if not isinstance(data, dict):
+                raise ValueError('Request must be a JSON object')
+            return web.json_response(await action(data))
+        except (ValueError, KeyError, TypeError, OverflowError) as error:
+            return web.json_response({'type': 'error', 'message': str(error)}, status=400)
+
+    async def start_run_http(self, request):
+        async def start(data):
+            return await self.run_test(data.get('testId', 'custom'), data.get('reference'),
+                                       data.get('limits'), data.get('max_sample_gap_s'))
+        return await self.http_action(request, start)
+
+    async def samples_http(self, request):
+        return await self.http_action(request, self.receive_samples)
+
+    async def complete_http(self, request):
+        return await self.http_action(request, self.complete_run)
+
+    def active_run(self, data):
+        run_id = data.get('run_id')
+        if not isinstance(run_id, str) or run_id not in self.runs:
+            raise ValueError('Unknown run_id')
+        run = self.runs[run_id]
+        if run['status'] != 'collecting':
+            raise ValueError('Run is already finalized')
+        return run_id, run
+
+    async def receive_samples(self, data):
+        run_id, run = self.active_run(data)
+        batch = validate_samples(data.get('samples'), minimum=1)
+        if len(run['actual']) + len(batch) > MAX_RUN_SAMPLES:
+            raise ValueError('Run sample limit exceeded')
+        if run['actual']:
+            # Check batch boundaries too; do not silently replace duplicates.
+            validate_samples([run['actual'][-1]] + batch, minimum=2)
+        run['actual'].extend(batch)
+        response = {'type': 'samplesAccepted', 'run_id': run_id,
+                    'samples_received': len(run['actual'])}
+        await self.broadcast(response)
+        return response
+
+    async def complete_run(self, data):
+        run_id, run = self.active_run(data)
+        failure = data.get('error')
+        if failure is not None and (not isinstance(failure, str) or not failure.strip()):
+            raise ValueError('error must be a nonempty string')
+        run['status'] = 'validating'
+        try:
+            if failure:
+                raise ValueError(f'Simulation failed: {failure}')
+            result = await asyncio.to_thread(compare_trajectory, run['reference'], run['actual'],
+                                            limits=run['limits'], max_sample_gap_s=run['max_sample_gap_s'])
+        except (ValueError, OverflowError) as error:
+            result = {'data_valid': False, 'passed': None, 'error': str(error)}
+        run['status'] = 'completed' if result['data_valid'] else 'invalid'
+        run['result'] = result
+        message = {'type': 'validationResult', 'run_id': run_id, 'result': result}
+        await self.broadcast(message)
+        return message
 
     async def handle_rc_commands(self, commands):
         command_str = ''.join(commands)
@@ -81,37 +179,41 @@ class TestServer:
             'type': 'log',
             'level': 'info',
             'step': 'rc-input',
-            'message': f'RC commands queued ({len(commands)} steps): {command_str}'
+            'message': f'RC commands received ({len(commands)} steps): {command_str}'
         })
         # TODO: forward commands to the test node over SPI/serial when that
         # interface is ready.
 
-    async def run_test(self, test_id):
+    async def run_test(self, test_id, reference=None, limits=None, max_sample_gap_s=None):
+        if not isinstance(test_id, str) or not test_id:
+            raise ValueError('testId must be a nonempty string')
+        if reference is None:
+            if test_id not in PRESET_FILES:
+                raise ValueError('Provide reference samples for a custom test')
+            path = os.path.join(TESTS_DIR, 'generateTests', 'JSONtests', PRESET_FILES[test_id])
+            with open(path, encoding='utf-8') as source:
+                reference = json.load(source)
+        reference = validate_samples(reference, 'reference')
+        limits = validate_limits(limits)
+        if max_sample_gap_s is not None and (not finite_number(max_sample_gap_s) or max_sample_gap_s <= 0):
+            raise ValueError('max_sample_gap_s must be positive and finite')
+        if any(run['status'] in ('collecting', 'validating') for run in self.runs.values()):
+            raise ValueError('Complete the active run before starting another')
+        run_id = uuid4().hex
+        self.runs[run_id] = {'reference': reference, 'actual': [], 'limits': limits,
+                             'max_sample_gap_s': max_sample_gap_s, 'status': 'collecting',
+                             'test_id': test_id}
         self.current_test = test_id
-        await self.broadcast({'type': 'status', 'status': f'Running test {test_id}'})
-
-        for i in range(0, 101, 10):
-            await asyncio.sleep(1)
-            await self.broadcast({
-                'type': 'progress',
-                'value': i
-            })
-            await self.broadcast({
-                'type': 'log',
-                'level': 'info',
-                'message': f'Test progress: {i}%'
-            })
-
-        await self.broadcast({
-            'type': 'testComplete',
-            'success': True,
-            'message': f'Test {test_id} completed successfully'
-        })
+        message = {'type': 'runStarted', 'run_id': run_id, 'test_id': test_id,
+                   'status': 'Waiting for simulation samples'}
+        await self.broadcast(message)
+        return message
 
     async def broadcast(self, message):
         if self.clients:
             await asyncio.gather(
-                *(client.send_json(message) for client in self.clients)
+                *(client.send_json(message) for client in tuple(self.clients)),
+                return_exceptions=True,
             )
 
 

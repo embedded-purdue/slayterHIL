@@ -306,9 +306,18 @@
                     <p class="history-empty">No runs saved</p>
                 </div>
             </section>
+            <section class="rc-output" id="validationOutput" aria-live="polite">
+                <h3>Trajectory Validation</h3>
+                <p id="validationStatus">No simulation results received.</p>
+                <div class="rc-meta" id="validationRun"></div>
+                <table class="waypoints-table">
+                    <thead><tr><th>Metric</th><th>Result</th></tr></thead>
+                    <tbody id="validationMetrics"></tbody>
+                </table>
+            </section>
         </main>
     </div>
     
-    <script src="script.js?v=11"></script>
+    <script src="script.js?v=12"></script>
 </body>
 </html>

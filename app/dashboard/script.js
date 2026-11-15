@@ -656,7 +656,7 @@ class TestAutomationDashboard {
             alert('No RC commands loaded for this test yet.');
             return;
         }
-        const payload = { command: 'rcCommands', commands: cmds };
+        const payload = { command: 'rcCommands', commands: cmds, testId: presetKey };
         if (this.ws && this.ws.readyState === WebSocket.OPEN) {
             this.ws.send(JSON.stringify(payload));
             const ts = new Date().toLocaleTimeString('en-US', { hour12: false });
@@ -664,7 +664,7 @@ class TestAutomationDashboard {
                 ts,
                 'info',
                 'preset-test',
-                `Sent ${cmds.length} RC commands (${presetKey}) to test node`
+                `Sent ${cmds.length} RC commands (${presetKey}) to dashboard server`
             );
         } else {
             alert('Not connected to test server.');
@@ -813,6 +813,7 @@ class TestAutomationDashboard {
             return;
         }
         const commands = waypointsToRcCommands(this.waypoints);
+        this._lastReference = null;
         this.showRcOutput(commands);
     }
 
@@ -826,8 +827,14 @@ class TestAutomationDashboard {
 
         try {
             let waypoints;
+            let reference = null;
             if (format === 'json') {
                 const data = JSON.parse(text);
+                const fields = ['Timestamp', 'X_pos', 'Y_pos', 'Z_pos',
+                    'X_vel_ext', 'Y_vel_ext', 'Z_vel_ext'];
+                if (Array.isArray(data) && data.length >= 2 && data.every(
+                    (row) => row && fields.every((field) => Number.isFinite(row[field]))
+                )) reference = data;
                 waypoints = data.map((r) => ({
                     x: r.X_pos ?? r.x_pos ?? r.x ?? 0,
                     y: r.Y_pos ?? r.y_pos ?? r.y ?? 0,
@@ -837,6 +844,7 @@ class TestAutomationDashboard {
                 waypoints = parseCsvWaypoints(text);
             }
             const commands = waypointsToRcCommands(waypoints);
+            this._lastReference = reference;
             this.showRcOutput(commands);
             this.viz.update(waypoints);
         } catch (e) {
@@ -855,6 +863,7 @@ class TestAutomationDashboard {
     sendRcToServer() {
         if (!this._lastRcCommands) return;
         const payload = { command: 'rcCommands', commands: this._lastRcCommands };
+        if (this._lastReference) payload.reference = this._lastReference;
         if (this.ws && this.ws.readyState === WebSocket.OPEN) {
             this.ws.send(JSON.stringify(payload));
             const ts = new Date().toLocaleTimeString('en-US', { hour12: false });
@@ -862,7 +871,7 @@ class TestAutomationDashboard {
                 ts,
                 'info',
                 'user-input',
-                `Sent ${this._lastRcCommands.length} RC commands to test node`
+                `Sent ${this._lastRcCommands.length} RC commands to dashboard server`
             );
         } else {
             alert('Not connected to test server.');
@@ -871,7 +880,8 @@ class TestAutomationDashboard {
 
     setupWebSocket() {
         try {
-            this.ws = new WebSocket('ws://localhost:8080/ws');
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            this.ws = new WebSocket(`${protocol}//${window.location.host}/ws`);
 
             this.ws.onopen = () => {
                 this.addLogEntry('01:15:00', 'info', 'setup', 'Connected to test server');
@@ -896,34 +906,65 @@ class TestAutomationDashboard {
     }
 
     runTest() {
-        const timestamp = new Date().toLocaleTimeString('en-US', { hour12: false });
+        this.sendRcToServer();
+    }
 
-        this.addLogEntry(timestamp, 'info', 'setup', 'Test execution started');
-
-        setTimeout(() => {
-            this.addLogEntry(timestamp, 'info', 'execute', 'Running test cases...');
-        }, 1000);
-
-        setTimeout(() => {
-            this.addLogEntry(timestamp, 'warn', 'execute', 'Network latency detected');
-        }, 2000);
-
-        setTimeout(() => {
-            this.addLogEntry(timestamp, 'info', 'teardown', 'Test completed successfully');
-        }, 3000);
-
-        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-            this.ws.send(
-                JSON.stringify({
-                    command: 'runTest',
-                    testId: 'search-test',
-                })
-            );
+    showValidationMessage(message) {
+        const status = document.getElementById('validationStatus');
+        const run = document.getElementById('validationRun');
+        const body = document.getElementById('validationMetrics');
+        if (message.type === 'error') {
+            status.textContent = message.message;
+            return;
         }
+        run.textContent = `Run: ${message.run_id}`;
+        if (message.type === 'runStarted') {
+            this._activeRunId = message.run_id;
+            body.replaceChildren();
+            status.textContent = 'Waiting for flight simulation data.';
+            return;
+        }
+        if (message.type === 'samplesAccepted') {
+            status.textContent = `Received ${message.samples_received} simulation samples.`;
+            return;
+        }
+        const result = message.result;
+        this._lastValidationResult = result;
+        body.replaceChildren();
+        if (!result.data_valid) {
+            status.textContent = `Unable to validate: ${result.error}`;
+            return;
+        }
+        status.textContent = result.passed === null
+            ? 'Comparison complete. Pass/fail limits were not supplied.'
+            : result.passed ? 'Passed the configured limits.' : 'Failed the configured limits.';
+        const metrics = [
+            ['Position RMSE (m)', result.position_rmse_m],
+            ['Maximum position error (m)', result.max_position_error_m],
+            ['Final position error (m)', result.final_position_error_m],
+            ['Velocity RMSE (m/s)', result.velocity_rmse_mps],
+            ['Duration (s)', result.duration_s],
+            ['Simulation samples received', result.actual_samples_received],
+        ];
+        metrics.forEach(([label, value]) => {
+            const row = document.createElement('tr');
+            const name = document.createElement('td');
+            const measurement = document.createElement('td');
+            name.textContent = label;
+            measurement.textContent = Number.isInteger(value) ? String(value) : value.toFixed(4);
+            row.append(name, measurement);
+            body.appendChild(row);
+        });
     }
 
     handleServerMessage(message) {
         switch (message.type) {
+            case 'runStarted':
+            case 'samplesAccepted':
+            case 'validationResult':
+            case 'error':
+                this.showValidationMessage(message);
+                break;
             case 'log':
                 this.addLogEntry(
                     message.timestamp || new Date().toLocaleTimeString('en-US', { hour12: false }),
@@ -941,6 +982,10 @@ class TestAutomationDashboard {
     }
 
     addLogEntry(time, level, step, message) {
+        if (!this.logTableBody) {
+            console.log(`[${level}] ${step}: ${message}`);
+            return;
+        }
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${time}</td>
